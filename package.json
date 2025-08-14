@@ -1,0 +1,28 @@
+{
+  "name": "mizu-os",
+  "version": "0.2.0",
+  "description": "SPA que simula un sistema operativo futurista con HTML, CSS y JS puros.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "http-server -c-1 -p 5173 .",
+    "lint": "npm run lint:js && npm run lint:css && npm run lint:md",
+    "lint:js": "eslint assets",
+    "lint:css": "stylelint \"**/*.css\"",
+    "lint:md": "markdownlint README.md",
+    "format": "prettier --write .",
+    "check": "prettier --check . && npm run lint",
+    "serve": "http-server -p 8080 ."
+  },
+  "devDependencies": {
+    "eslint": "9.9.1",
+    "@eslint/js": "9.9.1",
+    "eslint-config-prettier": "9.1.0",
+    "globals": "15.8.0",
+    "prettier": "3.3.3",
+    "stylelint": "16.8.2",
+    "stylelint-config-standard": "36.0.1",
+    "markdownlint-cli": "0.41.0",
+    "http-server": "14.1.1"
+  }
+}

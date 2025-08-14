@@ -1,8 +1,6 @@
-# mizu_os
-Webapps OS
-# 🌌 Sistema Operativo Frontend SPA
+# 🌌 Mizu OS
 
-Este proyecto es una simulación visual de un sistema operativo moderno, minimalista y futurista, desarrollado como una aplicación de una sola página (SPA) utilizando HTML, CSS y JavaScript puro. Está diseñado para ofrecer una experiencia fluida, estética y altamente personalizable.
+Webapps OS — SPA que simula un sistema operativo futurista.
 
 ## 🧩 Características actuales
 
@@ -25,13 +23,15 @@ Este proyecto es una simulación visual de un sistema operativo moderno, minimal
 
 1. Clona o descarga el repositorio
 2. Abre el archivo `index.html` en tu navegador
-3. Interactúa con el sistema: espera la carga, toca el logo para activar, arrastra iconos, abre y maximiza aplicaciones
+3. Interactúa con el sistema: espera la carga, toca el logo para activar,
+   arrastra iconos, abre y maximiza aplicaciones
 
 ## 🛠️ Planes futuros
 
 Este proyecto está en constante evolución. Aquí algunos desarrollos planeados:
 
 ### 🔧 Funcionalidades
+
 - **Persistencia de escritorio**: guardar la posición de los iconos con `localStorage`
 - **Multiventanas**: permitir abrir varias apps simultáneamente con gestión de capas
 - **Sistema de notificaciones**: mensajes emergentes en la barra superior
@@ -39,16 +39,19 @@ Este proyecto está en constante evolución. Aquí algunos desarrollos planeados
 - **Soporte táctil completo**: optimización para dispositivos móviles
 
 ### 🎨 Diseño
+
 - **Fondos dinámicos**: cambiar el wallpaper según la hora del día o el clima
 - **Animaciones avanzadas**: integración con librerías como GSAP para transiciones más fluidas
 - **Iconos personalizados**: SVGs temáticos para cada aplicación
 
 ### 📱 PWA (Progressive Web App)
+
 - Convertir el sistema en una app instalable desde el navegador
 - Soporte offline y caché inteligente
 - Integración con notificaciones push
 
 ### 🧠 Inteligencia simulada
+
 - Asistente virtual integrado
 - Simulación de tareas automatizadas (calendario, recordatorios, etc.)
 
@@ -59,4 +62,25 @@ Este proyecto está en constante evolución. Aquí algunos desarrollos planeados
 ---
 
 **Licencia:** AGPL
-**Autor:** Moises Núñez  
+
+**Autor:** Moises Núñez
+
+## 🧪 Desarrollo
+
+- Requisitos: Node.js >= 18, npm >= 9
+- Instalar deps y validar:
+
+```bash
+npm install
+npm run check
+npm run dev
+```
+
+La app se sirve en `http://localhost:5173`.
+
+## 🧭 Versionado
+
+Este repositorio sigue SemVer. Versión actual: `0.2.0`.
+
+- `0.2.0`: reestructuración del proyecto, separación CSS/JS, linters, corrección de assets.
+- `0.1.0`: versión inicial.

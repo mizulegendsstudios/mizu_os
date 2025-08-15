@@ -1,4 +1,4 @@
- Este archivo está escrito con fuerza, claridad y propósito, para que inspire tanto a colaboradores como a usuarios:
+Este archivo está escrito con fuerza, claridad y propósito, para que inspire tanto a colaboradores como a usuarios:
 ...
 
 🌍 Manifiesto de Libertad Digital y Compromiso Humano

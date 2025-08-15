@@ -1,0 +1,152 @@
+/* Estilos principales extraídos de index.html y normalizados */
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #0d0d15;
+  overflow: hidden;
+}
+
+.slide {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.5s ease;
+  background-color: #0d0d15;
+  background-size: cover;
+  background-position: center;
+}
+.slide.active {
+  display: flex;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.2);
+  padding: 30px;
+  text-align: center;
+  color: #fff;
+}
+
+.logo {
+  width: 100px;
+  margin-bottom: 20px;
+}
+
+.barra-carga {
+  width: 80%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: auto;
+}
+.progreso {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #00e5ff, #1a237e);
+  animation: cargar 2.5s forwards;
+}
+@keyframes cargar {
+  to {
+    width: 100%;
+  }
+}
+
+.blink {
+  font-size: 14px;
+  margin-top: 10px;
+  animation: blink 1.5s infinite;
+}
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.standby-info {
+  text-align: center;
+  color: #fff;
+}
+.standby-info h1 {
+  font-size: 60px;
+  margin: 0;
+}
+.standby-info p {
+  font-size: 20px;
+  opacity: 0.7;
+}
+
+.iconos {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding: 40px;
+}
+.icono {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.icono:hover {
+  transform: scale(1.1);
+}
+
+.ventana {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  width: 300px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+  padding: 20px;
+  color: #fff;
+  display: none;
+}
+
+.ventana-max {
+  width: 90%;
+  height: 90%;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(0, 229, 255, 0.4);
+  padding: 40px;
+  color: #fff;
+  text-align: center;
+}
+
+button {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  background: #00e5ff;
+  color: #000;
+  cursor: pointer;
+  margin-top: 20px;
+}

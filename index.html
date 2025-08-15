@@ -1,244 +1,75 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sistema Operativo Futurista</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #0D0D15;
-      overflow: hidden;
-    }
-
-    .slide {
-      display: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      width: 100vw;
-      justify-content: center;
-      align-items: center;
-      transition: opacity 0.5s ease;
-      background-color: #0D0D15;
-      background-size: cover;
-      background-position: center;
-    }
-    .slide.active {
-      display: flex;
-    }
-
-    .glass {
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(12px);
-      border-radius: 20px;
-      box-shadow: 0 0 30px rgba(0, 229, 255, 0.2);
-      padding: 30px;
-      text-align: center;
-      color: white;
-    }
-
-    .logo {
-      width: 100px;
-      margin-bottom: 20px;
-    }
-
-    .barra-carga {
-      width: 80%;
-      height: 8px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 10px;
-      overflow: hidden;
-      margin: auto;
-    }
-    .progreso {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #00E5FF, #1A237E);
-      animation: cargar 2.5s forwards;
-    }
-    @keyframes cargar {
-      to { width: 100%; }
-    }
-
-    .blink {
-      font-size: 14px;
-      margin-top: 10px;
-      animation: blink 1.5s infinite;
-    }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
-
-    .standby-info {
-      text-align: center;
-      color: white;
-    }
-    .standby-info h1 {
-      font-size: 60px;
-      margin: 0;
-    }
-    .standby-info p {
-      font-size: 20px;
-      opacity: 0.7;
-    }
-
-    .iconos {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-      padding: 40px;
-    }
-    .icono {
-      width: 80px;
-      height: 80px;
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(5px);
-      border-radius: 20px;
-      box-shadow: 0 0 10px rgba(255,255,255,0.2);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 30px;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-    .icono:hover {
-      transform: scale(1.1);
-    }
-
-    .ventana {
-      position: absolute;
-      bottom: 20px;
-      left: 20px;
-      width: 300px;
-      height: 200px;
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      box-shadow: 0 0 20px rgba(0,229,255,0.3);
-      padding: 20px;
-      color: white;
-      display: none;
-    }
-
-    .ventana-max {
-      width: 90%;
-      height: 90%;
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(15px);
-      border-radius: 20px;
-      box-shadow: 0 0 40px rgba(0,229,255,0.4);
-      padding: 40px;
-      color: white;
-      text-align: center;
-    }
-
-    button {
-      padding: 10px 20px;
-      border-radius: 10px;
-      border: none;
-      background: #00E5FF;
-      color: black;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Diapositiva 1: Pantalla de carga -->
-  <div id="pantalla-carga" class="slide active">
-    <div class="glass">
-      <img src="logo.png" class="logo" alt="Logo" />
-      <div class="barra-carga">
-        <div class="progreso"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema Operativo Futurista</title>
+    <link rel="preload" href="assets/styles.css" as="style" />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <!-- Diapositiva 1: Pantalla de carga -->
+    <div id="pantalla-carga" class="slide active">
+      <div class="glass">
+        <img src="assets/logo.svg" class="logo" alt="Logo Mizu" />
+        <div class="barra-carga">
+          <div class="progreso"></div>
+        </div>
+        <div class="blink">Cargando...</div>
       </div>
-      <div class="blink">Cargando...</div>
     </div>
-  </div>
 
-  <!-- Diapositiva 2: Standby -->
-  <div id="standby" class="slide" style="background-image: url('https://www.dzoom.org.es/wp-content/uploads/2016/07/17187369638_18dbc881c7_o.jpg');">
-    <div class="standby-info">
-      <h1 id="hora"></h1>
-      <p id="fecha"></p>
-      <img src="logo.png" class="logo" alt="Logo" onclick="activarSistema()" />
-      <p style="opacity: 0.5;">Toque para activar</p>
+    <!-- Diapositiva 2: Standby -->
+    <div
+      id="standby"
+      class="slide"
+      style="
+        background-image: url('https://www.dzoom.org.es/wp-content/uploads/2016/07/17187369638_18dbc881c7_o.jpg');
+      "
+    >
+      <div class="standby-info">
+        <h1 id="hora"></h1>
+        <p id="fecha"></p>
+        <img id="logo-standby" src="assets/logo.svg" class="logo" alt="Logo Mizu" />
+        <p style="opacity: 0.5">Toque para activar</p>
+      </div>
     </div>
-  </div>
 
-  <!-- Diapositiva 3: Escritorio -->
-  <div id="escritorio" class="slide" style="background-image: url('https://www.dzoom.org.es/wp-content/uploads/2016/07/17187369638_18dbc881c7_o.jpg');">
-    <div class="iconos">
-      <div class="icono" onclick="volverStandby()">❌</div>
-      <div class="icono" onclick="abrirApp()">📁</div>
-      <div class="icono" onclick="abrirApp()">🖼️</div>
-      <div class="icono" onclick="abrirApp()">🎵</div>
+    <!-- Diapositiva 3: Escritorio -->
+    <div
+      id="escritorio"
+      class="slide"
+      style="
+        background-image: url('https://www.dzoom.org.es/wp-content/uploads/2016/07/17187369638_18dbc881c7_o.jpg');
+      "
+    >
+      <div class="iconos">
+        <div id="btn-salir" class="icono">❌</div>
+        <div class="icono abrir-app">📁</div>
+        <div class="icono abrir-app">🖼️</div>
+        <div class="icono abrir-app">🎵</div>
+      </div>
+      <div id="ventana-app" class="ventana">
+        <h3>Aplicación abierta</h3>
+        <button id="btn-maximizar">Maximizar</button>
+      </div>
     </div>
-    <div id="ventana-app" class="ventana">
-      <h3>Aplicación abierta</h3>
-      <button onclick="maximizarApp()">Maximizar</button>
+
+    <!-- Diapositiva 4: App Maximizado -->
+    <div
+      id="app-maximizado"
+      class="slide"
+      style="
+        background-image: url('https://www.dzoom.org.es/wp-content/uploads/2016/07/17187369638_18dbc881c7_o.jpg');
+      "
+    >
+      <div class="ventana-max">
+        <h1>Programa Maximizado</h1>
+        <p>Contenido de ejemplo: bloc de notas, navegador, etc.</p>
+        <button id="btn-cerrar">Cerrar</button>
+      </div>
     </div>
-  </div>
 
-  <!-- Diapositiva 4: App Maximizado -->
-  <div id="app-maximizado" class="slide" style="background-image: url('https://www.dzoom.org.es/wp-content/uploads/2016/07/17187369638_18dbc881c7_o.jpg');">
-    <div class="ventana-max">
-      <h1>Programa Maximizado</h1>
-      <p>Contenido de ejemplo: bloc de notas, navegador, etc.</p>
-      <button onclick="cerrarMaximizado()">Cerrar</button>
-    </div>
-  </div>
-
-  <script>
-    function cambiarSlide(id) {
-      document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-    }
-
-    function cargarSistema() {
-      setTimeout(() => {
-        cambiarSlide('standby');
-      }, 2700);
-    }
-
-    function activarSistema() {
-      cambiarSlide('escritorio');
-    }
-
-    function volverStandby() {
-      cambiarSlide('standby');
-      document.getElementById('ventana-app').style.display = 'none';
-    }
-
-    function abrirApp() {
-      const ventana = document.getElementById('ventana-app');
-      ventana.style.display = 'block';
-    }
-
-    function maximizarApp() {
-      cambiarSlide('app-maximizado');
-    }
-
-    function cerrarMaximizado() {
-      cambiarSlide('escritorio');
-    }
-
-    function actualizarHora() {
-      const ahora = new Date();
-      document.getElementById('hora').textContent = ahora.toLocaleTimeString();
-      document.getElementById('fecha').textContent = ahora.toLocaleDateString();
-    }
-
-    setInterval(actualizarHora, 1000);
-    window.onload = cargarSistema;
-  </script>
-</body>
+    <script src="assets/main.js" defer></script>
+  </body>
 </html>

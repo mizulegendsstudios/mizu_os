@@ -1,7 +1,7 @@
 {
   "name": "mizu-os",
   "version": "0.2.0",
-  "description": "SPA que simula un sistema operativo futurista con HTML, CSS y JS puros.",
+  "description": "Sistema operativo SPA con HTML, CSS y JS puros.",
   "private": true,
   "type": "module",
   "scripts": {

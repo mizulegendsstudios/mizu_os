@@ -46,11 +46,8 @@ function volverStandby() {
 
 // Función para abrir una aplicación
 function abrirApp() {
-  // Muestra la ventana de aplicación en el escritorio
-  const ventana = document.getElementById('ventana-app');
-  if (ventana) {
-    ventana.style.display = 'block';
-  }
+  // Abre directamente en vista maximizada
+  cambiarSlide('app-maximizado');
 }
 
 // Función para maximizar una aplicación

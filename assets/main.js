@@ -9,17 +9,19 @@ function cambiarSlide(id) {
     // Remueve la clase 'active' de cada slide (oculta todos los slides)
     slide.classList.remove('active');
   });
-  
+
   // Busca el slide específico por su ID
-  var destino = document.getElementById(id);
+  const destino = document.getElementById(id);
   // Si el slide existe, le agrega la clase 'active' (lo hace visible)
-  if (destino) destino.classList.add('active');
+  if (destino) {
+    destino.classList.add('active');
+  }
 }
 
 // Función que se ejecuta al cargar la página
 function cargarSistema() {
   // Establece un temporizador para cambiar al slide 'standby' después de 2.7 segundos
-  window.setTimeout(function () {
+  window.setTimeout(() => {
     cambiarSlide('standby');
   }, 2700);
 }
@@ -34,17 +36,21 @@ function activarSistema() {
 function volverStandby() {
   // Cambia al slide 'standby'
   cambiarSlide('standby');
-  
+
   // Oculta la ventana de aplicaciones si existe
-  var ventana = document.getElementById('ventana-app');
-  if (ventana) ventana.style.display = 'none';
+  const ventana = document.getElementById('ventana-app');
+  if (ventana) {
+    ventana.style.display = 'none';
+  }
 }
 
 // Función para abrir una aplicación
 function abrirApp() {
   // Muestra la ventana de aplicaciones si existe
-  var ventana = document.getElementById('ventana-app');
-  if (ventana) ventana.style.display = 'block';
+  const ventana = document.getElementById('ventana-app');
+  if (ventana) {
+    ventana.style.display = 'block';
+  }
 }
 
 // Función para maximizar una aplicación
@@ -62,50 +68,62 @@ function cerrarMaximizado() {
 // Función para actualizar la hora y fecha mostradas
 function actualizarHora() {
   // Obtiene la fecha y hora actual
-  var ahora = new Date();
-  
+  const ahora = new Date();
+
   // Busca los elementos para mostrar hora y fecha
-  var hora = document.getElementById('hora');
-  var fecha = document.getElementById('fecha');
-  
+  const hora = document.getElementById('hora');
+  const fecha = document.getElementById('fecha');
+
   // Si existe el elemento de hora, actualiza su contenido
-  if (hora) hora.textContent = ahora.toLocaleTimeString();
-  
+  if (hora) {
+    hora.textContent = ahora.toLocaleTimeString();
+  }
+
   // Si existe el elemento de fecha, actualiza su contenido
-  if (fecha) fecha.textContent = ahora.toLocaleDateString();
+  if (fecha) {
+    fecha.textContent = ahora.toLocaleDateString();
+  }
 }
 
 // Evento que se dispara cuando el DOM está completamente cargado
-window.addEventListener('DOMContentLoaded', function () {
+window.addEventListener('DOMContentLoaded', () => {
   // ===== INTERACCIONES =====
-  
+
   // Asigna evento click al logo en modo standby para activar el sistema
-  var logoStandby = document.getElementById('logo-standby');
-  if (logoStandby) logoStandby.addEventListener('click', activarSistema);
-  
+  const logoStandby = document.getElementById('logo-standby');
+  if (logoStandby) {
+    logoStandby.addEventListener('click', activarSistema);
+  }
+
   // Asigna evento click al botón de salir para volver a standby
-  var botonSalir = document.getElementById('btn-salir');
-  if (botonSalir) botonSalir.addEventListener('click', volverStandby);
-  
+  const botonSalir = document.getElementById('btn-salir');
+  if (botonSalir) {
+    botonSalir.addEventListener('click', volverStandby);
+  }
+
   // Asigna evento click a todos los iconos para abrir aplicaciones
-  var iconosAbrir = document.querySelectorAll('.abrir-app');
-  iconosAbrir.forEach(function (icono) {
+  const iconosAbrir = document.querySelectorAll('.abrir-app');
+  iconosAbrir.forEach((icono) => {
     icono.addEventListener('click', abrirApp);
   });
-  
+
   // Asigna evento click al botón de maximizar
-  var botonMax = document.getElementById('btn-maximizar');
-  if (botonMax) botonMax.addEventListener('click', maximizarApp);
-  
+  const botonMax = document.getElementById('btn-maximizar');
+  if (botonMax) {
+    botonMax.addEventListener('click', maximizarApp);
+  }
+
   // Asigna evento click al botón de cerrar vista maximizada
-  var botonCerrar = document.getElementById('btn-cerrar');
-  if (botonCerrar) botonCerrar.addEventListener('click', cerrarMaximizado);
-  
+  const botonCerrar = document.getElementById('btn-cerrar');
+  if (botonCerrar) {
+    botonCerrar.addEventListener('click', cerrarMaximizado);
+  }
+
   // ===== RELOJ =====
-  
+
   // Actualiza la hora inmediatamente al cargar
   actualizarHora();
-  
+
   // Configura un intervalo para actualizar la hora cada segundo
   window.setInterval(actualizarHora, 1000);
 });

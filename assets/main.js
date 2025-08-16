@@ -46,8 +46,11 @@ function volverStandby() {
 
 // Función para abrir una aplicación
 function abrirApp() {
-  // Salta directamente a la vista de pantalla completa
-  cambiarSlide('app-pantalla-completa');
+  // Muestra la ventana de aplicación en el escritorio
+  const ventana = document.getElementById('ventana-app');
+  if (ventana) {
+    ventana.style.display = 'block';
+  }
 }
 
 // Función para maximizar una aplicación
@@ -72,6 +75,12 @@ function minimizarApp() {
 function cerrarAppCompleta() {
   // Vuelve al slide 'escritorio'
   cambiarSlide('escritorio');
+}
+
+// Función para ir a pantalla completa desde maximizado
+function irPantallaCompleta() {
+  // Cambia al slide 'app-pantalla-completa'
+  cambiarSlide('app-pantalla-completa');
 }
 
 // Función para actualizar la hora y fecha mostradas
@@ -147,6 +156,12 @@ window.addEventListener('DOMContentLoaded', () => {
   const botonCerrarCompleta = document.getElementById('btn-cerrar-completa');
   if (botonCerrarCompleta) {
     botonCerrarCompleta.addEventListener('click', cerrarAppCompleta);
+  }
+
+  // Asigna evento click al botón de pantalla completa
+  const botonPantallaCompleta = document.getElementById('btn-pantalla-completa');
+  if (botonPantallaCompleta) {
+    botonPantallaCompleta.addEventListener('click', irPantallaCompleta);
   }
 
   // ===== RELOJ =====

@@ -73,12 +73,21 @@ function actualizarHora() {
 
   // Si existe el elemento de hora, actualiza su contenido
   if (hora) {
-    hora.textContent = ahora.toLocaleTimeString();
+    hora.textContent = ahora.toLocaleTimeString('es-ES', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
   }
 
   // Si existe el elemento de fecha, actualiza su contenido
   if (fecha) {
-    fecha.textContent = ahora.toLocaleDateString();
+    fecha.textContent = ahora.toLocaleDateString('es-ES', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   }
 }
 
@@ -86,10 +95,10 @@ function actualizarHora() {
 window.addEventListener('DOMContentLoaded', () => {
   // ===== INTERACCIONES =====
 
-  // Asigna evento click al logo en modo standby para activar el sistema
-  const logoStandby = document.getElementById('logo-standby');
-  if (logoStandby) {
-    logoStandby.addEventListener('click', activarSistema);
+  // Asigna evento click a toda la pantalla standby para activar el sistema
+  const standbyScreen = document.getElementById('standby');
+  if (standbyScreen) {
+    standbyScreen.addEventListener('click', activarSistema);
   }
 
   // Asigna evento click al botón de salir para volver a standby

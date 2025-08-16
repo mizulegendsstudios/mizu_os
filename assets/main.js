@@ -46,8 +46,8 @@ function volverStandby() {
 
 // Función para abrir una aplicación
 function abrirApp() {
-  // Salta directamente a la vista maximizada
-  cambiarSlide('app-maximizado');
+  // Salta directamente a la vista de pantalla completa
+  cambiarSlide('app-pantalla-completa');
 }
 
 // Función para maximizar una aplicación
@@ -58,6 +58,18 @@ function maximizarApp() {
 
 // Función para cerrar la vista maximizada
 function cerrarMaximizado() {
+  // Vuelve al slide 'escritorio'
+  cambiarSlide('escritorio');
+}
+
+// Función para minimizar desde pantalla completa
+function minimizarApp() {
+  // Vuelve al slide 'escritorio'
+  cambiarSlide('escritorio');
+}
+
+// Función para cerrar desde pantalla completa
+function cerrarAppCompleta() {
   // Vuelve al slide 'escritorio'
   cambiarSlide('escritorio');
 }
@@ -123,6 +135,18 @@ window.addEventListener('DOMContentLoaded', () => {
   const botonCerrar = document.getElementById('btn-cerrar');
   if (botonCerrar) {
     botonCerrar.addEventListener('click', cerrarMaximizado);
+  }
+
+  // Asigna evento click al botón de minimizar en pantalla completa
+  const botonMinimizar = document.getElementById('btn-minimizar');
+  if (botonMinimizar) {
+    botonMinimizar.addEventListener('click', minimizarApp);
+  }
+
+  // Asigna evento click al botón de cerrar en pantalla completa
+  const botonCerrarCompleta = document.getElementById('btn-cerrar-completa');
+  if (botonCerrarCompleta) {
+    botonCerrarCompleta.addEventListener('click', cerrarAppCompleta);
   }
 
   // ===== RELOJ =====

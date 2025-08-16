@@ -40,12 +40,29 @@ function actualizarHora() {
   var ahora = new Date();
   var hora = document.getElementById('hora');
   var fecha = document.getElementById('fecha');
-  if (hora) hora.textContent = ahora.toLocaleTimeString();
-  if (fecha) fecha.textContent = ahora.toLocaleDateString();
+
+  // Usar hora y fecha locales del dispositivo con opciones legibles
+  var opcionesHora = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+  var opcionesFecha = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
+  if (hora) hora.textContent = ahora.toLocaleTimeString(undefined, opcionesHora);
+  if (fecha) fecha.textContent = ahora.toLocaleDateString(undefined, opcionesFecha);
 }
 
 window.addEventListener('DOMContentLoaded', function () {
-  // Interacciones
+  // Permitir activar haciendo clic en cualquier parte del standby
+  var slideStandby = document.getElementById('standby');
+  if (slideStandby) {
+    slideStandby.addEventListener('click', activarSistema);
+    slideStandby.setAttribute('role', 'button');
+    slideStandby.setAttribute('aria-label', 'Activar sistema');
+    slideStandby.tabIndex = 0;
+    slideStandby.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') activarSistema();
+    });
+  }
+
+  // Interacciones existentes
   var logoStandby = document.getElementById('logo-standby');
   if (logoStandby) logoStandby.addEventListener('click', activarSistema);
 

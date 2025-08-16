@@ -1,18 +1,14 @@
-# Manifiesto de Libertad Digital y Compromiso Humano
+# 🌍 Manifiesto de Libertad Digital y Compromiso Humano
 
-## Versión 1.0 — por Moisés Núñez
+_Versión 1.0 — por Moisés Núñez Ibarra_
 
-Nosotros, los creadores de este proyecto, declaramos que el conocimiento, la tecnología y el acceso a herramientas digitales no deben ser privilegios, sino derechos universales. En un mundo donde lo [...]
+Nosotros, los creadores de este proyecto, declaramos que el conocimiento, la tecnología y el acceso a herramientas digitales no deben ser privilegios, sino derechos universales. En un mundo donde la tecnología puede liberar o esclavizar, elegimos la libertad.
+
+---
 
 ## 🛡️ Principio 1: Libertad sin condiciones
 
-Este software está licenciado bajo la AGPL, y así permanecerá. No habrá:
-
-- Versiones cerradas
-- Ediciones privadas
-- Puertas traseras
-
-Cada mejora, cada línea de código, cada idea que se construya sobre esta base será compartida con todos, sin excepción.
+Este software está licenciado bajo la AGPL, y así permanecerá. No habrá versiones cerradas, ni ediciones privadas, ni puertas traseras. Cada mejora, cada línea de código, cada idea que se construya sobre esta base será compartida con todos, sin excepción.
 
 ## 🌐 Principio 2: Acceso universal
 
@@ -77,6 +73,6 @@ Este manifiesto no es solo una declaración técnica. Es:
 
 ## Firma
 
-**Moisés Núñez Ibarra**  
-Creador, soñador, defensor de lo libre  
-Panamá, 15 ago 2025
+> **Firma:** Moisés Núñez Ibarra  
+> Creador, soñador, defensor de lo libre  
+> Panamá, 15 ago 2025

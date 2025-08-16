@@ -1,6 +1,6 @@
 {
   "name": "mizu-os",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Sistema operativo SPA con HTML, CSS y JS puros.",
   "private": true,
   "type": "module",

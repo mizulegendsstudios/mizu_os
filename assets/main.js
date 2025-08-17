@@ -35,10 +35,6 @@ function cerrarMaximizado() {
   cambiarSlide('escritorio');
 }
 
-function minimizarApp() {
-  cambiarSlide('escritorio');
-}
-
 function cerrarAppCompleta() {
   cambiarSlide('escritorio');
 }
@@ -47,20 +43,28 @@ function irPantallaCompleta() {
   cambiarSlide('app-pantalla-completa');
 }
 
+function minimizarApp() {
+  cambiarSlide('app-maximizado');
+}
+
+
+// 2) Hora local del dispositivo (sin forzar timeZone)
 function actualizarHora() {
   const ahora = new Date();
+  const locale = navigator.language || undefined;
   const hora = document.getElementById('hora');
   const fecha = document.getElementById('fecha');
 
   if (hora) {
-    hora.textContent = ahora.toLocaleTimeString('es-ES', {
+    hora.textContent = ahora.toLocaleTimeString(locale, {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit'
     });
   }
+
   if (fecha) {
-    fecha.textContent = ahora.toLocaleDateString('es-ES', {
+    fecha.textContent = ahora.toLocaleDateString(locale, {
       weekday: 'long',
       year: 'numeric',
       month: 'long',

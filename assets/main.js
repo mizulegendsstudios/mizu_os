@@ -35,10 +35,6 @@ function cerrarMaximizado() {
   cambiarSlide('escritorio');
 }
 
-function minimizarApp() {
-  cambiarSlide('escritorio');
-}
-
 function cerrarAppCompleta() {
   cambiarSlide('escritorio');
 }
@@ -47,24 +43,31 @@ function irPantallaCompleta() {
   cambiarSlide('app-pantalla-completa');
 }
 
+function minimizarApp() {
+  cambiarSlide('app-maximizado');
+}
+
 function actualizarHora() {
   const ahora = new Date();
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || undefined;
   const hora = document.getElementById('hora');
   const fecha = document.getElementById('fecha');
 
   if (hora) {
-    hora.textContent = ahora.toLocaleTimeString('es-ES', {
+    hora.textContent = ahora.toLocaleTimeString(undefined, {
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit'
+      second: '2-digit',
+      timeZone: tz
     });
   }
   if (fecha) {
-    fecha.textContent = ahora.toLocaleDateString('es-ES', {
+    fecha.textContent = ahora.toLocaleDateString(undefined, {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
+      timeZone: tz
     });
   }
 }

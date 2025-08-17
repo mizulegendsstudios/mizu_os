@@ -23,9 +23,7 @@
     <div
       id="standby"
       class="slide"
-      style="
-        background-image: url('https://www.dzoom.org.es/wp-content/uploads/2016/07/17187369638_18dbc881c7_o.jpg');
-      "
+      style="background-image: url('https://www.dzoom.org.es/wp-content/uploads/2016/07/17187369638_18dbc881c7_o.jpg');"
     >
       <div class="standby-info">
         <h1 id="hora"></h1>
@@ -39,23 +37,25 @@
     <div
       id="escritorio"
       class="slide"
-      style="
-        background-image: url('https://www.dzoom.org.es/wp-content/uploads/2016/07/17187369638_18dbc881c7_o.jpg');
-      "
+      style="background-image: url('https://www.dzoom.org.es/wp-content/uploads/2016/07/17187369638_18dbc881c7_o.jpg');"
     >
-<div class="iconos">
-  <div id="btn-salir" class="icono">❌</div>
-  <div class="icono abrir-app" data-app="1">📁</div>
-  <div class="icono abrir-app" data-app="2">🖼️</div>
-  <div class="icono abrir-app" data-app="3">🎵</div>
-  <div class="icono abrir-app" data-app="4">📝</div>
-  <div class="icono abrir-app" data-app="5">🌐</div>
-  <div class="icono abrir-app" data-app="6">🕹️</div>
-  <div class="icono abrir-app" data-app="7">⚙️</div>
-</div>
-      <div id="ventana-app" class="ventana">
-        <h3>Aplicación abierta</h3>
+      <div class="iconos">
+        <div id="btn-salir" class="icono">❌</div>
+        <div class="icono abrir-app" data-app="1">📁</div>
+        <div class="icono abrir-app" data-app="2">🖼️</div>
+        <div class="icono abrir-app" data-app="3">🎵</div>
+        <div class="icono abrir-app" data-app="4">📝</div>
+        <div class="icono abrir-app" data-app="5">🌐</div>
+        <div class="icono abrir-app" data-app="6">🕹️</div>
+        <div class="icono abrir-app" data-app="7">⚙️</div>
+      </div>
+
+      <!-- Ventana de app abierta desde el escritorio -->
+      <div id="ventana-app" class="ventana" style="display: none;">
+        <h3 id="app-title">Aplicación abierta</h3>
+        <p>Contenido de la aplicación seleccionada.</p>
         <button id="btn-maximizar">Maximizar</button>
+        <button class="btn-fullscreen">Pantalla completa</button>
       </div>
     </div>
 
@@ -63,14 +63,12 @@
     <div
       id="app-maximizado"
       class="slide"
-      style="
-        background-image: url('https://www.dzoom.org.es/wp-content/uploads/2016/07/17187369638_18dbc881c7_o.jpg');
-      "
+      style="background-image: url('https://www.dzoom.org.es/wp-content/uploads/2016/07/17187369638_18dbc881c7_o.jpg');"
     >
       <div class="ventana-max">
-        <h1>Programa Maximizado</h1>
+        <h1 id="app-title-max">App 1 Maximizada</h1>
         <p>Contenido de ejemplo: bloc de notas, navegador, etc.</p>
-        <button id="btn-pantalla-completa">Pantalla Completa</button>
+        <button class="btn-fullscreen">Pantalla completa</button>
         <button id="btn-cerrar">Cerrar</button>
       </div>
     </div>
@@ -79,17 +77,15 @@
     <div
       id="app-pantalla-completa"
       class="slide"
-      style="
-        background-image: url('https://www.dzoom.org.es/wp-content/uploads/2016/07/17187369638_18dbc881c7_o.jpg');
-      "
+      style="background-image: url('https://www.dzoom.org.es/wp-content/uploads/2016/07/17187369638_18dbc881c7_o.jpg');"
     >
       <div class="ventana-completa">
         <div class="controles-ventana">
-          <button id="btn-minimizar" class="control-btn">−</button>
+          <button id="btn-minimizar" class="control-btn">Salir de full screen</button>
           <button id="btn-cerrar-completa" class="control-btn">✕</button>
         </div>
         <div class="contenido-app">
-          <h1>Aplicación en Pantalla Completa</h1>
+          <h1 id="app-title-full">App 1 Modo Pantalla Completa</h1>
           <p>Esta es una vista sin efectos de iluminado que ocupa todo el viewport.</p>
           <p>Usa los controles superiores para minimizar o cerrar la aplicación.</p>
         </div>

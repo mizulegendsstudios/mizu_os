@@ -80,8 +80,9 @@ La app se sirve en `http://localhost:5173`.
 
 ## 🧭 Versionado
 
-Este repositorio sigue SemVer. Versión actual: `0.4.0`.
+Este repositorio sigue SemVer. Versión actual: `0.5.0`.
 
+- `0.5.0`: mejoras en el head, optimizacion del fondo de pantalla, optimizacion de los div.
 - `0.4.0`: identificación por app y títulos dinámicos (“App N Maximizada” / “App N Modo Pantalla Completa”); navegación coherente entre maximizado y pantalla completa; escritorio con 8 iconos.
 - `0.3.1`: fecha/hora locales del dispositivo; “Salir de full screen” vuelve a modo maximizado; escritorio con 8 iconos.
 - `0.3.0`: hora local, sombra en reloj, clic en pantalla de standby en cualquier lugar.

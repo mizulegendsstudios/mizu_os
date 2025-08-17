@@ -240,6 +240,71 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Permitir redimensionar la ventana principal
+  if (ventanaApp) {
+    let isResizing = false;
+    let currentHandle = null;
+    let startX, startY, startW, startH, startL, startT;
+    const minW = 180, minH = 120;
+    const handles = ventanaApp.querySelectorAll('.resize-handle');
+    handles.forEach(handle => {
+      handle.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+        isResizing = true;
+        currentHandle = handle;
+        startX = e.clientX;
+        startY = e.clientY;
+        startW = ventanaApp.offsetWidth;
+        startH = ventanaApp.offsetHeight;
+        startL = ventanaApp.offsetLeft;
+        startT = ventanaApp.offsetTop;
+        document.body.style.userSelect = 'none';
+      });
+    });
+    document.addEventListener('mousemove', (e) => {
+      if (!isResizing || !currentHandle) return;
+      let dx = e.clientX - startX;
+      let dy = e.clientY - startY;
+      let newW = startW, newH = startH, newL = startL, newT = startT;
+      if (currentHandle.classList.contains('resize-e')) {
+        newW = Math.max(minW, startW + dx);
+      } else if (currentHandle.classList.contains('resize-s')) {
+        newH = Math.max(minH, startH + dy);
+      } else if (currentHandle.classList.contains('resize-w')) {
+        newW = Math.max(minW, startW - dx);
+        newL = startL + dx;
+      } else if (currentHandle.classList.contains('resize-n')) {
+        newH = Math.max(minH, startH - dy);
+        newT = startT + dy;
+      } else if (currentHandle.classList.contains('resize-nw')) {
+        newW = Math.max(minW, startW - dx);
+        newL = startL + dx;
+        newH = Math.max(minH, startH - dy);
+        newT = startT + dy;
+      } else if (currentHandle.classList.contains('resize-ne')) {
+        newW = Math.max(minW, startW + dx);
+        newH = Math.max(minH, startH - dy);
+        newT = startT + dy;
+      } else if (currentHandle.classList.contains('resize-sw')) {
+        newW = Math.max(minW, startW - dx);
+        newL = startL + dx;
+        newH = Math.max(minH, startH + dy);
+      } else if (currentHandle.classList.contains('resize-se')) {
+        newW = Math.max(minW, startW + dx);
+        newH = Math.max(minH, startH + dy);
+      }
+      ventanaApp.style.width = newW + 'px';
+      ventanaApp.style.height = newH + 'px';
+      ventanaApp.style.left = newL + 'px';
+      ventanaApp.style.top = newT + 'px';
+    });
+    document.addEventListener('mouseup', () => {
+      isResizing = false;
+      currentHandle = null;
+      document.body.style.userSelect = '';
+    });
+  }
+
   // Inicializar
   actualizarTitulos();
   actualizarHora();

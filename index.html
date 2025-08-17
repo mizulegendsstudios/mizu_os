@@ -1,15 +1,31 @@
 <!doctype html>
 <html lang="es">
-<!-- HEAD -->
   <head>
-<!-- Metas básicos -->
+<!-- HEAD -->
+<!-- METAS -->
 <meta charset="UTF-8">
 <title>Mizu OS</title>
 <meta name="description" content="Descripción actualizada para Mizu OS">
 <meta name="keywords" content="mizu,online,libre,nomowi,sistema,operativo">
 <meta name="author" content="Moises Nunez Ibarra">
+<link rel="icon" href="https://github.com/mizulegendsstudios/mizu_os/raw/refs/heads/main/assets/mizu_legends_3002_2025_alfa.ico" type="image/x-icon">
 
-<!-- Origen -->
+<!-- Viewport -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- CSS -->
+  <!-- CSS en línea para ocultar el body hasta que los estilos reales carguen -->
+  <style>
+    body {
+      visibility: hidden;
+      background: #000; 
+    }
+  </style>
+    <link rel="preload" href="assets/styles.css" as="style" />
+    <link rel="stylesheet" href="assets/styles.css" />
+    <link rel="prefetch" href="assets/main.js">
+
+<!-- GEO -->
 <meta name="geo.region" content="PA-8">
 <meta name="geo.placename" content="Panama">
     
@@ -17,23 +33,18 @@
 <meta property="og:title" content="Mizu OS - Título para redes sociales">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://github.com/mizulegendsstudios/mizu_os">
-<meta property="og:image" content="URL_de_imagen_relevante">
+<meta property="og:image" content="assets/mizu_legends_3002_2025_alfa.ico">
 <meta property="og:description" content="Descripción para compartir en redes">
 
 <!-- Analytics -->
 <meta name="octolytics-host" content="github.com">
 <meta name="octolytics-dimension-repository_id" content="1038271912">
 
-<!-- Viewport -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- CSS -->
-    <link rel="preload" href="assets/styles.css" as="style" />
-    <link rel="stylesheet" href="assets/styles.css" />
   </head>
   
 <!-- BODY -->
   <body>
+    
     <!-- Diapositiva 1: Pantalla de carga -->
     <div id="pantalla-carga" class="slide active">
       <div class="glass">
@@ -48,8 +59,7 @@
     <!-- Diapositiva 2: Standby -->
     <div
       id="standby"
-      class="slide"
-      style="background-image: url('https://www.dzoom.org.es/wp-content/uploads/2016/07/17187369638_18dbc881c7_o.jpg');"
+      class="slide"        
     >
       <div class="standby-info">
         <h1 id="hora"></h1>
@@ -63,7 +73,6 @@
     <div
       id="escritorio"
       class="slide"
-      style="background-image: url('https://www.dzoom.org.es/wp-content/uploads/2016/07/17187369638_18dbc881c7_o.jpg');"
     >
       <div class="iconos">
         <div id="btn-salir" class="icono">❌</div>
@@ -89,7 +98,6 @@
     <div
       id="app-maximizado"
       class="slide"
-      style="background-image: url('https://www.dzoom.org.es/wp-content/uploads/2016/07/17187369638_18dbc881c7_o.jpg');"
     >
       <div class="ventana-max">
         <h1 id="app-title-max">App 1 Maximizada</h1>
@@ -103,7 +111,6 @@
     <div
       id="app-pantalla-completa"
       class="slide"
-      style="background-image: url('https://www.dzoom.org.es/wp-content/uploads/2016/07/17187369638_18dbc881c7_o.jpg');"
     >
       <div class="ventana-completa">
         <div class="controles-ventana">

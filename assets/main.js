@@ -47,27 +47,28 @@ function minimizarApp() {
   cambiarSlide('app-maximizado');
 }
 
+
+// 2) Hora local del dispositivo (sin forzar timeZone)
 function actualizarHora() {
   const ahora = new Date();
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || undefined;
+  const locale = navigator.language || undefined;
   const hora = document.getElementById('hora');
   const fecha = document.getElementById('fecha');
 
   if (hora) {
-    hora.textContent = ahora.toLocaleTimeString(undefined, {
+    hora.textContent = ahora.toLocaleTimeString(locale, {
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit',
-      timeZone: tz
+      second: '2-digit'
     });
   }
+
   if (fecha) {
-    fecha.textContent = ahora.toLocaleDateString(undefined, {
+    fecha.textContent = ahora.toLocaleDateString(locale, {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric',
-      timeZone: tz
+      day: 'numeric'
     });
   }
 }

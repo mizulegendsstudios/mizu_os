@@ -5,7 +5,11 @@
 body {
   margin: 0;
   font-family: 'Helvetica Neue', sans-serif;
-  background-color: #0d0d15;
+  background-color: #000;
+  background-image: url('assets/tapiz0.webp');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed; /* opcional: evita scroll del fondo */
   overflow: hidden;
 }
 
@@ -19,9 +23,6 @@ body {
   justify-content: center;
   align-items: center;
   transition: opacity 0.5s ease;
-  background-color: #0d0d15;
-  background-size: cover;
-  background-position: center;
 }
 .slide.active {
   display: flex;

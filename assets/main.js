@@ -1,6 +1,11 @@
 'use strict';
 /* eslint-env browser */
 
+//Body Visible
+window.addEventListener("load", () => {
+  document.body.style.visibility = "visible";
+});
+
 // Estado actual del sistema
 var appState = { currentAppId: 1 };
 

@@ -221,3 +221,47 @@ button {
   margin-bottom: 20px;
   opacity: 0.8;
 }
+
+.barra-ventana {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.18);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  padding: 8px 12px;
+  cursor: move;
+  user-select: none;
+  position: relative;
+}
+.logo-barra {
+  width: 28px;
+  height: 28px;
+  margin-right: 10px;
+}
+.titulo-barra {
+  flex: 1;
+  font-size: 1.1em;
+  font-weight: 500;
+  color: #fff;
+}
+.controles-barra {
+  display: flex;
+  gap: 6px;
+}
+#ventana-app .contenido-ventana {
+  padding: 18px 10px 10px 10px;
+}
+#ventana-app button {
+  background: rgba(0,229,255,0.15);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 1em;
+  margin: 0 2px;
+  transition: background 0.2s;
+}
+#ventana-app button:hover {
+  background: rgba(0,229,255,0.35);
+}

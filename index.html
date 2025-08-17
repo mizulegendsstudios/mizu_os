@@ -87,10 +87,17 @@
 
       <!-- Ventana de app abierta desde el escritorio -->
       <div id="ventana-app" class="ventana" style="display: none;">
-        <h3 id="app-title">Aplicación abierta</h3>
-        <p>Contenido de la aplicación seleccionada.</p>
-        <button id="btn-maximizar">Maximizar</button>
-        <button class="btn-fullscreen">Pantalla completa</button>
+        <div class="barra-ventana">
+          <img src="assets/logo.svg" class="logo-barra" alt="Logo App" />
+          <span class="titulo-barra" id="app-title">Aplicación abierta</span>
+          <div class="controles-barra">
+            <button id="btn-maximizar" title="Maximizar">🗖</button>
+            <button class="btn-fullscreen" title="Pantalla completa">⛶</button>
+          </div>
+        </div>
+        <div class="contenido-ventana">
+          <p>Contenido de la aplicación seleccionada.</p>
+        </div>
       </div>
     </div>
 

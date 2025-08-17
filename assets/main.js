@@ -70,6 +70,7 @@ function actualizarTitulos() {
   const titleFull = document.getElementById('app-title-full');
   if (titleFull) titleFull.textContent = `${nombre} Modo Pantalla Completa`;
 
+  // Actualiza el título en la barra de la ventana principal
   const appTitle = document.getElementById('app-title');
   if (appTitle) appTitle.textContent = nombre;
 }
@@ -213,6 +214,31 @@ window.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.btn-fullscreen').forEach((btn) => {
     btn.addEventListener('click', irPantallaCompleta);
   });
+
+  // Permitir mover la ventana principal
+  const barraVentana = document.querySelector('#ventana-app .barra-ventana');
+  const ventanaApp = document.getElementById('ventana-app');
+  if (barraVentana && ventanaApp) {
+    let offsetX = 0, offsetY = 0, isDragging = false;
+    barraVentana.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      offsetX = e.clientX - ventanaApp.offsetLeft;
+      offsetY = e.clientY - ventanaApp.offsetTop;
+      document.body.style.userSelect = 'none';
+    });
+    document.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        ventanaApp.style.left = (e.clientX - offsetX) + 'px';
+        ventanaApp.style.top = (e.clientY - offsetY) + 'px';
+        ventanaApp.style.right = 'auto';
+        ventanaApp.style.bottom = 'auto';
+      }
+    });
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+      document.body.style.userSelect = '';
+    });
+  }
 
   // Inicializar
   actualizarTitulos();

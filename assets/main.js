@@ -108,6 +108,9 @@ function abrirApp(ev) {
  */
 function maximizarApp() {
   actualizarTitulos();
+  // Ocultar ventana-app si está visible
+  const ventana = document.getElementById('ventana-app');
+  if (ventana) ventana.style.display = 'none';
   cambiarSlide('app-maximizado');
 }
 
@@ -138,6 +141,9 @@ function cerrarAppCompleta() {
  */
 function irPantallaCompleta() {
   actualizarTitulos();
+  // Ocultar ventana-app si está visible
+  const ventana = document.getElementById('ventana-app');
+  if (ventana) ventana.style.display = 'none';
   cambiarSlide('app-pantalla-completa');
 }
 

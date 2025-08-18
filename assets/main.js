@@ -210,6 +210,15 @@ window.addEventListener('DOMContentLoaded', () => {
     botonCerrarCompleta.addEventListener('click', cerrarAppCompleta);
   }
 
+  // Botón cerrar (ventana principal)
+  const botonCerrarVentana = document.getElementById('btn-cerrar-ventana');
+  if (botonCerrarVentana) {
+    botonCerrarVentana.addEventListener('click', () => {
+      const ventana = document.getElementById('ventana-app');
+      if (ventana) ventana.style.display = 'none';
+    });
+  }
+
   // Todos los botones de "Pantalla completa" (clase común)
   document.querySelectorAll('.btn-fullscreen').forEach((btn) => {
     btn.addEventListener('click', irPantallaCompleta);

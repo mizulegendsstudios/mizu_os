@@ -1,6 +1,54 @@
 <div id="app-notes">
-  <div class="tab-bar">
-    <span class="tab active">Notas</span>
+  <header>
+    <div class="app-info">
+      <span class="app-name">Mizu Notes</span>
+      <span class="app-version">v0.2.0</span>
+    </div>
+    <div id="tabs"></div>
+    <button id="newTab" title="Nueva pestaña">➕</button>
+  </header>
+  <main>
+    <div id="searchBar">
+      <input type="text" id="searchInput" placeholder="Buscar..." />
+      <button id="searchPrev">⬆️ Anterior</button>
+      <button id="searchNext">⬇️ Siguiente</button>
+      <button id="closeSearch">✕</button>
+      <span class="search-info" id="searchInfo"></span>
+    </div>
+    <textarea id="editor" spellcheck="false"></textarea>
+  </main>
+  <footer>
+    <input type="text" id="filename" placeholder="Nombre de archivo" />
+    <select id="exportType">
+      <option value="txt">.txt</option>
+      <option value="html">.html</option>
+      <option value="css">.css</option>
+      <option value="js">.js</option>
+      <option value="md">.md</option>
+    </select>
+    <button id="exportBtn">⬇️ Exportar</button>
+    <button id="linkBtn">🔗 Enlace</button>
+    <button id="helpBtn">❓ Ayuda</button>
+  </footer>
+  <div class="overlay" id="overlay"></div>
+  <div class="shortcuts-info" id="shortcutsInfo">
+    <h3>Atajos de teclado</h3>
+    <div class="shortcut">
+      <span>Buscar</span>
+      <span class="key">Ctrl+F</span>
+    </div>
+    <div class="shortcut">
+      <span>Siguiente resultado</span>
+      <span class="key">F3</span>
+    </div>
+    <div class="shortcut">
+      <span>Resultado anterior</span>
+      <span class="key">Shift+F3</span>
+    </div>
+    <div class="shortcut">
+      <span>Ayuda</span>
+      <span class="key">F1</span>
+    </div>
+    <button id="closeShortcuts" style="margin-top: 15px; width: 100%;">Cerrar</button>
   </div>
-  <textarea class="notepad" placeholder="Escribe tus notas aquí..."></textarea>
 </div>

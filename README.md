@@ -2,7 +2,7 @@
 
 > 🧑‍💻 ¿Quieres crear tu propia app para Mizu OS? Lee la guía: [docs/crear-app-modular.md](docs/crear-app-modular.md)
 
-Webapps OS — SPA que simula un sistema operativo futurista.
+WebOS — Interfaz de Escritorio Virtual que ofrece un entorno unificado para acceder a herramientas básicas sin salir del navegador sin dependencias externas.
 
 ---
 

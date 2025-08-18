@@ -1,16 +1,20 @@
 [
   {
-    "id": "notes",
-    "nombre": "Bloc de Notas",
-    "icono": "📝",
-    "ruta": "apps/notes/main.js",
-    "init": "initAppNotes"
+    "id": 4,
+    "name": "Bloc de Notas",
+    "icon": "📝",
+    "path": "apps/notes/",
+    "init": "initAppNotes",
+    "title": "Notas",
+    "version": "0.2.0"
   },
   {
-    "id": "speech",
-    "nombre": "Mizu Speech",
-    "icono": "🕹️",
-    "ruta": "apps/speech/main.js",
-    "init": "initAppSpeech"
+    "id": 6,
+    "name": "Mizu Speech",
+    "icon": "🗣️",
+    "path": "apps/speech/",
+    "init": "initAppSpeech",
+    "title": "Narrador",
+    "version": "2.3.0"
   }
 ]

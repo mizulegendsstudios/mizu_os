@@ -117,6 +117,39 @@ window.initAppTuapp = function(container) {
 
 ---
 
+## 🧑‍💻 Ejemplo avanzado: app que respeta el sistema
+
+```js
+let ejemploHTML = '<div id="app-ejemplo"><h2>Demo App</h2><p id="msg"></p></div>';
+let ejemploCSS = '#app-ejemplo { padding: 16px; border-radius: 8px; background: #222; color: #fff; }';
+window.initAppEjemplo = function(container) {
+  container.innerHTML = ejemploHTML;
+  if (!document.getElementById('ejemplo-styles')) {
+    const style = document.createElement('style');
+    style.id = 'ejemplo-styles';
+    style.textContent = ejemploCSS;
+    document.head.appendChild(style);
+  }
+  const root = container.querySelector('#app-ejemplo');
+  const msg = root.querySelector('#msg');
+  // Detectar tema
+  const theme = document.body.classList.contains('theme-light') ? 'claro' :
+                document.body.classList.contains('theme-daltonic') ? 'daltonico' : 'oscuro';
+  // Detectar idioma
+  const lang = document.documentElement.lang || 'es';
+  // Detectar tamaño de fuente
+  const fontSize = getComputedStyle(document.body).fontSize;
+  msg.textContent = `Tema: ${theme}, Idioma: ${lang}, Fuente: ${fontSize}`;
+  // Aplicar tamaño de fuente
+  root.style.fontSize = fontSize;
+  // Cambiar colores según tema
+  if (theme === 'claro') root.style.background = '#fff', root.style.color = '#222';
+  if (theme === 'daltonico') root.style.background = '#0A1D37', root.style.color = '#fff';
+};
+```
+
+---
+
 ## 📋 apps.json (ejemplo)
 ```json
 [

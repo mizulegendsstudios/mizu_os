@@ -1,6 +1,8 @@
 # 🌌 Mizu OS
 
-Webapps OS — Sistema operativo web.
+> 🧑‍💻 ¿Quieres crear tu propia app para Mizu OS? Lee la guía: [docs/crear-app-modular.md](docs/crear-app-modular.md)
+
+Webapps OS — SPA que simula un sistema operativo futurista.
 
 ---
 

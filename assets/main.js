@@ -91,6 +91,15 @@ function abrirApp(ev) {
   const ventana = document.getElementById('ventana-app');
   if (ventana) {
     ventana.style.display = 'block';
+    // Centrar ventana en pantalla y un poco arriba
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const w = ventana.offsetWidth;
+    const h = ventana.offsetHeight;
+    ventana.style.left = ((vw - w) / 2) + 'px';
+    ventana.style.top = (vh * 0.18) + 'px';
+    ventana.style.right = 'auto';
+    ventana.style.bottom = 'auto';
   }
 }
 
@@ -186,37 +195,56 @@ window.addEventListener('DOMContentLoaded', () => {
     icono.addEventListener('click', abrirApp);
   });
 
-  // Botón maximizar (desde ventana normal)
-  const botonMax = document.getElementById('btn-maximizar');
-  if (botonMax) {
-    botonMax.addEventListener('click', maximizarApp);
-  }
-
-  // Botón cerrar (desde maximizado)
-  const botonCerrar = document.getElementById('btn-cerrar');
-  if (botonCerrar) {
-    botonCerrar.addEventListener('click', cerrarMaximizado);
-  }
-
-  // Botón minimizar (desde pantalla completa)
-  const botonMinimizar = document.getElementById('btn-minimizar');
-  if (botonMinimizar) {
-    botonMinimizar.addEventListener('click', minimizarApp);
-  }
-
-  // Botón cerrar (desde pantalla completa)
-  const botonCerrarCompleta = document.getElementById('btn-cerrar-completa');
-  if (botonCerrarCompleta) {
-    botonCerrarCompleta.addEventListener('click', cerrarAppCompleta);
-  }
-
-  // Botón cerrar (ventana principal)
-  const botonCerrarVentana = document.getElementById('btn-cerrar-ventana');
-  if (botonCerrarVentana) {
-    botonCerrarVentana.addEventListener('click', () => {
-      const ventana = document.getElementById('ventana-app');
-      if (ventana) ventana.style.display = 'none';
+  // Botón minimizar (ventana principal)
+  const btnMinVentana = document.getElementById('btn-minimizar-ventana');
+  if (btnMinVentana) {
+    btnMinVentana.addEventListener('click', () => {
+      document.getElementById('ventana-app').style.display = 'none';
     });
+  }
+  // Botón maximizar (ventana principal)
+  const btnMaxVentana = document.getElementById('btn-maximizar');
+  if (btnMaxVentana) {
+    btnMaxVentana.addEventListener('click', maximizarApp);
+  }
+  // Botón cerrar (ventana principal)
+  const btnCerrarVentana = document.getElementById('btn-cerrar-ventana');
+  if (btnCerrarVentana) {
+    btnCerrarVentana.addEventListener('click', () => {
+      document.getElementById('ventana-app').style.display = 'none';
+    });
+  }
+  // Botón minimizar (maximizada)
+  const btnMinMax = document.getElementById('btn-minimizar-max');
+  if (btnMinMax) {
+    btnMinMax.addEventListener('click', () => {
+      cambiarSlide('escritorio');
+    });
+  }
+  // Botón fullscreen (maximizada)
+  const btnFullMax = document.getElementById('btn-fullscreen-max');
+  if (btnFullMax) {
+    btnFullMax.addEventListener('click', irPantallaCompleta);
+  }
+  // Botón cerrar (maximizada)
+  const btnCerrarMax = document.getElementById('btn-cerrar');
+  if (btnCerrarMax) {
+    btnCerrarMax.addEventListener('click', cerrarMaximizado);
+  }
+  // Botón minimizar (pantalla completa)
+  const btnMinFull = document.getElementById('btn-minimizar');
+  if (btnMinFull) {
+    btnMinFull.addEventListener('click', minimizarApp);
+  }
+  // Botón maximizar (pantalla completa)
+  const btnMaxFull = document.getElementById('btn-maximizar-full');
+  if (btnMaxFull) {
+    btnMaxFull.addEventListener('click', maximizarApp);
+  }
+  // Botón cerrar (pantalla completa)
+  const btnCerrarFull = document.getElementById('btn-cerrar-completa');
+  if (btnCerrarFull) {
+    btnCerrarFull.addEventListener('click', cerrarAppCompleta);
   }
 
   // Todos los botones de "Pantalla completa" (clase común)

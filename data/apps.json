@@ -1,0 +1,38 @@
+[
+  {
+    "id": 4,
+    "name": "Mizu Notes",
+    "icon": "📝",
+    "path": "apps/notes/",
+    "init": "initAppNotes",
+    "title": "Notas",
+    "version": "0.2.0"
+  },
+  {
+    "id": 5,
+    "name": "Mizu Pixel",
+    "icon": "🟩",
+    "path": "apps/pixel/",
+    "init": "initAppPixel",
+    "title": "Pixel Editor",
+    "version": "1.0.0"
+  },
+  {
+    "id": 6,
+    "name": "Mizu Speech",
+    "icon": "🗣️",
+    "path": "apps/speech/",
+    "init": "initAppSpeech",
+    "title": "Narrador",
+    "version": "2.3.0"
+  },
+  {
+    "id": 7,
+    "name": "Mizu Settings",
+    "icon": "⚙️",
+    "path": "apps/settings/",
+    "init": "initAppSettings",
+    "title": "Configuración",
+    "version": "1.0.0"
+  }
+]

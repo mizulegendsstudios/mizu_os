@@ -1,0 +1,35 @@
+<div id="app-pixel">
+  <header>
+    <div id="tabs"></div>
+    <button id="newTab">➕ Nuevo</button>
+    <input type="color" id="colorPicker" value="#ff0000" />
+    <div id="hslPreview"></div>
+    <select id="brushSize">
+      <option value="1">1px</option>
+      <option value="2">2px</option>
+      <option value="4">4px</option>
+      <option value="8">8px</option>
+    </select>
+    <button id="clearBtn">🧹 Limpiar</button>
+    <button id="exportBtn">⬇️ PNG</button>
+    <select id="resizeSelect">
+      <option value="32">32×32</option>
+      <option value="64" selected>64×64</option>
+      <option value="128">128×128</option>
+    </select>
+    <button id="zoomInBtn">🔍➕</button>
+    <button id="zoomOutBtn">🔍➖</button>
+    <button id="resetZoomBtn">🔍↻</button>
+    <button id="toggleGridBtn">#️⃣ Malla</button>
+  </header>
+  <div id="canvasContainer">
+    <canvas id="pixelCanvas" width="64" height="64"></canvas>
+    <div id="gridOverlay" class="grid" style="display: none;"></div>
+  </div>
+  <footer>
+    <label>Transparencia</label>
+    <input type="range" id="alphaSlider" min="0" max="1" step="0.01" value="1" />
+    <label>Luz (HSL)</label>
+    <input type="range" id="lightSlider" min="0" max="100" step="1" value="50" />
+  </footer>
+</div>

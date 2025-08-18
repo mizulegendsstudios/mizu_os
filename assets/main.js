@@ -82,33 +82,68 @@ function actualizarTitulos() {
   if (appTitle) appTitle.textContent = nombre;
 }
 
-/**
- * Abre una app desde el escritorio
- * @param {MouseEvent} ev - Evento de clic
- */
-function abrirApp(ev) {
-  const target = ev.currentTarget;
-  const appId = Number(target.dataset.app);
-  if (!appId || appId < 1 || appId > 7) return;
+// --- Modular Apps ---
+const AppRegistry = new Map();
+
+// Cargar metadatos
+async function cargarApps() {
+  const res = await fetch('data/apps.json');
+  const apps = await res.json();
+  apps.forEach(app => {
+    AppRegistry.set(app.id, app);
+  });
+}
+
+// Centrar ventana
+function centrarVentana(ventana) {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const w = ventana.offsetWidth;
+  const h = ventana.offsetHeight;
+  ventana.style.left = ((vw - w) / 2) + 'px';
+  ventana.style.top = (vh * 0.18) + 'px';
+  ventana.style.right = 'auto';
+  ventana.style.bottom = 'auto';
+}
+
+// Abrir app por ID
+async function abrirApp(ev) {
+  const appId = Number(ev.currentTarget.dataset.app);
+  const app = AppRegistry.get(appId);
+  if (!app) return;
 
   appState.currentAppId = appId;
-  actualizarTitulos();
+  actualizarTitulos(); // Usa app.name
 
-  // Mostrar ventana en el escritorio
   const ventana = document.getElementById('ventana-app');
-  if (ventana) {
-    ventana.classList.remove('maximizado', 'fullscreen');
-    ventana.style.display = 'block';
-    // Centrar ventana en pantalla y un poco arriba
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const w = ventana.offsetWidth;
-    const h = ventana.offsetHeight;
-    ventana.style.left = ((vw - w) / 2) + 'px';
-    ventana.style.top = (vh * 0.18) + 'px';
-    ventana.style.right = 'auto';
-    ventana.style.bottom = 'auto';
+  const contenido = ventana.querySelector('.contenido-ventana');
+  contenido.innerHTML = '';
+
+  // Cargar recursos si es la primera vez
+  if (!window[app.init]) {
+    const script = document.createElement('script');
+    script.src = `${app.path}main.js`;
+    script.defer = true;
+    document.head.appendChild(script);
   }
+
+  // Mostrar ventana
+  ventana.classList.remove('maximizado', 'fullscreen');
+  ventana.style.display = 'block';
+  centrarVentana(ventana);
+
+  // Esperar a que el script cargue
+  await new Promise(resolve => {
+    const check = setInterval(() => {
+      if (window[app.init]) {
+        clearInterval(check);
+        resolve();
+      }
+    }, 50);
+  });
+
+  // Inicializar app
+  window[app.init](contenido);
 }
 
 /**
@@ -193,10 +228,14 @@ function actualizarHora() {
   }
 }
 
-/**
- * Inicialización al cargar el DOM
- */
+// --- Integración con iconos ---
 window.addEventListener('DOMContentLoaded', () => {
+  cargarApps().then(() => {
+    document.querySelectorAll('.abrir-app').forEach((icono) => {
+      icono.addEventListener('click', abrirApp);
+    });
+  });
+
   // Standby: clic o Enter/espacio
   const standbyScreen = document.getElementById('standby');
   if (standbyScreen) {
@@ -214,11 +253,6 @@ window.addEventListener('DOMContentLoaded', () => {
   if (botonSalir) {
     botonSalir.addEventListener('click', volverStandby);
   }
-
-  // Abrir apps por ícono
-  document.querySelectorAll('.abrir-app').forEach((icono) => {
-    icono.addEventListener('click', abrirApp);
-  });
 
   // Botón minimizar (ventana principal)
   const btnMinVentana = document.getElementById('btn-minimizar-ventana');
@@ -403,3 +437,32 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // Iniciar carga del sistema al cargar la página
 window.addEventListener('load', cargarSistema);
+
+function mostrarVentanaApp(appId) {
+  const ventana = document.getElementById('ventana-app');
+  if (ventana) {
+    ventana.classList.remove('maximizado', 'fullscreen');
+    ventana.style.display = 'block';
+    // Centrar ventana
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const w = ventana.offsetWidth;
+    const h = ventana.offsetHeight;
+    ventana.style.left = ((vw - w) / 2) + 'px';
+    ventana.style.top = (vh * 0.18) + 'px';
+    ventana.style.right = 'auto';
+    ventana.style.bottom = 'auto';
+    // Inyectar app modular
+    const contenido = ventana.querySelector('.contenido-ventana');
+    if (contenido) {
+      // This function is no longer needed as apps are opened directly
+      // The logic for opening apps by ID is now in abrirApp
+    }
+    // Actualizar título
+    const meta = AppRegistry.get(appId);
+    if (meta) {
+      const appTitle = document.getElementById('app-title');
+      if (appTitle) appTitle.textContent = meta.nombre;
+    }
+  }
+}

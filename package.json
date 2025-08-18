@@ -1,7 +1,7 @@
 {
   "name": "mizu-os",
-  "version": "0.5.0",
-  "description": "Sistema operativo SPA con HTML, CSS y JS puros.",
+  "version": "0.6.0",
+  "description": "Sistema operativo SPA con HTML, CSS y JS puros. Ventana única con modos normal, maximizado y fullscreen.",
   "private": true,
   "type": "module",
   "scripts": {

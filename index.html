@@ -85,43 +85,30 @@
         <div class="icono abrir-app" data-app="7">⚙️</div>
       </div>
 
-      <!-- Ventana de app abierta desde el escritorio -->
+      <!-- Ventana de app abierta desde el escritorio (única) -->
       <div id="ventana-app" class="ventana" style="display: none;">
-        <h3 id="app-title">Aplicación abierta</h3>
-        <p>Contenido de la aplicación seleccionada.</p>
-        <button id="btn-maximizar">Maximizar</button>
-        <button class="btn-fullscreen">Pantalla completa</button>
-      </div>
-    </div>
-
-    <!-- Diapositiva 4: App Maximizado -->
-    <div
-      id="app-maximizado"
-      class="slide"
-    >
-      <div class="ventana-max">
-        <h1 id="app-title-max">App 1 Maximizada</h1>
-        <p>Contenido de ejemplo: bloc de notas, navegador, etc.</p>
-        <button class="btn-fullscreen">Pantalla completa</button>
-        <button id="btn-cerrar">Cerrar</button>
-      </div>
-    </div>
-
-    <!-- Diapositiva 5: App Pantalla Completa -->
-    <div
-      id="app-pantalla-completa"
-      class="slide"
-    >
-      <div class="ventana-completa">
-        <div class="controles-ventana">
-          <button id="btn-minimizar" class="control-btn">Salir de full screen</button>
-          <button id="btn-cerrar-completa" class="control-btn">✕</button>
+        <div class="barra-ventana">
+          <img src="assets/logo.svg" class="logo-barra" alt="Logo App" />
+          <span class="titulo-barra" id="app-title">Aplicación abierta</span>
+          <div class="controles-barra">
+            <button id="btn-minimizar-ventana" title="Minimizar">⤢</button>
+            <button id="btn-maximizar" title="Maximizar">🗖</button>
+            <button id="btn-fullscreen" title="Pantalla completa">⛶</button>
+            <button id="btn-cerrar-ventana" title="Cerrar">✕</button>
+          </div>
         </div>
-        <div class="contenido-app">
-          <h1 id="app-title-full">App 1 Modo Pantalla Completa</h1>
-          <p>Esta es una vista sin efectos de iluminado que ocupa todo el viewport.</p>
-          <p>Usa los controles superiores para minimizar o cerrar la aplicación.</p>
+        <div class="contenido-ventana">
+          <p>Contenido de la aplicación seleccionada.</p>
         </div>
+        <!-- Handlers para redimensionar -->
+        <div class="resize-handle resize-n"></div>
+        <div class="resize-handle resize-e"></div>
+        <div class="resize-handle resize-s"></div>
+        <div class="resize-handle resize-w"></div>
+        <div class="resize-handle resize-nw"></div>
+        <div class="resize-handle resize-ne"></div>
+        <div class="resize-handle resize-sw"></div>
+        <div class="resize-handle resize-se"></div>
       </div>
     </div>
 <!-- JS -->

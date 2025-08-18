@@ -2,13 +2,13 @@
 
 Webapps OS — SPA que simula un sistema operativo futurista.
 
-## 🧩 Características actuales
+## 🛸 Características actuales
 
 - **Pantalla de carga animada** con barra de progreso y fondo estrellado
 - **Modo standby** con hora y fecha en tiempo real
 - **Escritorio interactivo** con iconos arrastrables y reordenables
 - **Ventana flotante de aplicación** con efecto glassmorphism
-- **Modo maximizado** que cubre toda la pantalla con bordes cuadrados
+- **Ventana única con modos normal, maximizado y pantalla completa** (sin slides)
 - **Transiciones suaves** entre pantallas
 - **Diseño responsive** y adaptable a distintos tamaños de pantalla
 
@@ -63,7 +63,7 @@ Este proyecto está en constante evolución. Aquí algunos desarrollos planeados
 
 **Licencia:** AGPL
 
-**Autor:** Moises Núñez
+**Autor:** Moises Nuñez
 
 ## 🧪 Desarrollo
 
@@ -80,9 +80,10 @@ La app se sirve en `http://localhost:5173`.
 
 ## 🧭 Versionado
 
-Este repositorio sigue SemVer. Versión actual: `0.5.0`.
+Este repositorio sigue SemVer. Versión actual: `0.6.0`.
 
-- `0.5.0`: mejoras en el head, optimizacion del fondo de pantalla, optimizacion de los div.
+- `0.6.0`: refactor a ventana única con modos normal, maximizado y pantalla completa; iconos solo se ocultan en fullscreen; mejoras de UX y robustez.
+- `0.5.0`: mejoras en el head, optimización del fondo de pantalla, optimización de los div.
 - `0.4.0`: identificación por app y títulos dinámicos (“App N Maximizada” / “App N Modo Pantalla Completa”); navegación coherente entre maximizado y pantalla completa; escritorio con 8 iconos.
 - `0.3.1`: fecha/hora locales del dispositivo; “Salir de full screen” vuelve a modo maximizado; escritorio con 8 iconos.
 - `0.3.0`: hora local, sombra en reloj, clic en pantalla de standby en cualquier lugar.

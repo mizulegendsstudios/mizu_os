@@ -199,7 +199,8 @@ window.addEventListener('DOMContentLoaded', () => {
   const btnMinVentana = document.getElementById('btn-minimizar-ventana');
   if (btnMinVentana) {
     btnMinVentana.addEventListener('click', () => {
-      document.getElementById('ventana-app').style.display = 'none';
+      const ventana = document.getElementById('ventana-app');
+      if (ventana) ventana.style.display = 'none';
     });
   }
   // Botón maximizar (ventana principal)
@@ -211,7 +212,8 @@ window.addEventListener('DOMContentLoaded', () => {
   const btnCerrarVentana = document.getElementById('btn-cerrar-ventana');
   if (btnCerrarVentana) {
     btnCerrarVentana.addEventListener('click', () => {
-      document.getElementById('ventana-app').style.display = 'none';
+      const ventana = document.getElementById('ventana-app');
+      if (ventana) ventana.style.display = 'none';
     });
   }
   // Botón minimizar (maximizada)

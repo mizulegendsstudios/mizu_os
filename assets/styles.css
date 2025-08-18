@@ -121,17 +121,18 @@ text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
 
 .ventana {
   position: absolute;
-  bottom: 20px;
-  left: 20px;
-  width: 300px;
-  height: 200px;
+  min-width: 260px;
+  min-height: 140px;
+  width: 320px;
+  height: 220px;
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
-  padding: 20px;
+  padding: 0;
   color: #fff;
   display: none;
+  overflow: hidden;
 }
 
 .ventana-max {
@@ -228,7 +229,7 @@ button {
   background: rgba(0, 0, 0, 0.18);
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-  padding: 8px 12px;
+  padding: 10px 12px 10px 10px;
   cursor: move;
   user-select: none;
   position: relative;
@@ -249,7 +250,7 @@ button {
   gap: 6px;
 }
 #ventana-app .contenido-ventana {
-  padding: 18px 10px 10px 10px;
+  padding: 16px 10px 10px 10px;
 }
 #ventana-app button {
   background: rgba(0,229,255,0.15);
@@ -289,4 +290,11 @@ button {
 .ventana-max .contenido-ventana,
 .ventana-completa .contenido-ventana {
   padding: 30px 20px 20px 20px;
+}
+@media (max-width: 600px) {
+  .ventana {
+    width: 96vw;
+    left: 2vw !important;
+    min-width: 0;
+  }
 }

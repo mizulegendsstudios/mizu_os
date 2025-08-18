@@ -25,11 +25,18 @@ const nombresApps = {
  * @param {string} id - ID de la diapositiva destino
  */
 function cambiarSlide(id) {
+  // Quitar la clase active de todos los slides
   document.querySelectorAll('.slide').forEach((slide) => {
     slide.classList.remove('active');
+    // Asegurar que todos los slides están ocultos
+    slide.style.display = 'none';
   });
+  // Activar solo el slide destino
   const destino = document.getElementById(id);
-  if (destino) destino.classList.add('active');
+  if (destino) {
+    destino.classList.add('active');
+    destino.style.display = 'flex';
+  }
 }
 
 /**

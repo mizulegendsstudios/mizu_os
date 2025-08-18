@@ -1,12 +1,21 @@
 [
   {
     "id": 4,
-    "name": "Bloc de Notas",
+    "name": "Mizu Notes",
     "icon": "📝",
     "path": "apps/notes/",
     "init": "initAppNotes",
     "title": "Notas",
     "version": "0.2.0"
+  },
+  {
+    "id": 5,
+    "name": "Mizu Pixel",
+    "icon": "🟩",
+    "path": "apps/pixel/",
+    "init": "initAppPixel",
+    "title": "Pixel Editor",
+    "version": "1.0.0"
   },
   {
     "id": 6,

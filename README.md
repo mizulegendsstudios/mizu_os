@@ -1,6 +1,6 @@
 # 🌌 Mizu OS
 
-Webapps OS — SPA que simula un sistema operativo futurista.
+Webapps OS — Sistema operativo web.
 
 ---
 

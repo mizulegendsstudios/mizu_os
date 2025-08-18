@@ -9,6 +9,7 @@ Webapps OS — SPA que simula un sistema operativo futurista.
 - **Escritorio interactivo** con iconos arrastrables y reordenables
 - **Ventana flotante de aplicación** con efecto glassmorphism
 - **Ventana única con modos normal, maximizado y pantalla completa** (sin slides)
+- **Sistema modular de apps externas**: apps como Bloc de Notas y Mizu Speech se cargan dinámicamente, con estilos y lógica aislados
 - **Transiciones suaves** entre pantallas
 - **Diseño responsive** y adaptable a distintos tamaños de pantalla
 
@@ -80,8 +81,9 @@ La app se sirve en `http://localhost:5173`.
 
 ## 🧭 Versionado
 
-Este repositorio sigue SemVer. Versión actual: `0.6.0`.
+Este repositorio sigue SemVer. Versión actual: `0.7.0`.
 
+- `0.7.0`: sistema modular de apps externas (notes, speech) con carga dinámica y sin conflictos.
 - `0.6.0`: refactor a ventana única con modos normal, maximizado y pantalla completa; iconos solo se ocultan en fullscreen; mejoras de UX y robustez.
 - `0.5.0`: mejoras en el head, optimización del fondo de pantalla, optimización de los div.
 - `0.4.0`: identificación por app y títulos dinámicos (“App N Maximizada” / “App N Modo Pantalla Completa”); navegación coherente entre maximizado y pantalla completa; escritorio con 8 iconos.

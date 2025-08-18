@@ -61,12 +61,18 @@ Para que una app sea compatible con Mizu OS debe cumplir con:
 - **JavaScript** para la lógica de navegación, interacción y drag & drop
 - **Sin frameworks**: todo el código es puro y fácilmente extensible
 
-## 📦 Cómo usar
+## 🚀 Prueba Mizu OS online
 
-1. Clona o descarga el repositorio
-2. Abre el archivo `index.html` en tu navegador
-3. Interactúa con el sistema: espera la carga, toca el logo para activar,
-   arrastra iconos, abre y maximiza aplicaciones
+- Solo entra a: [https://mizulegendsstudios.github.io/mizu_os/](https://mizulegendsstudios.github.io/mizu_os/)
+- ¡No necesitas instalar nada!
+
+## 📦 Uso local (opcional)
+
+- Descarga o clona el repositorio.
+- Abre el archivo `index.html` en tu navegador.
+- ¡Listo! Puedes interactuar con el sistema sin instalar dependencias.
+
+---
 
 ## 🛠️ Planes futuros
 

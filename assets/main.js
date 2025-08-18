@@ -130,7 +130,10 @@ function cerrarMaximizado() {
  */
 function minimizarApp() {
   actualizarTitulos();
-  cambiarSlide('app-maximizado');
+  // Al minimizar desde pantalla completa, volver al escritorio y mostrar ventana principal
+  cambiarSlide('escritorio');
+  const ventana = document.getElementById('ventana-app');
+  if (ventana) ventana.style.display = 'block';
 }
 
 /**

@@ -119,6 +119,10 @@ text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
   transform: scale(1.1);
 }
 
+.slide#app-pantalla-completa ~ .iconos, .slide#app-pantalla-completa .iconos {
+  display: none !important;
+}
+
 .ventana {
   position: absolute;
   min-width: 260px;

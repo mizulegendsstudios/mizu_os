@@ -279,3 +279,14 @@ button {
 .resize-ne { top: -4px; right: -4px; width: 12px; height: 12px; cursor: ne-resize; }
 .resize-sw { bottom: -4px; left: -4px; width: 12px; height: 12px; cursor: sw-resize; }
 .resize-se { bottom: -4px; right: -4px; width: 12px; height: 12px; cursor: se-resize; }
+
+.ventana-max .barra-ventana,
+.ventana-completa .barra-ventana {
+  border-radius: 20px 20px 0 0;
+  padding: 12px 18px;
+  font-size: 1.15em;
+}
+.ventana-max .contenido-ventana,
+.ventana-completa .contenido-ventana {
+  padding: 30px 20px 20px 20px;
+}

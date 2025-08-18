@@ -110,36 +110,46 @@
       </div>
     </div>
 
-    <!-- Diapositiva 4: App Maximizado -->
-    <div
-      id="app-maximizado"
-      class="slide"
-    >
-      <div class="ventana-max">
-        <h1 id="app-title-max">App 1 Maximizada</h1>
-        <p>Contenido de ejemplo: bloc de notas, navegador, etc.</p>
-        <button class="btn-fullscreen">Pantalla completa</button>
-        <button id="btn-cerrar">Cerrar</button>
+      <!-- Diapositiva 4: App Maximizado -->
+      <div
+        id="app-maximizado"
+        class="slide"
+      >
+        <div class="ventana-max">
+          <div class="barra-ventana">
+            <img src="assets/logo.svg" class="logo-barra" alt="Logo App" />
+            <span class="titulo-barra" id="app-title-max">App 1 Maximizada</span>
+            <div class="controles-barra">
+              <button class="btn-fullscreen" title="Pantalla completa">⛶</button>
+              <button id="btn-cerrar" title="Cerrar">✕</button>
+            </div>
+          </div>
+          <div class="contenido-ventana">
+            <p>Contenido de ejemplo: bloc de notas, navegador, etc.</p>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <!-- Diapositiva 5: App Pantalla Completa -->
-    <div
-      id="app-pantalla-completa"
-      class="slide"
-    >
-      <div class="ventana-completa">
-        <div class="controles-ventana">
-          <button id="btn-minimizar" class="control-btn">Salir de full screen</button>
-          <button id="btn-cerrar-completa" class="control-btn">✕</button>
-        </div>
-        <div class="contenido-app">
-          <h1 id="app-title-full">App 1 Modo Pantalla Completa</h1>
-          <p>Esta es una vista sin efectos de iluminado que ocupa todo el viewport.</p>
-          <p>Usa los controles superiores para minimizar o cerrar la aplicación.</p>
+      <!-- Diapositiva 5: App Pantalla Completa -->
+      <div
+        id="app-pantalla-completa"
+        class="slide"
+      >
+        <div class="ventana-completa">
+          <div class="barra-ventana">
+            <img src="assets/logo.svg" class="logo-barra" alt="Logo App" />
+            <span class="titulo-barra" id="app-title-full">App 1 Modo Pantalla Completa</span>
+            <div class="controles-barra">
+              <button id="btn-minimizar" class="control-btn" title="Salir de full screen">⤢</button>
+              <button id="btn-cerrar-completa" class="control-btn" title="Cerrar">✕</button>
+            </div>
+          </div>
+          <div class="contenido-ventana">
+            <p>Esta es una vista sin efectos de iluminado que ocupa todo el viewport.</p>
+            <p>Usa los controles superiores para minimizar o cerrar la aplicación.</p>
+          </div>
         </div>
       </div>
-    </div>
 <!-- JS -->
     <script src="assets/main.js" defer></script>
   </body>

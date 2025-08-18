@@ -95,11 +95,17 @@ visibility: visible;
 text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
 }
 
+/* Ocultar iconos por defecto */
 .iconos {
   display: none;
 }
+/* Mostrar iconos en grid solo cuando el escritorio está activo */
 #escritorio.slide.active .iconos {
   display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 0 auto;
+  max-width: 420px;
 }
 .icono {
   width: 80px;

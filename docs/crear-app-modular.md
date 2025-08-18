@@ -4,6 +4,40 @@ Mizu OS permite integrar apps externas de forma limpia, segura y sin conflictos.
 
 ---
 
+## 🌐 Compatibilidad con la configuración global del sistema
+
+Para que tu app se integre perfectamente con Mizu OS y respete las preferencias del usuario, sigue estas recomendaciones:
+
+### Tema visual (oscuro, claro, daltonico, igual al sistema)
+- Usa clases en el body: `theme-dark`, `theme-light`, `theme-daltonic`.
+- Si tu app tiene selector de tema, incluye la opción "igual al sistema" y aplica el tema leyendo la clase del body:
+  ```js
+  const theme = document.body.classList.contains('theme-light') ? 'light' :
+                document.body.classList.contains('theme-daltonic') ? 'daltonic' : 'dark';
+  // Aplica el tema en tu app según este valor
+  ```
+- Usa variables CSS o clases en tu contenedor para cambiar colores según el tema.
+
+### Idioma
+- El idioma global está en `document.documentElement.lang` (`es` o `en`).
+- Si tu app soporta varios idiomas, detecta el idioma así:
+  ```js
+  const lang = document.documentElement.lang || 'es';
+  // Aplica textos según el idioma
+  ```
+- Si tu app tiene selector de idioma, incluye la opción "igual al sistema".
+
+### Tamaño de fuente
+- El tamaño global se aplica en `body.style.fontSize` (`14px`, `16px`, `20px`).
+- Usa `em` o `rem` en tus estilos para que tu app escale automáticamente.
+- Si tu app tiene selector de tamaño, incluye la opción "igual al sistema" y usa:
+  ```js
+  const fontSize = getComputedStyle(document.body).fontSize;
+  // Aplica fontSize en tu app si es necesario
+  ```
+
+---
+
 ## 📦 Estructura de una app
 
 Cada app debe estar en su propia carpeta dentro de `apps/`:

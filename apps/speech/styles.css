@@ -1,0 +1,31 @@
+#app-speech {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+#app-speech h2 {
+  color: #00e5ff;
+  margin-bottom: 20px;
+}
+#app-speech .speech-btn {
+  background: #00e5ff;
+  color: #222;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1.2em;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+#app-speech .speech-result {
+  background: #fff;
+  color: #222;
+  border-radius: 8px;
+  padding: 16px;
+  min-width: 200px;
+  min-height: 40px;
+  box-shadow: 0 0 8px rgba(0,229,255,0.1);
+}

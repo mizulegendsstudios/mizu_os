@@ -193,10 +193,61 @@ function actualizarHora() {
   }
 }
 
-/**
- * Inicialización al cargar el DOM
- */
+// --- Modular Apps ---
+const appsRegistry = new Map();
+let appsMeta = [];
+
+function cargarAppsMeta() {
+  return fetch('data/apps.json')
+    .then(r => r.json())
+    .then(json => {
+      appsMeta = json;
+      for (const app of appsMeta) {
+        appsRegistry.set(app.id, app);
+      }
+    });
+}
+
+function cargarScriptApp(app) {
+  return new Promise((resolve, reject) => {
+    if (window[app.init]) return resolve();
+    const script = document.createElement('script');
+    script.src = app.ruta;
+    script.onload = () => resolve();
+    script.onerror = reject;
+    document.body.appendChild(script);
+  });
+}
+
+async function abrirAppModular(appId, container) {
+  const app = appsRegistry.get(appId);
+  if (!app) return;
+  await cargarScriptApp(app);
+  if (typeof window[app.init] === 'function') {
+    window[app.init](container);
+  }
+}
+
+// --- Integración con iconos ---
 window.addEventListener('DOMContentLoaded', () => {
+  cargarAppsMeta().then(() => {
+    // Reemplazar lógica de abrirApp para apps modulares
+    document.querySelectorAll('.abrir-app').forEach((icono) => {
+      icono.addEventListener('click', (ev) => {
+        const appId = String(ev.currentTarget.dataset.app);
+        // Bloc de notas (📝, id=4) y Mizu Speech (🕹️, id=6)
+        if (appId === '4') {
+          mostrarVentanaApp('notes');
+        } else if (appId === '6') {
+          mostrarVentanaApp('speech');
+        } else {
+          // Lógica original para otras apps
+          abrirApp(ev);
+        }
+      });
+    });
+  });
+
   // Standby: clic o Enter/espacio
   const standbyScreen = document.getElementById('standby');
   if (standbyScreen) {
@@ -214,11 +265,6 @@ window.addEventListener('DOMContentLoaded', () => {
   if (botonSalir) {
     botonSalir.addEventListener('click', volverStandby);
   }
-
-  // Abrir apps por ícono
-  document.querySelectorAll('.abrir-app').forEach((icono) => {
-    icono.addEventListener('click', abrirApp);
-  });
 
   // Botón minimizar (ventana principal)
   const btnMinVentana = document.getElementById('btn-minimizar-ventana');
@@ -403,3 +449,31 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // Iniciar carga del sistema al cargar la página
 window.addEventListener('load', cargarSistema);
+
+function mostrarVentanaApp(appId) {
+  const ventana = document.getElementById('ventana-app');
+  if (ventana) {
+    ventana.classList.remove('maximizado', 'fullscreen');
+    ventana.style.display = 'block';
+    // Centrar ventana
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const w = ventana.offsetWidth;
+    const h = ventana.offsetHeight;
+    ventana.style.left = ((vw - w) / 2) + 'px';
+    ventana.style.top = (vh * 0.18) + 'px';
+    ventana.style.right = 'auto';
+    ventana.style.bottom = 'auto';
+    // Inyectar app modular
+    const contenido = ventana.querySelector('.contenido-ventana');
+    if (contenido) {
+      abrirAppModular(appId, contenido);
+    }
+    // Actualizar título
+    const meta = appsRegistry.get(appId);
+    if (meta) {
+      const appTitle = document.getElementById('app-title');
+      if (appTitle) appTitle.textContent = meta.nombre;
+    }
+  }
+}

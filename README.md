@@ -2,6 +2,45 @@
 
 Webapps OS — SPA que simula un sistema operativo futurista.
 
+---
+
+## 📦 Contrato de una App Modular en Mizu OS
+
+Para que una app sea compatible con Mizu OS debe cumplir con:
+
+- `apps/[nombre]/index.html`: Solo el contenido visual (sin `<html>`, `<head>`, ni `<body>`)
+- `apps/[nombre]/styles.css`: Estilos específicos de la app (usa prefijos/IDs únicos, evita reglas globales como `body`, `*`, etc.)
+- `apps/[nombre]/main.js`: Función global `initAppX(container)` que recibe el DOM donde se inyectará el contenido y aplica la lógica y estilos. Ejemplo: `window.initAppNotes = function(container) { ... }`
+- `data/apps.json`: Metadatos de la app (id, nombre, icono, ruta del JS, nombre de la función init)
+
+**Ejemplo de apps.json:**
+```json
+[
+  {
+    "id": "notes",
+    "nombre": "Bloc de Notas",
+    "icono": "📝",
+    "ruta": "apps/notes/main.js",
+    "init": "initAppNotes"
+  },
+  {
+    "id": "speech",
+    "nombre": "Mizu Speech",
+    "icono": "🕹️",
+    "ruta": "apps/speech/main.js",
+    "init": "initAppSpeech"
+  }
+]
+```
+
+**Requisitos:**
+- El sistema cargará el JS de la app solo cuando se abra.
+- La función `initAppX(container)` debe inyectar el HTML y lógica en el contenedor recibido.
+- Los estilos deben estar aislados usando IDs únicos (ej: `#app-notes .tab`).
+- No debe haber conflictos de variables globales ni estilos.
+
+---
+
 ## 🛸 Características actuales
 
 - **Pantalla de carga animada** con barra de progreso y fondo estrellado

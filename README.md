@@ -1,14 +1,54 @@
 # 🌌 Mizu OS
 
-Webapps OS — SPA que simula un sistema operativo futurista.
+Webapps OS — Sistema operativo web.
 
-## 🧩 Características actuales
+---
+
+## 📦 Contrato de una App Modular en Mizu OS
+
+Para que una app sea compatible con Mizu OS debe cumplir con:
+
+- `apps/[nombre]/index.html`: Solo el contenido visual (sin `<html>`, `<head>`, ni `<body>`)
+- `apps/[nombre]/styles.css`: Estilos específicos de la app (usa prefijos/IDs únicos, evita reglas globales como `body`, `*`, etc.)
+- `apps/[nombre]/main.js`: Función global `initAppX(container)` que recibe el DOM donde se inyectará el contenido y aplica la lógica y estilos. Ejemplo: `window.initAppNotes = function(container) { ... }`
+- `data/apps.json`: Metadatos de la app (id, nombre, icono, ruta del JS, nombre de la función init)
+
+**Ejemplo de apps.json:**
+```json
+[
+  {
+    "id": "notes",
+    "nombre": "Bloc de Notas",
+    "icono": "📝",
+    "ruta": "apps/notes/main.js",
+    "init": "initAppNotes"
+  },
+  {
+    "id": "speech",
+    "nombre": "Mizu Speech",
+    "icono": "🕹️",
+    "ruta": "apps/speech/main.js",
+    "init": "initAppSpeech"
+  }
+]
+```
+
+**Requisitos:**
+- El sistema cargará el JS de la app solo cuando se abra.
+- La función `initAppX(container)` debe inyectar el HTML y lógica en el contenedor recibido.
+- Los estilos deben estar aislados usando IDs únicos (ej: `#app-notes .tab`).
+- No debe haber conflictos de variables globales ni estilos.
+
+---
+
+## 🛸 Características actuales
 
 - **Pantalla de carga animada** con barra de progreso y fondo estrellado
 - **Modo standby** con hora y fecha en tiempo real
 - **Escritorio interactivo** con iconos arrastrables y reordenables
 - **Ventana flotante de aplicación** con efecto glassmorphism
-- **Modo maximizado** que cubre toda la pantalla con bordes cuadrados
+- **Ventana única con modos normal, maximizado y pantalla completa** (sin slides)
+- **Sistema modular de apps externas**: apps como Bloc de Notas y Mizu Speech se cargan dinámicamente, con estilos y lógica aislados
 - **Transiciones suaves** entre pantallas
 - **Diseño responsive** y adaptable a distintos tamaños de pantalla
 
@@ -63,7 +103,7 @@ Este proyecto está en constante evolución. Aquí algunos desarrollos planeados
 
 **Licencia:** AGPL
 
-**Autor:** Moises Núñez
+**Autor:** Moises Nuñez
 
 ## 🧪 Desarrollo
 
@@ -80,9 +120,11 @@ La app se sirve en `http://localhost:5173`.
 
 ## 🧭 Versionado
 
-Este repositorio sigue SemVer. Versión actual: `0.5.0`.
+Este repositorio sigue SemVer. Versión actual: `0.7.0`.
 
-- `0.5.0`: mejoras en el head, optimizacion del fondo de pantalla, optimizacion de los div.
+- `0.7.0`: sistema modular de apps externas (notes, speech) con carga dinámica y sin conflictos.
+- `0.6.0`: refactor a ventana única con modos normal, maximizado y pantalla completa; iconos solo se ocultan en fullscreen; mejoras de UX y robustez.
+- `0.5.0`: mejoras en el head, optimización del fondo de pantalla, optimización de los div.
 - `0.4.0`: identificación por app y títulos dinámicos (“App N Maximizada” / “App N Modo Pantalla Completa”); navegación coherente entre maximizado y pantalla completa; escritorio con 8 iconos.
 - `0.3.1`: fecha/hora locales del dispositivo; “Salir de full screen” vuelve a modo maximizado; escritorio con 8 iconos.
 - `0.3.0`: hora local, sombra en reloj, clic en pantalla de standby en cualquier lugar.

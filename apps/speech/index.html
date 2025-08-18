@@ -1,0 +1,122 @@
+<div id="app-speech">
+  <div id="mainBox">
+    <h1 id="appTitle">Mizu Speech</h1>
+    <p id="status">Ready. Write something to narrate…</p>
+    <textarea id="textInput" rows="6" placeholder="Write here the text you want to narrate…"></textarea>
+    <div class="buttons">
+      <button id="btnPlay">▶️ <span class="play-text">Play</span></button>
+      <button id="btnStop" disabled>⏹️ <span class="stop-text">Stop</span></button>
+      <button id="btnConfig">⚙️ <span class="config-text">Settings</span></button>
+    </div>
+    <div class="version">v2.3.0</div>
+  </div>
+  <div id="compatibilityInfo">
+    <div class="main-tab-container">
+      <div class="main-tab active" data-tab="compatible">Compatible</div>
+      <div class="main-tab" data-tab="incompatible">Incompatible</div>
+      <div class="main-tab" data-tab="settings">Settings</div>
+    </div>
+    <div class="tab-content active" id="compatible-tab">
+      <div class="os-tab-container">
+        <div class="os-tab active" data-os="windows-compatible">Windows 11</div>
+        <div class="os-tab" data-os="android-compatible">Android</div>
+      </div>
+      <div class="os-content active" id="windows-compatible">
+        <ul class="browser-list">
+          <li>Edge <span class="browser-count">(306 <span class="voices-detected">voices detected</span>)</span></li>
+          <li>Chrome <span class="browser-count">(23 <span class="voices-detected">voices detected</span>)</span></li>
+          <li>Whale <span class="browser-count">(13 <span class="voices-detected">voices detected</span>)</span></li>
+          <li>Firefox <span class="browser-count">(9 <span class="voices-detected">voices detected</span>)</span></li>
+          <li>Vivaldi <span class="browser-count">(6 <span class="voices-detected">voices detected</span>)</span></li>
+          <li>DuckDuckGo <span class="browser-count">(6 <span class="voices-detected">voices detected</span>)</span></li>
+          <li>Opera GX <span class="browser-count">(6 <span class="voices-detected">voices detected</span>)</span></li>
+        </ul>
+      </div>
+      <div class="os-content" id="android-compatible">
+        <ul class="browser-list">
+          <li>Firefox <span class="browser-count">(67 <span class="voices-detected">voices detected</span>)</span></li>
+          <li>Chrome <span class="browser-count">(56 <span class="voices-detected">voices detected</span>)</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="tab-content" id="incompatible-tab">
+      <div class="os-tab-container">
+        <div class="os-tab active" data-os="windows-incompatible">Windows 11</div>
+        <div class="os-tab" data-os="android-incompatible">Android</div>
+      </div>
+      <div class="os-content active" id="windows-incompatible">
+        <ul class="browser-list"><li>Tor</li><li>LibreWolf</li></ul>
+      </div>
+      <div class="os-content" id="android-incompatible">
+        <ul class="browser-list">
+          <li>BrowseHere</li><li>ORZ</li><li>Opera</li><li>Opera Mini</li><li>Internet Browser (Zeus)</li>
+          <li>Mint (Xiaomi)</li><li>Webbrowser (MAIDA)</li><li>Yandex</li><li>AIVA</li><li>Aloha Lite</li><li>Lokke</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tab-content" id="settings-tab">
+      <div><span>Language:</span>
+        <select id="compatLangSel">
+          <option value="en-US">English</option>
+          <option value="es-ES">Spanish</option>
+        </select>
+      </div>
+      <div><span>Theme:</span>
+        <select id="compatThemeSel">
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+          <option value="daltonic">Colorblind</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div id="configModal">
+    <div class="modal">
+      <button class="closeBtn">×</button>
+      <h2>Settings</h2>
+      <div><span>Voice:</span><select id="voiceSelect"></select></div>
+      <div>
+        <span>Rate:</span>
+        <div style="display:flex;align-items:center;gap:.5rem;width:60%">
+          <input type="range" id="rateR" min="0.5" max="2" step="0.1" value="1" style="width:100%">
+          <span id="rateValue" style="min-width:2rem;text-align:right">1</span>
+        </div>
+      </div>
+      <div>
+        <span>Pitch:</span>
+        <div style="display:flex;align-items:center;gap:.5rem;width:60%">
+          <input type="range" id="pitchR" min="0.5" max="1.5" step="0.1" value="1" style="width:100%">
+          <span id="pitchValue" style="min-width:2rem;text-align:right">1</span>
+        </div>
+      </div>
+      <div>
+        <span>Volume:</span>
+        <div style="display:flex;align-items:center;gap:.5rem;width:60%">
+          <input type="range" id="volumeR" min="0.1" max="1" step="0.1" value="1" style="width:100%">
+          <span id="volumeValue" style="min-width:2rem;text-align:right">1</span>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>Skip symbols:</span>
+        <label class="switch"><input type="checkbox" id="skipSymbols" checked><span class="slider"></span></label>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>Skip emojis:</span>
+        <label class="switch"><input type="checkbox" id="skipEmojis" checked><span class="slider"></span></label>
+      </div>
+      <div><span>Theme:</span>
+        <select id="themeSel">
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+          <option value="daltonic">Colorblind</option>
+        </select>
+      </div>
+      <div><span>Language:</span>
+        <select id="langSel">
+          <option value="en-US">English</option>
+          <option value="es-ES">Spanish</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+#app-speech {
+  font-family:'Helvetica Neue',Calibri,'Segoe UI',Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100%;
+}
+#app-speech :root {
+  --bg: #000; --text: #e0e0e0; --accent: #1a1a1a;
+  --modal-bg: #222; --modal-text: #fff; --select-bg: #333;
+  --button-bg: rgba(255,255,255,.2); --button-active: rgba(255,255,255,.4);
+  --switch-off: #555; --switch-on: #4CAF50; --switch-knob: #fff;
+  --text-area-bg: #222; --text-area-text: #e0e0e0; --main-text: #e0e0e0;
+}
+#app-speech *{box-sizing:border-box;margin:0;padding:0;touch-action:manipulation}
+#app-speech #mainBox{width:100%;max-width:480px;padding:2rem;border-radius:1rem;background:var(--accent);color:var(--main-text);position:relative}
+#app-speech #appTitle{font-size:1.4rem;margin-bottom:1rem;text-align:center;color:var(--main-text)}
+#app-speech #status{margin-bottom:1rem;font-weight:bold;min-height:1.5rem;color:var(--main-text)}
+#app-speech textarea{width:100%;resize:vertical;padding:1rem;border-radius:.5rem;border:none;font-size:1rem;background:var(--text-area-bg);margin-bottom:1rem;min-height:120px;color:var(--text-area-text)}
+#app-speech .buttons{display:flex;gap:1rem;justify-content:center}
+#app-speech .buttons button{padding:1rem 1.5rem;border:none;border-radius:2rem;background:var(--button-bg);color:var(--main-text);font-weight:bold;cursor:pointer;font-size:1rem;min-width:100px;transition:transform .2s,background .2s}
+#app-speech .buttons button:active{background:var(--button-active);transform:scale(.95)}
+#app-speech .buttons button:disabled{opacity:.6;cursor:not-allowed}
+#app-speech #configModal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;justify-content:center;align-items:center;z-index:10}
+#app-speech .modal{background:var(--modal-bg);padding:2rem;border-radius:1rem;width:90%;max-width:400px;display:flex;flex-direction:column;gap:1rem;position:relative}
+#app-speech .modal h2{color:var(--modal-text);text-align:center;margin-bottom:.5rem}
+#app-speech .modal>div{display:flex;justify-content:space-between;align-items:center;color:var(--modal-text);width:100%}
+#app-speech .modal select{width:60%;border-radius:.5rem;padding:.3rem;background:var(--select-bg);color:var(--select-text);border:1px solid #555}
+#app-speech .modal input[type=range]{width:100%;background:var(--select-bg);border-radius:.5rem}
+#app-speech .switch{position:relative;display:inline-block;width:50px;height:24px}
+#app-speech .switch input{opacity:0;width:0;height:0}
+#app-speech .slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:var(--switch-off);transition:.4s;border-radius:24px}
+#app-speech .slider:before{position:absolute;content:"";height:16px;width:16px;left:4px;bottom:4px;background-color:var(--switch-knob);transition:.4s;border-radius:50%}
+#app-speech input:checked+.slider{background-color:var(--switch-on)}
+#app-speech input:checked+.slider:before{transform:translateX(26px)}
+#app-speech .closeBtn{position:absolute;top:-15px;right:-15px;width:40px;height:40px;border-radius:50%;background:#f44;border:none;color:#fff;font-size:1.2rem;font-weight:bold;cursor:pointer;display:flex;justify-content:center;align-items:center;box-shadow:0 2px 5px rgba(0,0,0,.3)}
+#app-speech .closeBtn:active{transform:scale(.95)}
+#app-speech .version{position:absolute;bottom:-20px;right:10px;font-size:.8rem;color:var(--main-text)}
+#app-speech #compatibilityInfo{display:none;width:100%;max-width:480px;background:var(--accent);border-radius:1rem;padding:1rem;color:var(--main-text)}
+#app-speech .main-tab-container,#app-speech .os-tab-container{display:flex;margin-bottom:.5rem;gap:.5rem;overflow-x:auto;padding-bottom:.5rem}
+#app-speech .main-tab,#app-speech .os-tab{padding:.5rem 1rem;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;flex-shrink:0}
+#app-speech .main-tab{font-weight:bold}
+#app-speech .os-tab{font-weight:400;font-size:.9rem}
+#app-speech .main-tab.active,#app-speech .os-tab.active{border-bottom:2px solid var(--text)}
+#app-speech .tab-content,#app-speech .os-content{display:none}
+#app-speech .tab-content.active,#app-speech .os-content.active{display:block}
+#app-speech .browser-list{list-style:none;margin-top:.5rem}
+#app-speech .browser-list li{padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.1)}
+#app-speech .browser-count{color:#bbb;font-size:.8em}
+#app-speech.light{--accent:#f0d9a8;--modal-bg:#f5f5f5;--modal-text:#000;--select-bg:#fff;--select-text:#000;--button-bg:rgba(0,0,0,.1);--button-active:rgba(0,0,0,.2);--switch-off:#ccc;--switch-on:#4CAF50;--switch-knob:#fff;--text-area-bg:rgba(255,255,255,.9);--text-area-text:#000;--main-text:#000}
+#app-speech.daltonic{--bg:#000;--text:#fff;--accent:#0A1D37;--modal-bg:#1C2526;--modal-text:#fff;--select-bg:#1B263B;--select-text:#fff;--button-bg:rgba(163,228,215,.2);--button-active:rgba(163,228,215,.4);--switch-off:#555;--switch-on:#A3E4D7;--switch-knob:#000;--text-area-bg:#1C2526;--text-area-text:#fff;--main-text:#fff}
+#app-speech button,#app-speech textarea,#app-speech select{-webkit-tap-highlight-color:transparent}
+#app-speech textarea{touch-action:auto}
+@media(max-width:480px){#app-speech #mainBox,#app-speech #compatibilityInfo{padding:1.5rem}#app-speech .buttons{flex-direction:column;gap:.5rem}#app-speech .buttons button{width:100%}}

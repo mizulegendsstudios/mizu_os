@@ -25,11 +25,18 @@ const nombresApps = {
  * @param {string} id - ID de la diapositiva destino
  */
 function cambiarSlide(id) {
+  // Quitar la clase active de todos los slides
   document.querySelectorAll('.slide').forEach((slide) => {
     slide.classList.remove('active');
+    // Asegurar que todos los slides están ocultos
+    slide.style.display = 'none';
   });
+  // Activar solo el slide destino
   const destino = document.getElementById(id);
-  if (destino) destino.classList.add('active');
+  if (destino) {
+    destino.classList.add('active');
+    destino.style.display = 'flex';
+  }
 }
 
 /**
@@ -70,27 +77,73 @@ function actualizarTitulos() {
   const titleFull = document.getElementById('app-title-full');
   if (titleFull) titleFull.textContent = `${nombre} Modo Pantalla Completa`;
 
+  // Actualiza el título en la barra de la ventana principal
   const appTitle = document.getElementById('app-title');
   if (appTitle) appTitle.textContent = nombre;
 }
 
-/**
- * Abre una app desde el escritorio
- * @param {MouseEvent} ev - Evento de clic
- */
-function abrirApp(ev) {
-  const target = ev.currentTarget;
-  const appId = Number(target.dataset.app);
-  if (!appId || appId < 1 || appId > 7) return;
+// --- Modular Apps ---
+const AppRegistry = new Map();
+
+// Cargar metadatos
+async function cargarApps() {
+  const res = await fetch('data/apps.json');
+  const apps = await res.json();
+  apps.forEach(app => {
+    AppRegistry.set(app.id, app);
+  });
+}
+
+// Centrar ventana
+function centrarVentana(ventana) {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const w = ventana.offsetWidth;
+  const h = ventana.offsetHeight;
+  ventana.style.left = ((vw - w) / 2) + 'px';
+  ventana.style.top = (vh * 0.18) + 'px';
+  ventana.style.right = 'auto';
+  ventana.style.bottom = 'auto';
+}
+
+// Abrir app por ID
+async function abrirApp(ev) {
+  const appId = Number(ev.currentTarget.dataset.app);
+  const app = AppRegistry.get(appId);
+  if (!app) return;
 
   appState.currentAppId = appId;
-  actualizarTitulos();
+  actualizarTitulos(); // Usa app.name
 
-  // Mostrar ventana en el escritorio
   const ventana = document.getElementById('ventana-app');
-  if (ventana) {
-    ventana.style.display = 'block';
+  const contenido = ventana.querySelector('.contenido-ventana');
+  contenido.innerHTML = '';
+
+  // Cargar recursos si es la primera vez
+  if (!window[app.init]) {
+    const script = document.createElement('script');
+    script.src = `${app.path}main.js`;
+    script.defer = true;
+    document.head.appendChild(script);
   }
+
+  // Mostrar ventana
+  ventana.classList.remove('maximizado', 'fullscreen');
+  ventana.style.display = 'block';
+  centrarVentana(ventana);
+
+  // Esperar a que el script cargue
+  await new Promise(resolve => {
+    const check = setInterval(() => {
+      if (window[app.init]) {
+        clearInterval(check);
+        resolve();
+      }
+    }, 50);
+  });
+
+  // Inicializar app
+  window[app.init](contenido);
 }
 
 /**
@@ -98,6 +151,13 @@ function abrirApp(ev) {
  */
 function maximizarApp() {
   actualizarTitulos();
+  // Copiar contenido de la ventana-app a la maximizada
+  const contenido = document.querySelector('#ventana-app .contenido-ventana');
+  const destino = document.querySelector('#app-maximizado .contenido-ventana');
+  if (contenido && destino) destino.innerHTML = contenido.innerHTML;
+  // Ocultar ventana-app si está visible
+  const ventana = document.getElementById('ventana-app');
+  if (ventana) ventana.style.display = 'none';
   cambiarSlide('app-maximizado');
 }
 
@@ -113,7 +173,10 @@ function cerrarMaximizado() {
  */
 function minimizarApp() {
   actualizarTitulos();
-  cambiarSlide('app-maximizado');
+  // Al minimizar desde pantalla completa, volver al escritorio y mostrar ventana principal
+  cambiarSlide('escritorio');
+  const ventana = document.getElementById('ventana-app');
+  if (ventana) ventana.style.display = 'block';
 }
 
 /**
@@ -128,6 +191,13 @@ function cerrarAppCompleta() {
  */
 function irPantallaCompleta() {
   actualizarTitulos();
+  // Copiar contenido de la ventana-app a la pantalla completa
+  const contenido = document.querySelector('#ventana-app .contenido-ventana');
+  const destino = document.querySelector('#app-pantalla-completa .contenido-ventana');
+  if (contenido && destino) destino.innerHTML = contenido.innerHTML;
+  // Ocultar ventana-app si está visible
+  const ventana = document.getElementById('ventana-app');
+  if (ventana) ventana.style.display = 'none';
   cambiarSlide('app-pantalla-completa');
 }
 
@@ -158,10 +228,14 @@ function actualizarHora() {
   }
 }
 
-/**
- * Inicialización al cargar el DOM
- */
+// --- Integración con iconos ---
 window.addEventListener('DOMContentLoaded', () => {
+  cargarApps().then(() => {
+    document.querySelectorAll('.abrir-app').forEach((icono) => {
+      icono.addEventListener('click', abrirApp);
+    });
+  });
+
   // Standby: clic o Enter/espacio
   const standbyScreen = document.getElementById('standby');
   if (standbyScreen) {
@@ -180,39 +254,180 @@ window.addEventListener('DOMContentLoaded', () => {
     botonSalir.addEventListener('click', volverStandby);
   }
 
-  // Abrir apps por ícono
-  document.querySelectorAll('.abrir-app').forEach((icono) => {
-    icono.addEventListener('click', abrirApp);
-  });
-
-  // Botón maximizar (desde ventana normal)
-  const botonMax = document.getElementById('btn-maximizar');
-  if (botonMax) {
-    botonMax.addEventListener('click', maximizarApp);
+  // Botón minimizar (ventana principal)
+  const btnMinVentana = document.getElementById('btn-minimizar-ventana');
+  if (btnMinVentana) {
+    btnMinVentana.addEventListener('click', () => {
+      const ventana = document.getElementById('ventana-app');
+      if (ventana) ventana.style.display = 'none';
+    });
   }
-
-  // Botón cerrar (desde maximizado)
-  const botonCerrar = document.getElementById('btn-cerrar');
-  if (botonCerrar) {
-    botonCerrar.addEventListener('click', cerrarMaximizado);
+  // Botón maximizar (ventana principal)
+  const btnMaxVentana = document.getElementById('btn-maximizar');
+  if (btnMaxVentana) {
+    btnMaxVentana.addEventListener('click', () => {
+      const ventana = document.getElementById('ventana-app');
+      if (ventana) {
+        ventana.classList.toggle('maximizado');
+        ventana.classList.remove('fullscreen');
+        ventana.style.left = '0';
+        ventana.style.top = '0';
+      }
+    });
   }
-
-  // Botón minimizar (desde pantalla completa)
-  const botonMinimizar = document.getElementById('btn-minimizar');
-  if (botonMinimizar) {
-    botonMinimizar.addEventListener('click', minimizarApp);
+  // Botón fullscreen (ventana principal)
+  const btnFullVentana = document.getElementById('btn-fullscreen');
+  if (btnFullVentana) {
+    btnFullVentana.addEventListener('click', () => {
+      const ventana = document.getElementById('ventana-app');
+      if (ventana) {
+        ventana.classList.toggle('fullscreen');
+        ventana.classList.remove('maximizado');
+        ventana.style.left = '0';
+        ventana.style.top = '0';
+      }
+    });
   }
-
-  // Botón cerrar (desde pantalla completa)
-  const botonCerrarCompleta = document.getElementById('btn-cerrar-completa');
-  if (botonCerrarCompleta) {
-    botonCerrarCompleta.addEventListener('click', cerrarAppCompleta);
+  // Botón cerrar (ventana principal)
+  const btnCerrarVentana = document.getElementById('btn-cerrar-ventana');
+  if (btnCerrarVentana) {
+    btnCerrarVentana.addEventListener('click', () => {
+      const ventana = document.getElementById('ventana-app');
+      if (ventana) ventana.style.display = 'none';
+    });
+  }
+  // Botón minimizar (maximizada)
+  const btnMinMax = document.getElementById('btn-minimizar-max');
+  if (btnMinMax) {
+    btnMinMax.addEventListener('click', () => {
+      cambiarSlide('escritorio');
+    });
+  }
+  // Botón fullscreen (maximizada)
+  const btnFullMax = document.getElementById('btn-fullscreen-max');
+  if (btnFullMax) {
+    btnFullMax.addEventListener('click', irPantallaCompleta);
+  }
+  // Botón cerrar (maximizada)
+  const btnCerrarMax = document.getElementById('btn-cerrar');
+  if (btnCerrarMax) {
+    btnCerrarMax.addEventListener('click', cerrarMaximizado);
+  }
+  // Botón minimizar (pantalla completa)
+  const btnMinFull = document.getElementById('btn-minimizar');
+  if (btnMinFull) {
+    btnMinFull.addEventListener('click', minimizarApp);
+  }
+  // Botón maximizar (pantalla completa)
+  const btnMaxFull = document.getElementById('btn-maximizar-full');
+  if (btnMaxFull) {
+    btnMaxFull.addEventListener('click', maximizarApp);
+  }
+  // Botón fullscreen (pantalla completa)
+  const btnFullFull = document.getElementById('btn-fullscreen-full');
+  if (btnFullFull) {
+    btnFullFull.addEventListener('click', irPantallaCompleta);
+  }
+  // Botón cerrar (pantalla completa)
+  const btnCerrarFull = document.getElementById('btn-cerrar-completa');
+  if (btnCerrarFull) {
+    btnCerrarFull.addEventListener('click', cerrarAppCompleta);
   }
 
   // Todos los botones de "Pantalla completa" (clase común)
   document.querySelectorAll('.btn-fullscreen').forEach((btn) => {
     btn.addEventListener('click', irPantallaCompleta);
   });
+
+  // Permitir mover la ventana principal
+  const barraVentana = document.querySelector('#ventana-app .barra-ventana');
+  const ventanaApp = document.getElementById('ventana-app');
+  if (barraVentana && ventanaApp) {
+    let offsetX = 0, offsetY = 0, isDragging = false;
+    barraVentana.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      offsetX = e.clientX - ventanaApp.offsetLeft;
+      offsetY = e.clientY - ventanaApp.offsetTop;
+      document.body.style.userSelect = 'none';
+    });
+    document.addEventListener('mousemove', (e) => {
+      if (isDragging) {
+        ventanaApp.style.left = (e.clientX - offsetX) + 'px';
+        ventanaApp.style.top = (e.clientY - offsetY) + 'px';
+        ventanaApp.style.right = 'auto';
+        ventanaApp.style.bottom = 'auto';
+      }
+    });
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+      document.body.style.userSelect = '';
+    });
+  }
+
+  // Permitir redimensionar la ventana principal
+  if (ventanaApp) {
+    let isResizing = false;
+    let currentHandle = null;
+    let startX, startY, startW, startH, startL, startT;
+    const minW = 180, minH = 120;
+    const handles = ventanaApp.querySelectorAll('.resize-handle');
+    handles.forEach(handle => {
+      handle.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+        isResizing = true;
+        currentHandle = handle;
+        startX = e.clientX;
+        startY = e.clientY;
+        startW = ventanaApp.offsetWidth;
+        startH = ventanaApp.offsetHeight;
+        startL = ventanaApp.offsetLeft;
+        startT = ventanaApp.offsetTop;
+        document.body.style.userSelect = 'none';
+      });
+    });
+    document.addEventListener('mousemove', (e) => {
+      if (!isResizing || !currentHandle) return;
+      let dx = e.clientX - startX;
+      let dy = e.clientY - startY;
+      let newW = startW, newH = startH, newL = startL, newT = startT;
+      if (currentHandle.classList.contains('resize-e')) {
+        newW = Math.max(minW, startW + dx);
+      } else if (currentHandle.classList.contains('resize-s')) {
+        newH = Math.max(minH, startH + dy);
+      } else if (currentHandle.classList.contains('resize-w')) {
+        newW = Math.max(minW, startW - dx);
+        newL = startL + dx;
+      } else if (currentHandle.classList.contains('resize-n')) {
+        newH = Math.max(minH, startH - dy);
+        newT = startT + dy;
+      } else if (currentHandle.classList.contains('resize-nw')) {
+        newW = Math.max(minW, startW - dx);
+        newL = startL + dx;
+        newH = Math.max(minH, startH - dy);
+        newT = startT + dy;
+      } else if (currentHandle.classList.contains('resize-ne')) {
+        newW = Math.max(minW, startW + dx);
+        newH = Math.max(minH, startH - dy);
+        newT = startT + dy;
+      } else if (currentHandle.classList.contains('resize-sw')) {
+        newW = Math.max(minW, startW - dx);
+        newL = startL + dx;
+        newH = Math.max(minH, startH + dy);
+      } else if (currentHandle.classList.contains('resize-se')) {
+        newW = Math.max(minW, startW + dx);
+        newH = Math.max(minH, startH + dy);
+      }
+      ventanaApp.style.width = newW + 'px';
+      ventanaApp.style.height = newH + 'px';
+      ventanaApp.style.left = newL + 'px';
+      ventanaApp.style.top = newT + 'px';
+    });
+    document.addEventListener('mouseup', () => {
+      isResizing = false;
+      currentHandle = null;
+      document.body.style.userSelect = '';
+    });
+  }
 
   // Inicializar
   actualizarTitulos();
@@ -222,3 +437,32 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // Iniciar carga del sistema al cargar la página
 window.addEventListener('load', cargarSistema);
+
+function mostrarVentanaApp(appId) {
+  const ventana = document.getElementById('ventana-app');
+  if (ventana) {
+    ventana.classList.remove('maximizado', 'fullscreen');
+    ventana.style.display = 'block';
+    // Centrar ventana
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const w = ventana.offsetWidth;
+    const h = ventana.offsetHeight;
+    ventana.style.left = ((vw - w) / 2) + 'px';
+    ventana.style.top = (vh * 0.18) + 'px';
+    ventana.style.right = 'auto';
+    ventana.style.bottom = 'auto';
+    // Inyectar app modular
+    const contenido = ventana.querySelector('.contenido-ventana');
+    if (contenido) {
+      // This function is no longer needed as apps are opened directly
+      // The logic for opening apps by ID is now in abrirApp
+    }
+    // Actualizar título
+    const meta = AppRegistry.get(appId);
+    if (meta) {
+      const appTitle = document.getElementById('app-title');
+      if (appTitle) appTitle.textContent = meta.nombre;
+    }
+  }
+}

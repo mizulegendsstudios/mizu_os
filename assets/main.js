@@ -208,6 +208,11 @@ window.addEventListener('DOMContentLoaded', () => {
   if (btnMaxVentana) {
     btnMaxVentana.addEventListener('click', maximizarApp);
   }
+  // Botón fullscreen (ventana principal)
+  const btnFullVentana = document.getElementById('btn-fullscreen');
+  if (btnFullVentana) {
+    btnFullVentana.addEventListener('click', irPantallaCompleta);
+  }
   // Botón cerrar (ventana principal)
   const btnCerrarVentana = document.getElementById('btn-cerrar-ventana');
   if (btnCerrarVentana) {
@@ -242,6 +247,11 @@ window.addEventListener('DOMContentLoaded', () => {
   const btnMaxFull = document.getElementById('btn-maximizar-full');
   if (btnMaxFull) {
     btnMaxFull.addEventListener('click', maximizarApp);
+  }
+  // Botón fullscreen (pantalla completa)
+  const btnFullFull = document.getElementById('btn-fullscreen-full');
+  if (btnFullFull) {
+    btnFullFull.addEventListener('click', irPantallaCompleta);
   }
   // Botón cerrar (pantalla completa)
   const btnCerrarFull = document.getElementById('btn-cerrar-completa');

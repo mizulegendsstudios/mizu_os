@@ -137,6 +137,29 @@ text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
   color: #fff;
   display: none;
   overflow: hidden;
+  transition: all 0.3s cubic-bezier(.4,2,.6,1);
+  z-index: 10;
+}
+.ventana.maximizado {
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  border-radius: 0 !important;
+  box-shadow: 0 0 40px rgba(0, 229, 255, 0.4);
+}
+.ventana.fullscreen {
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  border-radius: 0 !important;
+  box-shadow: none;
+  background: rgba(20, 20, 30, 0.98);
+  z-index: 100;
+}
+.fullscreen ~ .iconos, .fullscreen ~ .iconos, .fullscreen .iconos {
+  display: none !important;
 }
 
 .ventana-max {
@@ -252,6 +275,9 @@ button {
 .controles-barra {
   display: flex;
   gap: 6px;
+}
+#ventana-app .barra-ventana {
+  padding: 10px 12px 10px 10px;
 }
 #ventana-app .contenido-ventana {
   padding: 16px 10px 10px 10px;

@@ -97,6 +97,7 @@ function abrirApp(ev) {
   // Mostrar ventana en el escritorio
   const ventana = document.getElementById('ventana-app');
   if (ventana) {
+    ventana.classList.remove('maximizado', 'fullscreen');
     ventana.style.display = 'block';
     // Centrar ventana en pantalla y un poco arriba
     const vw = window.innerWidth;
@@ -230,12 +231,28 @@ window.addEventListener('DOMContentLoaded', () => {
   // Botón maximizar (ventana principal)
   const btnMaxVentana = document.getElementById('btn-maximizar');
   if (btnMaxVentana) {
-    btnMaxVentana.addEventListener('click', maximizarApp);
+    btnMaxVentana.addEventListener('click', () => {
+      const ventana = document.getElementById('ventana-app');
+      if (ventana) {
+        ventana.classList.toggle('maximizado');
+        ventana.classList.remove('fullscreen');
+        ventana.style.left = '0';
+        ventana.style.top = '0';
+      }
+    });
   }
   // Botón fullscreen (ventana principal)
   const btnFullVentana = document.getElementById('btn-fullscreen');
   if (btnFullVentana) {
-    btnFullVentana.addEventListener('click', irPantallaCompleta);
+    btnFullVentana.addEventListener('click', () => {
+      const ventana = document.getElementById('ventana-app');
+      if (ventana) {
+        ventana.classList.toggle('fullscreen');
+        ventana.classList.remove('maximizado');
+        ventana.style.left = '0';
+        ventana.style.top = '0';
+      }
+    });
   }
   // Botón cerrar (ventana principal)
   const btnCerrarVentana = document.getElementById('btn-cerrar-ventana');

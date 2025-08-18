@@ -108,6 +108,10 @@ function abrirApp(ev) {
  */
 function maximizarApp() {
   actualizarTitulos();
+  // Copiar contenido de la ventana-app a la maximizada
+  const contenido = document.querySelector('#ventana-app .contenido-ventana');
+  const destino = document.querySelector('#app-maximizado .contenido-ventana');
+  if (contenido && destino) destino.innerHTML = contenido.innerHTML;
   // Ocultar ventana-app si está visible
   const ventana = document.getElementById('ventana-app');
   if (ventana) ventana.style.display = 'none';
@@ -141,6 +145,10 @@ function cerrarAppCompleta() {
  */
 function irPantallaCompleta() {
   actualizarTitulos();
+  // Copiar contenido de la ventana-app a la pantalla completa
+  const contenido = document.querySelector('#ventana-app .contenido-ventana');
+  const destino = document.querySelector('#app-pantalla-completa .contenido-ventana');
+  if (contenido && destino) destino.innerHTML = contenido.innerHTML;
   // Ocultar ventana-app si está visible
   const ventana = document.getElementById('ventana-app');
   if (ventana) ventana.style.display = 'none';

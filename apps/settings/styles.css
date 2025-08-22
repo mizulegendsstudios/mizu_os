@@ -1,0 +1,46 @@
+#app-settings {
+  font-family: sans-serif;
+  background: #222;
+  color: #fff;
+  padding: 24px 16px;
+  border-radius: 12px;
+  min-width: 260px;
+  max-width: 340px;
+  margin: 0 auto;
+}
+#app-settings h2 {
+  color: #00e5ff;
+  margin-bottom: 18px;
+  text-align: center;
+}
+#app-settings .setting-group {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+#app-settings label {
+  font-size: 1em;
+  color: #aaf;
+}
+#app-settings select, #app-settings button {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  font-size: 1em;
+  background: #333;
+  color: #fff;
+}
+#app-settings select:focus, #app-settings button:focus {
+  outline: 2px solid #00e5ff;
+}
+#app-settings button {
+  background: #00e5ff;
+  color: #222;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#app-settings button:hover {
+  background: #00bcd4;
+}

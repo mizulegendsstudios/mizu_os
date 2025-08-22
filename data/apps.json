@@ -25,5 +25,14 @@
     "init": "initAppSpeech",
     "title": "Narrador",
     "version": "2.3.0"
+  },
+  {
+    "id": 7,
+    "name": "Mizu Settings",
+    "icon": "⚙️",
+    "path": "apps/settings/",
+    "init": "initAppSettings",
+    "title": "Configuración",
+    "version": "1.0.0"
   }
 ]

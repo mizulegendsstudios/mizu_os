@@ -3,11 +3,12 @@
  * Maneja la precarga de assets y inicialización básica
  */
 import eventBus from '../core/EventBus.js';
+import UIManagerCanvas from '../ui/UIManagerCanvas.js';
 
 class BootScene {
   constructor() {
     this.name = 'boot';
-    this.container = null;
+    this.uiManager = new UIManagerCanvas();
     this.assets = new Map();
     this.loadingProgress = 0;
     this.isLoaded = false;
@@ -33,37 +34,60 @@ class BootScene {
    */
   initialize() {
     console.log('BootScene inicializada');
-    this.createUI();
     this.startLoading();
   }
 
   /**
-   * Crea la interfaz de usuario de la escena
+   * Renderiza la escena de boot
    */
-  createUI() {
-    if (!this.container) return;
+  render() {
+    if (!this.uiManager.ctx) return;
 
-    this.container.innerHTML = `
-      <div class="boot-screen">
-        <div class="boot-logo">
-          <img src="assets/logo.svg" alt="Mizu OS" class="logo-image">
-        </div>
-        <div class="boot-progress">
-          <div class="progress-bar">
-            <div class="progress-fill" id="boot-progress-fill"></div>
-          </div>
-          <div class="progress-text" id="boot-progress-text">Iniciando sistema...</div>
-        </div>
-        <div class="boot-status" id="boot-status">Preparando entorno...</div>
-      </div>
-    `;
+    const ctx = this.uiManager.ctx;
+    const width = this.uiManager.canvas.width;
+    const height = this.uiManager.canvas.height;
+    
+    // Limpiar canvas
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, width, height);
+    
+    // Logo/texto Mizu OS
+    ctx.fillStyle = '#00e5ff';
+    ctx.font = 'bold 32px Helvetica Neue';
+    ctx.textAlign = 'center';
+    ctx.fillText('🌊 Mizu OS', width/2, height/2 - 50);
+    
+    // Barra de progreso
+    const barWidth = 300;
+    const barHeight = 20;
+    const barX = (width - barWidth) / 2;
+    const barY = height/2;
+    
+    // Fondo barra
+    ctx.fillStyle = '#333';
+    ctx.fillRect(barX, barY, barWidth, barHeight);
+    
+    // Barra de progreso
+    ctx.fillStyle = '#00e5ff';
+    ctx.fillRect(barX, barY, (barWidth * this.loadingProgress) / 100, barHeight);
+    
+    // Texto de progreso
+    ctx.fillStyle = '#fff';
+    ctx.font = '16px Helvetica Neue';
+    ctx.fillText(`${this.loadingProgress}%`, width/2, barY + 40);
+    
+    // Texto de estado
+    ctx.fillStyle = '#888';
+    ctx.font = '14px Helvetica Neue';
+    ctx.fillText(this.currentStatus || 'Iniciando sistema...', width/2, barY + 70);
   }
 
   /**
    * Inicia el proceso de carga de assets
    */
   startLoading() {
-    this.updateStatus('Iniciando sistema...');
+    this.currentStatus = 'Iniciando sistema...';
+    this.render();
     
     const loadingSteps = [
       { progress: 10, status: 'Inicializando núcleo...' },
@@ -83,7 +107,7 @@ class BootScene {
         this.updateStatus(step.status);
         currentStep++;
         
-        setTimeout(loadStep, 800);
+        setTimeout(loadStep, 300); // Más rápido para pruebas
       } else {
         this.onLoadingComplete();
       }
@@ -97,21 +121,15 @@ class BootScene {
    */
   updateProgress(progress) {
     this.loadingProgress = progress;
-    
-    const progressFill = document.getElementById('boot-progress-fill');
-    if (progressFill) {
-      progressFill.style.width = `${progress}%`;
-    }
+    this.render(); // Volver a renderizar con nuevo progreso
   }
 
   /**
    * Actualiza el texto de estado
    */
   updateStatus(status) {
-    const statusElement = document.getElementById('boot-status');
-    if (statusElement) {
-      statusElement.textContent = status;
-    }
+    this.currentStatus = status;
+    this.render(); // Volver a renderizar con nuevo estado
   }
 
   /**
@@ -123,9 +141,15 @@ class BootScene {
     console.log('BootScene completa, cambiando a MenuScene');
     
     setTimeout(() => {
+      // Ocultar indicador de carga del index.html
+      const loadingIndicator = document.getElementById('loading-indicator');
+      if (loadingIndicator) {
+        loadingIndicator.style.display = 'none';
+      }
+      
       // Emitir evento para que main cambie a menú
       eventBus.emit('bootComplete');
-    }, 800);
+    }, 500);
   }
 
   /**
@@ -138,9 +162,9 @@ class BootScene {
   /**
    * Activa la escena
    */
-  activate(data) {
+  activate() {
     console.log('BootScene activada');
-    this.createUI();
+    this.uiManager.mount(0, 0); // Montar el canvas
     this.startLoading();
   }
 
@@ -149,16 +173,14 @@ class BootScene {
    */
   deactivate() {
     console.log('BootScene desactivada');
-    if (this.container) {
-      this.container.innerHTML = '';
-    }
+    this.uiManager.destroy(); // Limpiar el canvas
   }
 
   /**
-   * Establece el contenedor de la escena
+   * Actualiza la escena
    */
-  setContainer(container) {
-    this.container = container;
+  update() {
+    // Lógica de actualización si es necesaria
   }
 }
 

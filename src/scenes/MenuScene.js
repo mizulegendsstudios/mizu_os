@@ -135,69 +135,18 @@ class MenuScene {
             spacing: 25
         });
         
-        // Prueba: render canvas button
-        const canvas = document.createElement('canvas');
-        canvas.width = 400;
-        canvas.height = 120;
-        canvas.style.cssText = 'position:absolute; left:20px; top:120px; z-index:10; border:1px solid rgba(0,229,255,0.2)';
-        menuContainer.appendChild(canvas);
-        const ctx = canvas.getContext('2d');
-        const buttons = [
-            new CanvasButton(20, 20, 200, 40, 'Iniciar', () => {
+        // UI canvas con UIManagerCanvas
+        const ui = new (await import('../ui/UIManagerCanvas.js')).default(menuContainer, { width: 420, height: 180 });
+        ui.mount(20, 120);
+        ui.createButtons([
+            { x: 20, y: 20, width: 200, height: 40, label: 'Iniciar', onSelect: () => {
                 eventBus.emit('scene:load', 'desktop');
                 eventBus.emit('changeScene', { scene: 'desktop' });
-            }),
-            new CanvasButton(20, 70, 200, 40, 'Opciones', () => {
-                console.log('Opciones');
-            }),
-            new CanvasButton(20, 120, 200, 40, 'Salir', () => {
-                eventBus.emit('systemExit', { reason: 'user_request' });
-            })
-        ];
-        const cursor = new CanvasCursor();
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            buttons.forEach(b => b.render(ctx));
-            cursor.render(ctx);
-            requestAnimationFrame(draw);
-        }
-        draw();
-        canvas.addEventListener('mousemove', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            buttons.forEach(b => b.setState(b.isHovered(x, y) ? 'hover' : 'normal'));
-        });
-        canvas.addEventListener('mousedown', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            buttons.forEach(b => { if (b.isHovered(x, y)) b.setState('pressed'); });
-        });
-        canvas.addEventListener('mouseup', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            buttons.forEach(b => {
-                const hovered = b.isHovered(x, y);
-                b.setState(hovered ? 'hover' : 'normal');
-                if (hovered) b.trigger();
-            });
-        });
+            }},
+            { x: 20, y: 70, width: 200, height: 40, label: 'Opciones', onSelect: () => console.log('Opciones') },
+            { x: 20, y: 120, width: 200, height: 40, label: 'Salir', onSelect: () => eventBus.emit('systemExit', { reason: 'user_request' }) }
+        ]);
 
-        // Integración Cursor: seleccionar con input positivo si está sobre un botón
-        eventBus.on('cursor:select', ({ x, y }) => {
-            const rect = canvas.getBoundingClientRect();
-            const cx = x - rect.left;
-            const cy = y - rect.top;
-            buttons.forEach(b => {
-                if (b.isHovered(cx, cy)) {
-                    b.setState('pressed');
-                    b.trigger();
-                    setTimeout(() => b.setState('normal'), 100);
-                }
-            });
-        });
         
         // Crear HUD del menú
         this.createMenuHUD();

@@ -8,10 +8,12 @@ import UIManagerCanvas from '../ui/UIManagerCanvas.js';
 class BootScene {
   constructor() {
     this.name = 'boot';
-    this.uiManager = new UIManagerCanvas();
+    this.uiManager = null;
     this.assets = new Map();
     this.loadingProgress = 0;
     this.isLoaded = false;
+    this.hasEmittedComplete = false;  // 🔥 BANDERA PARA EVITAR DUPLICADOS
+    this.currentStatus = 'Iniciando sistema...';
     
     this.initializeEventListeners();
   }
@@ -79,7 +81,7 @@ class BootScene {
     // Texto de estado
     ctx.fillStyle = '#888';
     ctx.font = '14px Helvetica Neue';
-    ctx.fillText(this.currentStatus || 'Iniciando sistema...', width/2, barY + 70);
+    ctx.fillText(this.currentStatus, width/2, barY + 70);
   }
 
   /**
@@ -107,7 +109,7 @@ class BootScene {
         this.updateStatus(step.status);
         currentStep++;
         
-        setTimeout(loadStep, 300); // Más rápido para pruebas
+        setTimeout(loadStep, 300);
       } else {
         this.onLoadingComplete();
       }
@@ -121,7 +123,7 @@ class BootScene {
    */
   updateProgress(progress) {
     this.loadingProgress = progress;
-    this.render(); // Volver a renderizar con nuevo progreso
+    this.render();
   }
 
   /**
@@ -129,13 +131,17 @@ class BootScene {
    */
   updateStatus(status) {
     this.currentStatus = status;
-    this.render(); // Volver a renderizar con nuevo estado
+    this.render();
   }
 
   /**
    * Se ejecuta cuando la carga está completa
    */
   onLoadingComplete() {
+    // 🔥 EVITAR DUPLICADOS - SOLO EJECUTAR UNA VEZ
+    if (this.hasEmittedComplete) return;
+    this.hasEmittedComplete = true;
+    
     this.isLoaded = true;
     this.updateStatus('Sistema listo');
     console.log('BootScene completa, cambiando a MenuScene');
@@ -147,8 +153,8 @@ class BootScene {
         loadingIndicator.style.display = 'none';
       }
       
-      // Emitir evento para que main cambie a menú
-eventBus.emit('stateChanged', { to: 'menu' });  // ← Así SceneManager lo maneja
+      // 🔥 EMITIR EVENTO PARA SCENEMANAGER (SOLO UNA VEZ)
+      eventBus.emit('stateChanged', { to: 'menu' });
     }, 500);
   }
 
@@ -164,7 +170,8 @@ eventBus.emit('stateChanged', { to: 'menu' });  // ← Así SceneManager lo mane
    */
   activate() {
     console.log('BootScene activada');
-    this.uiManager.mount(0, 0); // Montar el canvas
+    this.uiManager = new UIManagerCanvas();
+    this.uiManager.mount(0, 0);
     this.startLoading();
   }
 
@@ -173,7 +180,12 @@ eventBus.emit('stateChanged', { to: 'menu' });  // ← Así SceneManager lo mane
    */
   deactivate() {
     console.log('BootScene desactivada');
-    this.uiManager.destroy(); // Limpiar el canvas
+    if (this.uiManager) {
+      this.uiManager.destroy();
+      this.uiManager = null;
+    }
+    // 🔥 RESETEAR BANDERA AL DESACTIVAR
+    this.hasEmittedComplete = false;
   }
 
   /**

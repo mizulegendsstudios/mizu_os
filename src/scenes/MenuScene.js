@@ -3,8 +3,8 @@ import UIManagerCanvas from '../ui/UIManagerCanvas.js';
 
 /**
  * MenuScene - Escena del menú principal con navegación híbrida
- * Modo tradicional: Flechas navegan entre opciones + Enter selecciona
- * Modo libre: Flechas mueven cursor amarillo + Click selecciona
+ * Modo tradicional: Flechas navegan entre opciones como consola (focus highlight)
+ * Modo libre: Mouse/Flechas mueven cursor amarillo (como mouse)
  */
 class MenuScene {
     constructor() {
@@ -12,7 +12,7 @@ class MenuScene {
         this.uiManager = null;
         this.isActive = false;
         this.currentFocusIndex = 0;       // Índice del botón enfocado (modo tradicional)
-        this.freeMode = false;            // false = tradicional, true = libre
+        this.freeMode = true;             // true = libre (cursor), false = tradicional (focus)
         this.autoStartTimer = null;       // Timer para auto-inicio
         this.autoStartCountdown = 10;     // Segundos restantes para auto-inicio
         this.originalStartText = 'Iniciar Sistema'; // Texto original del botón
@@ -130,7 +130,21 @@ class MenuScene {
             }
         };
 
+        // Escuchar movimiento del mouse para modo libre
+        this.mouseMoveHandler = (event) => {
+            if (!this.isActive || !this.freeMode || !this.uiManager || !this.uiManager.cursor) return;
+            
+            const rect = this.uiManager.canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            
+            // Mover cursor con el mouse
+            this.uiManager.cursor.x = x;
+            this.uiManager.cursor.y = y;
+        };
+
         document.addEventListener('keydown', this.keyHandler);
+        document.addEventListener('mousemove', this.mouseMoveHandler);
 
         // Escuchar eventos del sistema
         this.systemExitHandler = (data) => {
@@ -163,31 +177,67 @@ class MenuScene {
 
     handleFreeModeNavigation(event) {
         // En modo libre, las flechas mueven el cursor
-        // (El cursor se mueve automáticamente con el mouse también)
-        switch(event.key) {
-            case 'Enter':
-                event.preventDefault();
-                // En modo libre, Enter simula un click en la posición actual
-                if (this.uiManager && this.uiManager.cursor) {
-                    const cursorX = this.uiManager.cursor.x;
-                    const cursorY = this.uiManager.cursor.y;
-                    this.handleCursorClick(cursorX, cursorY);
-                }
-                break;
-            case 'Escape':
-                event.preventDefault();
-                this.exitSystem();
-                break;
+        if (this.uiManager && this.uiManager.cursor) {
+            const speed = 10;
+            
+            switch(event.key) {
+                case 'ArrowUp':
+                    event.preventDefault();
+                    this.uiManager.cursor.y -= speed;
+                    break;
+                case 'ArrowDown':
+                    event.preventDefault();
+                    this.uiManager.cursor.y += speed;
+                    break;
+                case 'ArrowLeft':
+                    event.preventDefault();
+                    this.uiManager.cursor.x -= speed;
+                    break;
+                case 'ArrowRight':
+                    event.preventDefault();
+                    this.uiManager.cursor.x += speed;
+                    break;
+                case 'Enter':
+                    event.preventDefault();
+                    // Simular click en la posición actual del cursor
+                    this.handleCursorClick(this.uiManager.cursor.x, this.uiManager.cursor.y);
+                    break;
+                case 'Escape':
+                    event.preventDefault();
+                    this.exitSystem();
+                    break;
+            }
+            
+            // Limitar cursor dentro del canvas
+            this.clampCursorPosition();
+        }
+    }
+
+    clampCursorPosition() {
+        if (this.uiManager && this.uiManager.cursor) {
+            this.uiManager.cursor.x = Math.max(0, Math.min(this.uiManager.canvas.width, this.uiManager.cursor.x));
+            this.uiManager.cursor.y = Math.max(0, Math.min(this.uiManager.canvas.height, this.uiManager.cursor.y));
         }
     }
 
     toggleNavigationMode() {
         this.freeMode = !this.freeMode;
         
-        // Actualizar texto de guía
-        this.render();
+        // Ocultar/mostrar cursor según el modo
+        if (this.uiManager && this.uiManager.cursor) {
+            this.uiManager.cursor.visible = this.freeMode;
+        }
         
-        console.log(`Modo de navegación: ${this.freeMode ? 'Libre' : 'Tradicional'}`);
+        // Si cambiamos a modo tradicional, posicionar focus en el primer item
+        if (!this.freeMode) {
+            this.currentFocusIndex = 0;
+            this.cancelAutoStart(); // Cancelar auto-start al interactuar
+        }
+        
+        // Actualizar botones
+        this.updateMenuButtons();
+        
+        console.log(`Modo de navegación: ${this.freeMode ? 'Libre (Cursor)' : 'Tradicional (Focus)'}`);
     }
 
     navigate(direction) {
@@ -302,7 +352,7 @@ class MenuScene {
             ctx.fillText('MIZU OS', width / 2, 100);
             
             // Dibujar información de controles
-            ctx.fillStyle = '#888';
+            ctx.fillStyle = this.freeMode ? '#00ff00' : '#888';
             ctx.font = '14px Arial';
             ctx.textAlign = 'center';
             
@@ -310,7 +360,7 @@ class MenuScene {
             if (this.freeMode) {
                 controlsText = '🖱️ Modo Libre: Mouse/Flechas mueven cursor | ⏎ Click | TAB Cambiar modo';
             } else {
-                controlsText = '🔼🔽 Navegar | ⏎ Seleccionar | TAB Cambiar modo | ESC Salir';
+                controlsText = '🎮 Modo Tradicional: 🔼🔽 Navegar | ⏎ Seleccionar | TAB Cambiar modo | ESC Salir';
             }
             
             ctx.fillText(controlsText, width / 2, 500);
@@ -373,7 +423,9 @@ class MenuScene {
         if (this.keyHandler) {
             document.removeEventListener('keydown', this.keyHandler);
         }
-        
+        if (this.mouseMoveHandler) {
+            document.removeEventListener('mousemove', this.mouseMoveHandler);
+        }
         if (this.systemExitHandler) {
             eventBus.off('systemExit', this.systemExitHandler);
         }

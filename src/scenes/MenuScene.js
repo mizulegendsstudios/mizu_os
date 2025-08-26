@@ -1,5 +1,6 @@
 import eventBus from '../core/EventBus.js';
 import UIManager from '../ui/UIManager.js';
+import CanvasButton from '../entities/CanvasButton.js';
 
 /**
  * MenuScene - Escena del menú principal con UI interactiva
@@ -131,6 +132,43 @@ class MenuScene {
         const buttons = this.uiManager.createMenuButtons(this.menuItems, {
             y: 250,
             spacing: 25
+        });
+        
+        // Prueba: render canvas button
+        const canvas = document.createElement('canvas');
+        canvas.width = 400;
+        canvas.height = 120;
+        canvas.style.cssText = 'position:absolute; left:20px; top:120px; z-index:10; border:1px solid rgba(0,229,255,0.2)';
+        menuContainer.appendChild(canvas);
+        const ctx = canvas.getContext('2d');
+        const testButton = new CanvasButton(20, 20, 180, 40, 'Canvas Button', () => {
+            eventBus.emit('uiButtonClick', { buttonId: 'canvas-test', action: 'ENTER_SYSTEM' });
+        });
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            testButton.render(ctx);
+            requestAnimationFrame(draw);
+        }
+        draw();
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            testButton.setState(testButton.isHovered(x, y) ? 'hover' : 'normal');
+        });
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            if (testButton.isHovered(x, y)) testButton.setState('pressed');
+        });
+        canvas.addEventListener('mouseup', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const hovered = testButton.isHovered(x, y);
+            testButton.setState(hovered ? 'hover' : 'normal');
+            if (hovered) testButton.trigger();
         });
         
         // Crear HUD del menú

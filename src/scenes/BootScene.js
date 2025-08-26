@@ -120,10 +120,12 @@ class BootScene {
   onLoadingComplete() {
     this.isLoaded = true;
     this.updateStatus('Sistema listo');
+    console.log('BootScene completa, cambiando a MenuScene');
     
     setTimeout(() => {
+      // Emitir evento para que main cambie a menú
       eventBus.emit('bootComplete');
-    }, 1000);
+    }, 800);
   }
 
   /**

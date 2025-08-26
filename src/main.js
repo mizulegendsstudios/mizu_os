@@ -37,6 +37,8 @@ class MizuOS {
       this.sceneManager = new SceneManager();
       this.inputManager = new InputManager();
       
+      console.log('SceneManager inicializado');
+      
       // Configurar contenedor de escenas
       const sceneContainer = document.getElementById('scene-container') || document.body;
       this.sceneManager.setSceneContainer(sceneContainer);
@@ -57,6 +59,7 @@ class MizuOS {
       this.eventBus.emit('systemReady');
       
       // Cambiar a la escena de boot
+      console.log('Cambiando a BootScene');
       this.sceneManager.changeScene('boot');
       
     } catch (error) {

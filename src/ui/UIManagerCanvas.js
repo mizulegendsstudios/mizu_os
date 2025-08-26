@@ -20,7 +20,8 @@ export default class UIManagerCanvas {
     this.cursor = new CanvasCursor();
     this._raf = 0;
   }
-mount(x = 0, y = 0) {
+
+  mount(x = 0, y = 0) {
     // Limpiar cualquier contenido previo
     this.container.innerHTML = '';
 
@@ -34,27 +35,33 @@ mount(x = 0, y = 0) {
         top: ${y}px; 
         width: ${this.width}px; 
         height: ${this.height}px; 
-        z-index: 99999;  // AUMENTADO A 99999 PARA QUE ESTÉ SIEMPRE ARRIBA
-        pointer-events: none; /* Permite clics a través del canvas */
+        z-index: 9999;
+        pointer-events: none;
     `;
     
     this.container.appendChild(this.canvas);
+
     this.ctx = this.canvas.getContext('2d');
     this._bindPointerEvents();
     this._bindCursorSelect();
     this._loop();
     return this.canvas;
-}
+  }
 
   _bindPointerEvents() {
     const c = this.canvas;
     c.addEventListener('mousemove', (e) => {
       const { x, y } = this._rel(e);
-      this.buttons.forEach(b => b.setState(b.isHovered(x, y) ? 'hover' : 'normal'));
+      this.buttons.forEach(b => {
+        const hovered = b.isHovered(x, y);
+        b.setState(hovered ? 'hover' : 'normal');
+      });
     });
     c.addEventListener('mousedown', (e) => {
       const { x, y } = this._rel(e);
-      this.buttons.forEach(b => { if (b.isHovered(x, y)) b.setState('pressed'); });
+      this.buttons.forEach(b => { 
+        if (b.isHovered(x, y)) b.setState('pressed'); 
+      });
     });
     c.addEventListener('mouseup', (e) => {
       const { x, y } = this._rel(e);
@@ -84,8 +91,13 @@ mount(x = 0, y = 0) {
   _loop() {
     const draw = () => {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      
+      // Renderizar botones
       this.buttons.forEach(b => b.render(this.ctx));
+      
+      // Renderizar cursor (solo si es visible)
       this.cursor.render(this.ctx);
+      
       this._raf = requestAnimationFrame(draw);
     };
     draw();
@@ -97,13 +109,34 @@ mount(x = 0, y = 0) {
   }
 
   createButtons(configs = []) {
-    this.buttons = configs.map(c => new CanvasButton(c.x, c.y, c.width, c.height, c.label, c.onSelect));
+    this.buttons = configs.map(c => new CanvasButton(
+      c.x, 
+      c.y, 
+      c.width, 
+      c.height, 
+      c.label, 
+      c.onSelect,
+      c.isFocused || false  // 🔥 PASA EL ESTADO DE FOCO
+    ));
     return this.buttons;
+  }
+
+  updateButtonsFocus(focusedIndex) {
+    // 🔥 ACTUALIZAR EL FOCO DE LOS BOTONES
+    this.buttons.forEach((button, index) => {
+      button.setFocused(index === focusedIndex);
+    });
+  }
+
+  getButtonAtPosition(x, y) {
+    return this.buttons.find(button => button.isHovered(x, y));
   }
 
   destroy() {
     if (this._raf) cancelAnimationFrame(this._raf);
-    if (this.canvas && this.canvas.parentNode) this.canvas.parentNode.removeChild(this.canvas);
+    if (this.canvas && this.canvas.parentNode) {
+      this.canvas.parentNode.removeChild(this.canvas);
+    }
     this.canvas = null;
     this.ctx = null;
     this.buttons = [];

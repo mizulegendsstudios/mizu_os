@@ -2,15 +2,17 @@ import eventBus from '../core/EventBus.js';
 import UIManagerCanvas from '../ui/UIManagerCanvas.js';
 
 /**
- * MenuScene - Escena del menú principal con navegación por focus
- * Responsabilidad: Mostrar menú principal con navegación tradicional por flechas + Enter
+ * MenuScene - Escena del menú principal con navegación híbrida
+ * Modo tradicional: Flechas navegan entre opciones + Enter selecciona
+ * Modo libre: Flechas mueven cursor amarillo + Click selecciona
  */
 class MenuScene {
     constructor() {
         this.name = 'menu';
         this.uiManager = null;
         this.isActive = false;
-        this.currentFocusIndex = 0;       // Índice del botón enfocado
+        this.currentFocusIndex = 0;       // Índice del botón enfocado (modo tradicional)
+        this.freeMode = false;            // false = tradicional, true = libre
         this.autoStartTimer = null;       // Timer para auto-inicio
         this.autoStartCountdown = 10;     // Segundos restantes para auto-inicio
         this.originalStartText = 'Iniciar Sistema'; // Texto original del botón
@@ -113,23 +115,18 @@ class MenuScene {
         this.keyHandler = (event) => {
             if (!this.isActive) return;
             
-            switch(event.key) {
-                case 'ArrowUp':
-                    event.preventDefault();
-                    this.navigate(-1);
-                    break;
-                case 'ArrowDown':
-                    event.preventDefault();
-                    this.navigate(1);
-                    break;
-                case 'Enter':
-                    event.preventDefault();
-                    this.selectCurrentItem();
-                    break;
-                case 'Escape':
-                    event.preventDefault();
-                    this.exitSystem();
-                    break;
+            if (this.freeMode) {
+                // Modo libre: Las flechas mueven el cursor
+                this.handleFreeModeNavigation(event);
+            } else {
+                // Modo tradicional: Las flechas navegan entre opciones
+                this.handleTraditionalNavigation(event);
+            }
+            
+            // Tecla Tab para cambiar modo
+            if (event.key === 'Tab') {
+                event.preventDefault();
+                this.toggleNavigationMode();
             }
         };
 
@@ -141,6 +138,56 @@ class MenuScene {
         };
         
         eventBus.on('systemExit', this.systemExitHandler);
+    }
+
+    handleTraditionalNavigation(event) {
+        switch(event.key) {
+            case 'ArrowUp':
+                event.preventDefault();
+                this.navigate(-1);
+                break;
+            case 'ArrowDown':
+                event.preventDefault();
+                this.navigate(1);
+                break;
+            case 'Enter':
+                event.preventDefault();
+                this.selectCurrentItem();
+                break;
+            case 'Escape':
+                event.preventDefault();
+                this.exitSystem();
+                break;
+        }
+    }
+
+    handleFreeModeNavigation(event) {
+        // En modo libre, las flechas mueven el cursor
+        // (El cursor se mueve automáticamente con el mouse también)
+        switch(event.key) {
+            case 'Enter':
+                event.preventDefault();
+                // En modo libre, Enter simula un click en la posición actual
+                if (this.uiManager && this.uiManager.cursor) {
+                    const cursorX = this.uiManager.cursor.x;
+                    const cursorY = this.uiManager.cursor.y;
+                    this.handleCursorClick(cursorX, cursorY);
+                }
+                break;
+            case 'Escape':
+                event.preventDefault();
+                this.exitSystem();
+                break;
+        }
+    }
+
+    toggleNavigationMode() {
+        this.freeMode = !this.freeMode;
+        
+        // Actualizar texto de guía
+        this.render();
+        
+        console.log(`Modo de navegación: ${this.freeMode ? 'Libre' : 'Tradicional'}`);
     }
 
     navigate(direction) {
@@ -169,6 +216,16 @@ class MenuScene {
         }
     }
 
+    handleCursorClick(x, y) {
+        // Verificar si el click está sobre algún botón
+        this.menuItems.forEach((item, index) => {
+            if (x >= item.x && x <= item.x + item.width &&
+                y >= item.y && y <= item.y + item.height) {
+                item.onSelect();
+            }
+        });
+    }
+
     createMenuButtons() {
         this.updateMenuButtons();
     }
@@ -180,7 +237,7 @@ class MenuScene {
             width: item.width,
             height: item.height,
             label: item.text,
-            isFocused: index === this.currentFocusIndex,
+            isFocused: !this.freeMode && index === this.currentFocusIndex,
             onSelect: item.onSelect
         }));
 
@@ -248,7 +305,15 @@ class MenuScene {
             ctx.fillStyle = '#888';
             ctx.font = '14px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('🔼🔽 Navegar | ⏎ Seleccionar | ESC Salir', width / 2, 500);
+            
+            let controlsText;
+            if (this.freeMode) {
+                controlsText = '🖱️ Modo Libre: Mouse/Flechas mueven cursor | ⏎ Click | TAB Cambiar modo';
+            } else {
+                controlsText = '🔼🔽 Navegar | ⏎ Seleccionar | TAB Cambiar modo | ESC Salir';
+            }
+            
+            ctx.fillText(controlsText, width / 2, 500);
             
             // Dibujar versión
             ctx.fillStyle = '#666';
@@ -280,6 +345,7 @@ class MenuScene {
             <div style="line-height: 1.6;">
                 <p><strong>Versión:</strong> Mizu OS 0.7.2</p>
                 <p><strong>Resolución:</strong> ${window.innerWidth}x${window.innerHeight}</p>
+                <p><strong>Modo navegación:</strong> ${this.freeMode ? 'Libre' : 'Tradicional'}</p>
             </div>
             <button style="
                 background: rgba(0, 229, 255, 0.2);

@@ -2,25 +2,29 @@ import eventBus from '../core/EventBus.js';
 import UIManagerCanvas from '../ui/UIManagerCanvas.js';
 
 /**
- * MenuScene - Escena del menú principal con UI interactiva en Canvas
- * Responsabilidad: Mostrar menú principal con botones y cursor en canvas
+ * MenuScene - Escena del menú principal con navegación por focus
+ * Responsabilidad: Mostrar menú principal con navegación tradicional por flechas + Enter
  */
 class MenuScene {
     constructor() {
         this.name = 'menu';
         this.uiManager = null;
         this.isActive = false;
+        this.currentFocusIndex = 0;       // Índice del botón enfocado
+        this.autoStartTimer = null;       // Timer para auto-inicio
+        this.autoStartCountdown = 10;     // Segundos restantes para auto-inicio
+        this.originalStartText = 'Iniciar Sistema'; // Texto original del botón
         
         this.menuItems = [
             {
-                text: 'Iniciar Sistema',
+                text: 'Iniciar Sistema (10)',
                 x: 100,
                 y: 200,
-                width: 200,
+                width: 280,
                 height: 40,
                 action: 'ENTER_SYSTEM',
                 onSelect: () => {
-                    eventBus.emit('changeScene', { scene: 'desktop' });
+                    this.startSystem();
                 }
             },
             {
@@ -31,6 +35,7 @@ class MenuScene {
                 height: 40,
                 action: 'OPEN_SETTINGS',
                 onSelect: () => {
+                    this.cancelAutoStart();
                     eventBus.emit('changeScene', { scene: 'settings' });
                 }
             },
@@ -42,6 +47,7 @@ class MenuScene {
                 height: 40,
                 action: 'SHOW_SYSTEM_INFO',
                 onSelect: () => {
+                    this.cancelAutoStart();
                     this.showSystemInfo();
                 }
             },
@@ -53,6 +59,7 @@ class MenuScene {
                 height: 40,
                 action: 'EXIT_SYSTEM',
                 onSelect: () => {
+                    this.cancelAutoStart();
                     this.exitSystem();
                 }
             }
@@ -67,11 +74,17 @@ class MenuScene {
         this.uiManager = new UIManagerCanvas();
         this.uiManager.mount(0, 0);
         
+        // Configurar event listeners
+        this.setupEventListeners();
+        
         // Crear botones del menú
         this.createMenuButtons();
         
-        // Configurar event listeners
-        this.setupEventListeners();
+        // Iniciar contador de auto-inicio
+        this.startAutoStartTimer();
+        
+        // Renderizar inicialmente
+        this.render();
         
         eventBus.emit('menuActivated', { scene: this });
     }
@@ -79,6 +92,9 @@ class MenuScene {
     deactivate() {
         this.isActive = false;
         console.log('MenuScene desactivada');
+        
+        // Detener timers
+        this.cancelAutoStart();
         
         // Limpiar event listeners
         this.cleanup();
@@ -92,25 +108,135 @@ class MenuScene {
         eventBus.emit('menuDeactivated', { scene: this });
     }
 
+    setupEventListeners() {
+        // Escuchar eventos de teclado
+        this.keyHandler = (event) => {
+            if (!this.isActive) return;
+            
+            switch(event.key) {
+                case 'ArrowUp':
+                    event.preventDefault();
+                    this.navigate(-1);
+                    break;
+                case 'ArrowDown':
+                    event.preventDefault();
+                    this.navigate(1);
+                    break;
+                case 'Enter':
+                    event.preventDefault();
+                    this.selectCurrentItem();
+                    break;
+                case 'Escape':
+                    event.preventDefault();
+                    this.exitSystem();
+                    break;
+            }
+        };
+
+        document.addEventListener('keydown', this.keyHandler);
+
+        // Escuchar eventos del sistema
+        this.systemExitHandler = (data) => {
+            console.log('Sistema saliendo:', data);
+        };
+        
+        eventBus.on('systemExit', this.systemExitHandler);
+    }
+
+    navigate(direction) {
+        const newIndex = this.currentFocusIndex + direction;
+        
+        // Navegación circular
+        if (newIndex < 0) {
+            this.currentFocusIndex = this.menuItems.length - 1;
+        } else if (newIndex >= this.menuItems.length) {
+            this.currentFocusIndex = 0;
+        } else {
+            this.currentFocusIndex = newIndex;
+        }
+        
+        // Cancelar auto-inicio si el usuario interactúa
+        if (this.currentFocusIndex !== 0) {
+            this.cancelAutoStart();
+        }
+        
+        this.updateMenuButtons();
+    }
+
+    selectCurrentItem() {
+        if (this.menuItems[this.currentFocusIndex]) {
+            this.menuItems[this.currentFocusIndex].onSelect();
+        }
+    }
+
     createMenuButtons() {
-        const buttonConfigs = this.menuItems.map(item => ({
+        this.updateMenuButtons();
+    }
+
+    updateMenuButtons() {
+        const buttonConfigs = this.menuItems.map((item, index) => ({
             x: item.x,
             y: item.y,
             width: item.width,
             height: item.height,
             label: item.text,
+            isFocused: index === this.currentFocusIndex,
             onSelect: item.onSelect
         }));
 
-        this.uiManager.createButtons(buttonConfigs);
+        if (this.uiManager) {
+            this.uiManager.createButtons(buttonConfigs);
+            this.render();
+        }
+    }
+
+    startAutoStartTimer() {
+        this.autoStartCountdown = 10;
+        this.updateAutoStartText();
+        
+        this.autoStartTimer = setInterval(() => {
+            this.autoStartCountdown--;
+            
+            if (this.autoStartCountdown <= 0) {
+                this.startSystem();
+                return;
+            }
+            
+            this.updateAutoStartText();
+            
+        }, 1000);
+    }
+
+    cancelAutoStart() {
+        if (this.autoStartTimer) {
+            clearInterval(this.autoStartTimer);
+            this.autoStartTimer = null;
+            
+            // Restaurar texto original
+            this.menuItems[0].text = this.originalStartText;
+            this.updateMenuButtons();
+        }
+    }
+
+    updateAutoStartText() {
+        this.menuItems[0].text = `Iniciar Sistema (${this.autoStartCountdown})`;
+        this.updateMenuButtons();
+    }
+
+    startSystem() {
+        this.cancelAutoStart();
+        eventBus.emit('changeScene', { scene: 'desktop' });
     }
 
     render() {
-        // El renderizado se maneja automáticamente por UIManagerCanvas
-        // Podemos añadir elementos adicionales aquí si es necesario
         if (this.uiManager && this.uiManager.ctx) {
             const ctx = this.uiManager.ctx;
             const width = this.uiManager.canvas.width;
+            const height = this.uiManager.canvas.height;
+            
+            // Limpiar canvas
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, width, height);
             
             // Dibujar título
             ctx.fillStyle = '#00e5ff';
@@ -121,18 +247,18 @@ class MenuScene {
             // Dibujar información de controles
             ctx.fillStyle = '#888';
             ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
             ctx.fillText('🔼🔽 Navegar | ⏎ Seleccionar | ESC Salir', width / 2, 500);
             
             // Dibujar versión
             ctx.fillStyle = '#666';
             ctx.font = '12px Arial';
             ctx.textAlign = 'right';
-            ctx.fillText('v0.7.2', width - 20, 580);
+            ctx.fillText('v0.7.2', width - 20, height - 20);
         }
     }
 
     showSystemInfo() {
-        // Crear modal simple de información
         const modal = document.createElement('div');
         modal.style.cssText = `
             position: fixed;
@@ -176,17 +302,12 @@ class MenuScene {
         }
     }
 
-    setupEventListeners() {
-        // Escuchar eventos del sistema
-        this.systemExitHandler = (data) => {
-            console.log('Sistema saliendo:', data);
-        };
-        
-        eventBus.on('systemExit', this.systemExitHandler);
-    }
-
     cleanup() {
         // Limpiar event listeners
+        if (this.keyHandler) {
+            document.removeEventListener('keydown', this.keyHandler);
+        }
+        
         if (this.systemExitHandler) {
             eventBus.off('systemExit', this.systemExitHandler);
         }
@@ -198,11 +319,13 @@ class MenuScene {
                 modal.remove();
             }
         });
+        
+        // Asegurar que el timer se detenga
+        this.cancelAutoStart();
     }
 
     update() {
         // Lógica de actualización si es necesaria
-        this.render();
     }
 }
 

@@ -1,111 +1,172 @@
-/* ===== Estilos para BootScene (Mejorado) ===== */
-/* Contenedor principal: Gradiente mejorado + animación suave */
+/* ============================================= */
+/* BOOT SCENE - ESTILOS PRINCIPALES              */
+/* ============================================= */
+
+/* Contenedor principal del BootScene */
 .boot-screen {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background: linear-gradient(135deg, #0a0a1a 0%, #16213e 50%, #0f0f23 100%);
+  width: 100vw;
+  background: linear-gradient(135deg, #0a0a1a 0%, #0f0f23 100%);
   color: #00e5ff;
   font-family: 'Helvetica Neue', sans-serif;
   padding: 20px;
   box-sizing: border-box;
-  overflow: hidden; /* Evita scroll no deseado */
-  position: relative; /* Para efectos de superposición */
+  overflow: hidden;
 }
 
-/* Logo: Efecto de brillo mejorado + transición suave */
+/* Contenedor con efecto "glass morphism" */
+.glass {
+  background: rgba(15, 15, 35, 0.4);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.2);
+  padding: 30px;
+  text-align: center;
+  border: 1px solid rgba(0, 229, 255, 0.1);
+  width: 90%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem; /* Espacio entre elementos */
+}
+
+/* Logo principal */
 .boot-logo {
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   animation: logoGlow 3s ease-in-out infinite alternate;
-  transform: translateZ(0); /* Aceleración por hardware */
 }
 
-/* Imagen del logo: Filtros optimizados */
 .logo-image {
   width: 120px;
   height: 120px;
-  filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.7))
-          drop-shadow(0 0 5px rgba(0, 229, 255, 0.3));
-  transition: filter 0.5s ease; /* Suaviza cambios de brillo */
+  filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.7));
 }
 
-/* Barra de progreso: Diseño más moderno */
-.boot-progress {
-  width: 300px;
-  margin-bottom: 30px;
-  position: relative;
-}
-
-/* Barra de fondo: Bordes difuminados */
-.progress-bar {
-  width: 100%;
+/* Barra de carga */
+.barra-carga {
+  width: 80%;
   height: 8px;
-  background: rgba(0, 229, 255, 0.15);
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
   overflow: hidden;
+  margin: 20px auto;
   box-shadow: inset 0 0 5px rgba(0, 229, 255, 0.2);
 }
 
-/* Barra de progreso: Efecto de degradado mejorado */
-.progress-fill {
+.progreso {
   height: 100%;
-  background: linear-gradient(90deg, #00e5ff, #0099ff 50%, #1a237e);
   width: 0%;
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Animación más natural */
-  border-radius: 4px;
+  background: linear-gradient(90deg, #00e5ff, #1a237e);
+  animation: cargar 2.5s forwards;
+  transition: width 0.3s ease;
 }
 
-/* Texto de progreso: Mejor legibilidad */
-.progress-text {
-  text-align: center;
-  font-size: 14px;
-  opacity: 0.9;
-  color: rgba(255, 255, 255, 0.9);
-  margin-top: 10px;
-  text-shadow: 0 0 5px rgba(0, 229, 255, 0.3);
+@keyframes cargar {
+  to { width: 100%; }
 }
 
-/* Estado: Texto secundario con estilo */
+/* Texto de estado */
 .boot-status {
-  font-size: 12px;
-  opacity: 0.7;
+  font-size: 14px;
+  opacity: 0.8;
   text-align: center;
   max-width: 400px;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.7);
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.9);
 }
 
-/* Animación del logo: Más orgánica */
+/* Texto parpadeante */
+.blink {
+  font-size: 14px;
+  margin-top: 10px;
+  animation: blink 1.5s infinite;
+  color: #00e5ff;
+  text-shadow: 0 0 5px rgba(0, 229, 255, 0.5);
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Animación del logo */
 @keyframes logoGlow {
-  0% {
-    filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.7))
-            drop-shadow(0 0 5px rgba(0, 229, 255, 0.3));
-  }
-  50% {
-    filter: drop-shadow(0 0 25px rgba(0, 229, 255, 0.9))
-            drop-shadow(0 0 10px rgba(0, 229, 255, 0.5));
-  }
-  100% {
-    filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.7))
-            drop-shadow(0 0 5px rgba(0, 229, 255, 0.3));
-  }
+  0% { filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.7)); }
+  50% { filter: drop-shadow(0 0 25px rgba(0, 229, 255, 0.9)); }
+  100% { filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.7)); }
 }
 
-/* Efecto adicional: Partículas sutiles (opcional, descomentar si se usa JS para animarlas) */
-/*
-.boot-screen::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(0, 229, 255, 0.1) 0.5px, transparent 1px),
-    radial-gradient(circle at 80% 70%, rgba(0, 229, 255, 0.1) 0.3px, transparent 0.6px),
-    radial-gradient(circle at 40% 60%, rgba(0, 229, 255, 0.1) 0.2px, transparent 0.4px);
-  pointer-events: none;
+/* ============================================= */
+/* BOTONES DEL BOOTSCENE (Estilo solicitado)      */
+/* ============================================= */
+.boot-button {
+  background: rgba(63, 185, 80, 0.15);
+  padding: 1rem;
+  border-left: 4px solid #3fb950;
+  margin: 0.8rem 0;
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 80%;
+  max-width: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
-*/
+
+.boot-button:hover {
+  background: rgba(63, 185, 80, 0.25);
+  border-left: 4px solid rgba(63, 185, 80, 0.8);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(63, 185, 80, 0.2);
+}
+
+.boot-button:active {
+  transform: translateY(0);
+  background: rgba(63, 185, 80, 0.3);
+}
+
+/* Contenedor para botones (opcional) */
+.boot-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+  gap: 0.8rem;
+}
+
+/* ============================================= */
+/* ESTILOS ADICIONALES PARA COHERENCIA          */
+/* ============================================= */
+/* Efecto de focus para accesibilidad */
+.boot-button:focus-visible {
+  outline: 2px solid #3fb950;
+  outline-offset: 2px;
+}
+
+/* Animación para la aparición de botones */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.boot-button {
+  animation: fadeIn 0.5s ease-out forwards;
+  opacity: 0; /* Inicialmente oculto */
+}
+
+/* Retrasar la animación de cada botón */
+.boot-button:nth-child(1) { animation-delay: 0.2s; }
+.boot-button:nth-child(2) { animation-delay: 0.4s; }
+.boot-button:nth-child(3) { animation-delay: 0.6s; }

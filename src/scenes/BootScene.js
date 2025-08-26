@@ -148,7 +148,7 @@ class BootScene {
       }
       
       // Emitir evento para que main cambie a menú
-      eventBus.emit('bootComplete');
+eventBus.emit('stateChanged', { to: 'menu' });  // ← Así SceneManager lo maneja
     }, 500);
   }
 

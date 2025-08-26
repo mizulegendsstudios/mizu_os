@@ -71,6 +71,8 @@ class MenuScene {
         
         // Limpiar contenedor
         this.container.innerHTML = '';
+        // Asegurar que el contenedor tenga tamaño visible
+        Object.assign(this.container.style, { position: 'relative', width: '100%', height: '100vh', overflow: 'hidden' });
         
         // Crear fondo del menú
         this.createMenuBackground();

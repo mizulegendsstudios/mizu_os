@@ -1,6 +1,7 @@
 import eventBus from '../core/EventBus.js';
 import UIManager from '../ui/UIManager.js';
 import CanvasButton from '../entities/CanvasButton.js';
+import CanvasCursor from '../entities/CanvasCursor.js';
 
 /**
  * MenuScene - Escena del menú principal con UI interactiva
@@ -144,9 +145,11 @@ class MenuScene {
         const testButton = new CanvasButton(20, 20, 180, 40, 'Canvas Button', () => {
             eventBus.emit('uiButtonClick', { buttonId: 'canvas-test', action: 'ENTER_SYSTEM' });
         });
+        const cursor = new CanvasCursor();
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             testButton.render(ctx);
+            cursor.render(ctx);
             requestAnimationFrame(draw);
         }
         draw();
@@ -169,6 +172,19 @@ class MenuScene {
             const hovered = testButton.isHovered(x, y);
             testButton.setState(hovered ? 'hover' : 'normal');
             if (hovered) testButton.trigger();
+        });
+
+        // Integración Cursor: seleccionar con input positivo si está sobre el botón
+        eventBus.on('cursor:select', ({ x, y }) => {
+            // convertir coords globales a coords del canvas
+            const rect = canvas.getBoundingClientRect();
+            const cx = x - rect.left;
+            const cy = y - rect.top;
+            if (testButton.isHovered(cx, cy)) {
+                testButton.setState('pressed');
+                testButton.trigger();
+                setTimeout(() => testButton.setState('normal'), 100);
+            }
         });
         
         // Crear HUD del menú

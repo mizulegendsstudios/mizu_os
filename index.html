@@ -61,32 +61,12 @@
   
   <!-- BODY -->
   <body>
-    <!-- Contenedor principal para las escenas -->
-    <div id="scene-container">
-      <!-- Las escenas se renderizarán aquí dinámicamente -->
-    </div>
 
     <!-- Indicador de carga inicial -->
     <div class="loading-indicator" id="loading-indicator">
       🌊 Cargando Mizu OS...
     </div>
-    <!-- CANVAS -->
-<canvas id="gameCanvas" style="width: 100vw; height: 100vh; display: block;"></canvas>
-
     <!-- JS -->
     <script type="module" src="src/main.js"></script>
-    
-    <script>
-      // Ocultar indicador de carga cuando el sistema esté listo
-      document.addEventListener('DOMContentLoaded', () => {
-        // El indicador se ocultará automáticamente cuando se active la primera escena
-        setTimeout(() => {
-          const loadingIndicator = document.getElementById('loading-indicator');
-          if (loadingIndicator) {
-            loadingIndicator.style.display = 'none';
-          }
-        }, 1000);
-      });
-    </script>
   </body>
 </html>

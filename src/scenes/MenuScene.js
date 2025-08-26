@@ -76,7 +76,7 @@ class MenuScene {
         this.uiManager = new UIManagerCanvas();
         this.uiManager.mount(0, 0);
         
-        // 🔥 POSICIONAR CURSOR EN EL PRIMER BOTÓN AL ACTIVAR
+        // Posicionar cursor en el primer botón al activar
         if (this.uiManager && this.uiManager.cursor && this.menuItems[0]) {
             const firstItem = this.menuItems[0];
             this.uiManager.cursor.x = firstItem.x + (firstItem.width / 2);
@@ -235,7 +235,7 @@ class MenuScene {
         if (this.uiManager && this.uiManager.cursor) {
             this.uiManager.cursor.visible = this.freeMode;
             
-            // 🔥 EN MODO TRADICIONAL: Posicionar cursor en el botón seleccionado
+            // En modo tradicional: Posicionar cursor en el botón seleccionado
             if (!this.freeMode && this.menuItems[this.currentFocusIndex]) {
                 const item = this.menuItems[this.currentFocusIndex];
                 this.uiManager.cursor.x = item.x + (item.width / 2);
@@ -267,7 +267,7 @@ class MenuScene {
             this.currentFocusIndex = newIndex;
         }
         
-        // 🔥 MOVER CURSOR AL BOTÓN SELECCIONADO EN MODO TRADICIONAL
+        // Mover cursor al botón seleccionado en modo tradicional
         if (!this.freeMode && this.uiManager && this.uiManager.cursor && this.menuItems[this.currentFocusIndex]) {
             const item = this.menuItems[this.currentFocusIndex];
             this.uiManager.cursor.x = item.x + (item.width / 2);
@@ -315,6 +315,12 @@ class MenuScene {
 
         if (this.uiManager) {
             this.uiManager.createButtons(buttonConfigs);
+            
+            // Actualizar foco manualmente
+            if (!this.freeMode) {
+                this.uiManager.updateButtonsFocus(this.currentFocusIndex);
+            }
+            
             this.render();
         }
     }

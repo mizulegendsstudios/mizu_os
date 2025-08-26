@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimization Test - Mizu OS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #0f0f23;
+            color: #00e5ff;
+        }
+        .test-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: rgba(0, 229, 255, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 229, 255, 0.3);
+        }
+        .optimization-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .control-btn {
+            background: rgba(0, 229, 255, 0.2);
+            border: 1px solid #00e5ff;
+            color: #00e5ff;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .control-btn:hover {
+            background: rgba(0, 229, 255, 0.3);
+        }
+        .control-btn.success {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: #00ff88;
+            color: #00ff88;
+        }
+        .control-btn.success:hover {
+            background: rgba(0, 255, 136, 0.3);
+        }
+        .control-btn.active {
+            background: rgba(0, 255, 136, 0.3);
+            border-color: #00ff88;
+            color: #00ff88;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .metric-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(0, 229, 255, 0.2);
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .metric-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        .status-excellent { color: #00ff88; }
+        .status-good { color: #00e5ff; }
+        .status-warning { color: #ffaa00; }
+        .status-danger { color: #ff4444; }
+        .chart-container {
+            background: #000;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .performance-chart {
+            width: 100%;
+            height: 300px;
+            background: #111;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+        .chart-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #00e5ff;
+            transition: height 0.1s ease;
+        }
+        .chart-target {
+            position: absolute;
+            bottom: 33%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #00ff88;
+            opacity: 0.5;
+        }
+        .log-container {
+            background: #000;
+            padding: 15px;
+            border-radius: 5px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #00e5ff;
+        }
+        .log-optimization { border-left-color: #00ff88; }
+        .log-warning { border-left-color: #ffaa00; }
+        .log-error { border-left-color: #ff4444; }
+        .log-info { border-left-color: #00e5ff; }
+        .optimization-results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .result-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 229, 255, 0.2);
+        }
+        .result-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #00e5ff;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(0, 229, 255, 0.1);
+        }
+        .result-label {
+            font-size: 14px;
+        }
+        .result-value {
+            font-weight: bold;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 229, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00e5ff, #00ff88);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>⚡ Optimization Test - Mizu OS</h1>
+        
+        <div class="test-section">
+            <h3>🎮 Controles de Optimización</h3>
+            <div class="optimization-controls">
+                <button class="control-btn" id="start-optimization">🚀 Iniciar Optimización</button>
+                <button class="control-btn" id="stop-optimization">⏹️ Detener Optimización</button>
+                <button class="control-btn success" id="measure-load-time">📊 Medir Tiempo de Carga</button>
+                <button class="control-btn success" id="measure-memory">🧠 Medir Memoria</button>
+                <button class="control-btn success" id="measure-fps">🎯 Medir FPS</button>
+                <button class="control-btn" id="run-benchmark">🏃 Ejecutar Benchmark</button>
+                <button class="control-btn" id="clear-results">🧹 Limpiar Resultados</button>
+                <button class="control-btn" id="export-report">📄 Exportar Reporte</button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Métricas de Rendimiento</h3>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">FPS Actual</div>
+                    <div class="metric-value" id="current-fps">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">FPS Promedio</div>
+                    <div class="metric-value" id="avg-fps">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Frame Time (ms)</div>
+                    <div class="metric-value" id="frame-time">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Memoria (MB)</div>
+                    <div class="metric-value" id="memory-usage">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Tiempo de Carga (ms)</div>
+                    <div class="metric-value" id="load-time">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Score de Optimización</div>
+                    <div class="metric-value" id="optimization-score">0</div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="optimization-progress"></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📈 Gráfico de Rendimiento</h3>
+            <div class="chart-container">
+                <div class="performance-chart" id="performance-chart">
+                    <div class="chart-target"></div>
+                    <div class="chart-line" id="fps-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="optimization-results">
+            <div class="result-card">
+                <div class="result-title">🎯 Resultados de FPS</div>
+                <div class="result-item">
+                    <span class="result-label">FPS Mínimo:</span>
+                    <span class="result-value" id="min-fps">0</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">FPS Máximo:</span>
+                    <span class="result-value" id="max-fps">0</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">FPS Estable:</span>
+                    <span class="result-value" id="stable-fps">0</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Drops de FPS:</span>
+                    <span class="result-value" id="fps-drops">0</span>
+                </div>
+            </div>
+
+            <div class="result-card">
+                <div class="result-title">🧠 Resultados de Memoria</div>
+                <div class="result-item">
+                    <span class="result-label">Uso Inicial:</span>
+                    <span class="result-value" id="initial-memory">0 MB</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Uso Pico:</span>
+                    <span class="result-value" id="peak-memory">0 MB</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Uso Actual:</span>
+                    <span class="result-value" id="current-memory">0 MB</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Leaks Detectados:</span>
+                    <span class="result-value" id="memory-leaks">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 Log de Optimización</h3>
+            <div class="log-container" id="optimization-log"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import eventBus from './src/core/EventBus.js';
+        import SceneManager from './src/core/SceneManager.js';
+        import State from './src/core/State.js';
+        import InputManager from './src/core/InputManager.js';
+        import BootScene from './src/scenes/BootScene.js';
+        import MenuScene from './src/scenes/MenuScene.js';
+
+        // Variables de optimización
+        let optimizationTest = {
+            isRunning: false,
+            startTime: 0,
+            fpsHistory: [],
+            memoryHistory: [],
+            loadTimeHistory: [],
+            fpsDrops: 0,
+            memoryLeaks: 0,
+            optimizationScore: 0,
+            lastFpsTime: 0,
+            fpsCounter: 0,
+            minFps: Infinity,
+            maxFps: 0,
+            totalFps: 0,
+            frameCount: 0
+        };
+
+        // Elementos del DOM
+        const currentFps = document.getElementById('current-fps');
+        const avgFps = document.getElementById('avg-fps');
+        const frameTime = document.getElementById('frame-time');
+        const memoryUsage = document.getElementById('memory-usage');
+        const loadTime = document.getElementById('load-time');
+        const optimizationScore = document.getElementById('optimization-score');
+        const optimizationProgress = document.getElementById('optimization-progress');
+        const fpsLine = document.getElementById('fps-line');
+        const optimizationLog = document.getElementById('optimization-log');
+
+        // Resultados
+        const minFpsResult = document.getElementById('min-fps');
+        const maxFpsResult = document.getElementById('max-fps');
+        const stableFpsResult = document.getElementById('stable-fps');
+        const fpsDropsResult = document.getElementById('fps-drops');
+        const initialMemoryResult = document.getElementById('initial-memory');
+        const peakMemoryResult = document.getElementById('peak-memory');
+        const currentMemoryResult = document.getElementById('current-memory');
+        const memoryLeaksResult = document.getElementById('memory-leaks');
+
+        // Controles
+        const startOptimizationBtn = document.getElementById('start-optimization');
+        const stopOptimizationBtn = document.getElementById('stop-optimization');
+        const measureLoadTimeBtn = document.getElementById('measure-load-time');
+        const measureMemoryBtn = document.getElementById('measure-memory');
+        const measureFpsBtn = document.getElementById('measure-fps');
+        const runBenchmarkBtn = document.getElementById('run-benchmark');
+        const clearResultsBtn = document.getElementById('clear-results');
+        const exportReportBtn = document.getElementById('export-report');
+
+        // Variables del sistema
+        let sceneManager = null;
+        let state = null;
+        let inputManager = null;
+        let optimizationInterval = null;
+        let loadStartTime = performance.now();
+
+        // Función para agregar logs
+        function addLog(message, type = '') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            logEntry.innerHTML = `<strong>[${timestamp}]</strong> ${message}`;
+            optimizationLog.appendChild(logEntry);
+            optimizationLog.scrollTop = optimizationLog.scrollHeight;
+
+            // Limpiar logs antiguos
+            if (optimizationLog.children.length > 50) {
+                optimizationLog.removeChild(optimizationLog.firstChild);
+            }
+        }
+
+        // Función para calcular FPS
+        function calculateFPS() {
+            const now = performance.now();
+            optimizationTest.fpsCounter++;
+
+            if (now - optimizationTest.lastFpsTime >= 1000) {
+                const fps = Math.round((optimizationTest.fpsCounter * 1000) / (now - optimizationTest.lastFpsTime));
+                
+                // Actualizar métricas
+                optimizationTest.fpsHistory.push(fps);
+                optimizationTest.minFps = Math.min(optimizationTest.minFps, fps);
+                optimizationTest.maxFps = Math.max(optimizationTest.maxFps, fps);
+                optimizationTest.totalFps += fps;
+                optimizationTest.frameCount++;
+
+                // Detectar drops de FPS
+                if (fps < 30) {
+                    optimizationTest.fpsDrops++;
+                }
+
+                // Mantener solo los últimos 60 valores
+                if (optimizationTest.fpsHistory.length > 60) {
+                    optimizationTest.fpsHistory.shift();
+                }
+
+                // Actualizar UI
+                currentFps.textContent = fps;
+                avgFps.textContent = Math.round(optimizationTest.totalFps / optimizationTest.frameCount);
+                frameTime.textContent = Math.round(1000 / fps);
+                
+                // Clasificar FPS
+                currentFps.className = `metric-value ${fps >= 55 ? 'status-excellent' : fps >= 45 ? 'status-good' : fps >= 30 ? 'status-warning' : 'status-danger'}`;
+
+                // Actualizar gráfico
+                updatePerformanceChart(fps);
+
+                optimizationTest.fpsCounter = 0;
+                optimizationTest.lastFpsTime = now;
+            }
+        }
+
+        // Función para medir memoria
+        function measureMemory() {
+            if (performance.memory) {
+                const used = performance.memory.usedJSHeapSize / 1024 / 1024;
+                const total = performance.memory.totalJSHeapSize / 1024 / 1024;
+                const limit = performance.memory.jsHeapSizeLimit / 1024 / 1024;
+
+                optimizationTest.memoryHistory.push(used);
+                
+                // Detectar leaks de memoria
+                if (optimizationTest.memoryHistory.length > 10) {
+                    const recent = optimizationTest.memoryHistory.slice(-10);
+                    const trend = recent[recent.length - 1] - recent[0];
+                    if (trend > 10) { // Más de 10MB de crecimiento
+                        optimizationTest.memoryLeaks++;
+                        addLog(`⚠️ Posible leak de memoria detectado: +${trend.toFixed(1)}MB`, 'log-warning');
+                    }
+                }
+
+                memoryUsage.textContent = Math.round(used);
+                currentMemoryResult.textContent = `${Math.round(used)} MB`;
+
+                // Actualizar pico de memoria
+                if (used > parseFloat(peakMemoryResult.textContent)) {
+                    peakMemoryResult.textContent = `${Math.round(used)} MB`;
+                }
+
+                return { used, total, limit };
+            }
+            return null;
+        }
+
+        // Función para medir tiempo de carga
+        function measureLoadTime() {
+            const loadEndTime = performance.now();
+            const loadDuration = loadEndTime - loadStartTime;
+            
+            optimizationTest.loadTimeHistory.push(loadDuration);
+            loadTime.textContent = Math.round(loadDuration);
+            
+            addLog(`📊 Tiempo de carga: ${loadDuration.toFixed(2)}ms`, 'log-optimization');
+            
+            return loadDuration;
+        }
+
+        // Función para actualizar gráfico de rendimiento
+        function updatePerformanceChart(fps) {
+            const height = Math.min(100, (fps / 60) * 100);
+            fpsLine.style.height = `${height}%`;
+        }
+
+        // Función para calcular score de optimización
+        function calculateOptimizationScore() {
+            let score = 100;
+            
+            // Penalizar por FPS bajo
+            const avgFpsValue = optimizationTest.totalFps / optimizationTest.frameCount;
+            if (avgFpsValue < 60) {
+                score -= (60 - avgFpsValue) * 2;
+            }
+            
+            // Penalizar por drops de FPS
+            score -= optimizationTest.fpsDrops * 5;
+            
+            // Penalizar por uso de memoria alto
+            const currentMemory = parseFloat(memoryUsage.textContent);
+            if (currentMemory > 100) {
+                score -= (currentMemory - 100) * 0.5;
+            }
+            
+            // Penalizar por leaks de memoria
+            score -= optimizationTest.memoryLeaks * 10;
+            
+            score = Math.max(0, Math.min(100, score));
+            optimizationTest.optimizationScore = score;
+            
+            optimizationScore.textContent = Math.round(score);
+            optimizationScore.className = `metric-value ${score >= 90 ? 'status-excellent' : score >= 75 ? 'status-good' : score >= 50 ? 'status-warning' : 'status-danger'}`;
+            
+            optimizationProgress.style.width = `${score}%`;
+            
+            return score;
+        }
+
+        // Función para iniciar optimización
+        function startOptimization() {
+            if (optimizationTest.isRunning) return;
+
+            optimizationTest.isRunning = true;
+            optimizationTest.startTime = performance.now();
+            optimizationTest.lastFpsTime = performance.now();
+            
+            // Resetear métricas
+            optimizationTest.fpsHistory = [];
+            optimizationTest.memoryHistory = [];
+            optimizationTest.loadTimeHistory = [];
+            optimizationTest.fpsDrops = 0;
+            optimizationTest.memoryLeaks = 0;
+            optimizationTest.minFps = Infinity;
+            optimizationTest.maxFps = 0;
+            optimizationTest.totalFps = 0;
+            optimizationTest.frameCount = 0;
+
+            startOptimizationBtn.classList.add('active');
+            stopOptimizationBtn.classList.remove('active');
+
+            addLog('🚀 Iniciando optimización y medición de rendimiento', 'log-optimization');
+
+            // Loop de optimización
+            optimizationInterval = setInterval(() => {
+                calculateFPS();
+                measureMemory();
+                calculateOptimizationScore();
+            }, 16); // ~60 FPS
+
+            addLog('⚡ Sistema de optimización activo', 'log-optimization');
+        }
+
+        // Función para detener optimización
+        function stopOptimization() {
+            if (!optimizationTest.isRunning) return;
+
+            optimizationTest.isRunning = false;
+            startOptimizationBtn.classList.remove('active');
+            stopOptimizationBtn.classList.add('active');
+
+            if (optimizationInterval) {
+                clearInterval(optimizationInterval);
+            }
+
+            const duration = (performance.now() - optimizationTest.startTime) / 1000;
+            addLog(`⏹️ Optimización detenida. Duración: ${duration.toFixed(2)}s`, 'log-optimization');
+            
+            // Mostrar resultados finales
+            showFinalResults();
+        }
+
+        // Función para mostrar resultados finales
+        function showFinalResults() {
+            const avgFpsValue = optimizationTest.totalFps / optimizationTest.frameCount;
+            const stableFps = optimizationTest.fpsHistory.filter(fps => fps >= 55).length;
+            
+            minFpsResult.textContent = optimizationTest.minFps;
+            maxFpsResult.textContent = optimizationTest.maxFps;
+            stableFpsResult.textContent = stableFps;
+            fpsDropsResult.textContent = optimizationTest.fpsDrops;
+            memoryLeaksResult.textContent = optimizationTest.memoryLeaks;
+
+            addLog(`📊 Resultados finales - FPS Promedio: ${avgFpsValue.toFixed(1)}, Score: ${optimizationTest.optimizationScore}`, 'log-optimization');
+        }
+
+        // Función para ejecutar benchmark
+        function runBenchmark() {
+            addLog('🏃 Ejecutando benchmark completo...', 'log-optimization');
+            
+            // Simular carga intensiva
+            const iterations = 100000;
+            const start = performance.now();
+            
+            for (let i = 0; i < iterations; i++) {
+                Math.sqrt(i);
+                Math.sin(i);
+                Math.cos(i);
+            }
+            
+            const end = performance.now();
+            const duration = end - start;
+            
+            addLog(`🏃 Benchmark completado en ${duration.toFixed(2)}ms`, 'log-optimization');
+        }
+
+        // Función para exportar reporte
+        function exportReport() {
+            const report = {
+                timestamp: new Date().toISOString(),
+                optimizationScore: optimizationTest.optimizationScore,
+                fps: {
+                    average: optimizationTest.totalFps / optimizationTest.frameCount,
+                    min: optimizationTest.minFps,
+                    max: optimizationTest.maxFps,
+                    drops: optimizationTest.fpsDrops
+                },
+                memory: {
+                    current: parseFloat(memoryUsage.textContent),
+                    peak: parseFloat(peakMemoryResult.textContent),
+                    leaks: optimizationTest.memoryLeaks
+                },
+                loadTime: parseFloat(loadTime.textContent)
+            };
+
+            const reportText = JSON.stringify(report, null, 2);
+            const blob = new Blob([reportText], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `mizu-os-optimization-report-${Date.now()}.json`;
+            a.click();
+            
+            URL.revokeObjectURL(url);
+            addLog('📄 Reporte exportado', 'log-optimization');
+        }
+
+        // Event listeners
+        startOptimizationBtn.addEventListener('click', startOptimization);
+        stopOptimizationBtn.addEventListener('click', stopOptimization);
+        measureLoadTimeBtn.addEventListener('click', measureLoadTime);
+        measureMemoryBtn.addEventListener('click', measureMemory);
+        measureFpsBtn.addEventListener('click', () => {
+            addLog(`🎯 FPS actual: ${currentFps.textContent}`, 'log-info');
+        });
+        runBenchmarkBtn.addEventListener('click', runBenchmark);
+        clearResultsBtn.addEventListener('click', () => {
+            optimizationLog.innerHTML = '';
+            addLog('🧹 Resultados limpiados', 'log-optimization');
+        });
+        exportReportBtn.addEventListener('click', exportReport);
+
+        // Inicializar sistema
+        async function initializeSystem() {
+            try {
+                addLog('🔧 Inicializando sistema para optimización...', 'log-optimization');
+                
+                // Inicializar componentes
+                state = new State();
+                sceneManager = new SceneManager();
+                inputManager = new InputManager();
+                
+                // Registrar escenas
+                const bootScene = new BootScene();
+                const menuScene = new MenuScene();
+                
+                sceneManager.addScene('boot', bootScene);
+                sceneManager.addScene('menu', menuScene);
+                
+                // Configurar contenedor
+                const container = document.createElement('div');
+                container.style.display = 'none';
+                document.body.appendChild(container);
+                sceneManager.setSceneContainer(container);
+                
+                // Event listeners del sistema
+                eventBus.on('systemError', (data) => {
+                    addLog(`❌ Error del sistema: ${data.error}`, 'log-error');
+                });
+                
+                // Inicializar escenas
+                sceneManager.initializeScenes();
+                
+                // Medir memoria inicial
+                const initialMemory = measureMemory();
+                if (initialMemory) {
+                    initialMemoryResult.textContent = `${Math.round(initialMemory.used)} MB`;
+                    peakMemoryResult.textContent = `${Math.round(initialMemory.used)} MB`;
+                }
+                
+                addLog('✅ Sistema inicializado para optimización', 'log-optimization');
+                
+                // Medir tiempo de carga inicial
+                setTimeout(() => {
+                    measureLoadTime();
+                }, 1000);
+                
+            } catch (error) {
+                addLog(`❌ Error al inicializar: ${error.message}`, 'log-error');
+                console.error('Error en inicialización:', error);
+            }
+        }
+
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            addLog('📋 DOM cargado, preparando optimización...', 'log-optimization');
+            initializeSystem();
+        });
+
+        // Monitorear errores globales
+        window.addEventListener('error', (event) => {
+            addLog(`❌ Error global: ${event.error.message}`, 'log-error');
+        });
+
+        window.addEventListener('unhandledrejection', (event) => {
+            addLog(`❌ Promise rechazada: ${event.reason}`, 'log-error');
+        });
+    </script>
+</body>
+</html>

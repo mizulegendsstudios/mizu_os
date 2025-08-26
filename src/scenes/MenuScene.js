@@ -1,129 +1,317 @@
-/**
- * MenuScene - Escena del menú principal del sistema
- * Implementa navegación por flechas y botones duales (positivo/negativo)
- */
 import eventBus from '../core/EventBus.js';
-import MenuLogic from './MenuLogic.js';
+import UIManager from '../ui/UIManager.js';
 
+/**
+ * MenuScene - Escena del menú principal con UI interactiva
+ * Responsabilidad: Mostrar menú principal con botones y cursor
+ */
 class MenuScene {
-  constructor() {
-    this.name = 'menu';
-    this.container = null;
-    this.logic = new MenuLogic();
-    
-    this.initializeEventListeners();
-  }
-
-  /**
-   * Inicializa los listeners de eventos de la escena
-   */
-  initializeEventListeners() {
-    eventBus.on('navigate', (data) => this.logic.handleNavigation(data.direction));
-    eventBus.on('action', (data) => this.logic.handleAction(data.type));
-    eventBus.on('sceneChanged', (data) => {
-      if (data.to === 'menu') this.logic.onSceneActivated();
-    });
-  }
-
-  /**
-   * Inicializa la escena
-   */
-  initialize() {
-    console.log('MenuScene inicializada');
-  }
-
-  /**
-   * Crea la interfaz de usuario de la escena
-   */
-  createUI() {
-    if (!this.container) return;
-
-    this.container.innerHTML = this.generateHTML();
-    this.addMenuEventListeners();
-  }
-
-  /**
-   * Genera el HTML del menú
-   */
-  generateHTML() {
-    const menuItems = this.logic.getMenuItems();
-    return `
-      <div class="menu-scene">
-        <div class="menu-header">
-          <h1 class="menu-title">Mizu OS</h1>
-          <p class="menu-subtitle">Sistema Operativo en la Nube</p>
-        </div>
+    constructor() {
+        this.name = 'menu';
+        this.container = null;
+        this.uiManager = null;
+        this.isActive = false;
         
-        <div class="menu-container">
-          <div class="menu-items" id="menu-items">
-            ${menuItems.map((item, index) => `
-              <div class="menu-item ${index === 0 ? 'selected' : ''}" 
-                   data-index="${index}" 
-                   data-action="${item.action}">
-                <span class="menu-icon">${item.icon}</span>
-                <span class="menu-name">${item.name}</span>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-        
-        <div class="menu-controls">
-          <div class="control-hint">
-            <span class="control-key">↑↓</span> Navegar
-          </div>
-          <div class="control-hint">
-            <span class="control-key">Enter</span> Seleccionar
-          </div>
-          <div class="control-hint">
-            <span class="control-key">Esc</span> Volver
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  /**
-   * Agrega event listeners a los elementos del menú
-   */
-  addMenuEventListeners() {
-    const menuItems = document.querySelectorAll('.menu-item');
-    menuItems.forEach((item, index) => {
-      item.addEventListener('click', () => {
-        this.logic.selectedIndex = index;
-        this.logic.updateSelection();
-        this.logic.executeSelectedItem();
-      });
-    });
-  }
-
-  /**
-   * Activa la escena
-   */
-  activate(data) {
-    console.log('MenuScene activada');
-    this.logic.setActive(true);
-    this.createUI();
-    this.logic.selectedIndex = 0;
-    this.logic.updateSelection();
-  }
-
-  /**
-   * Desactiva la escena
-   */
-  deactivate() {
-    console.log('MenuScene desactivada');
-    this.logic.setActive(false);
-    if (this.container) {
-      this.container.innerHTML = '';
+        this.menuItems = [
+            {
+                text: 'Entrar al Sistema',
+                action: 'ENTER_SYSTEM',
+                onClick: () => {
+                    eventBus.emit('changeScene', { scene: 'desktop' });
+                }
+            },
+            {
+                text: 'Configuración',
+                action: 'OPEN_SETTINGS',
+                onClick: () => {
+                    eventBus.emit('changeScene', { scene: 'settings' });
+                }
+            },
+            {
+                text: 'Información del Sistema',
+                action: 'SHOW_SYSTEM_INFO',
+                onClick: () => {
+                    this.showSystemInfo();
+                }
+            },
+            {
+                text: 'Salir',
+                action: 'EXIT_SYSTEM',
+                onClick: () => {
+                    this.exitSystem();
+                }
+            }
+        ];
     }
-  }
 
-  /**
-   * Establece el contenedor de la escena
-   */
-  setContainer(container) {
-    this.container = container;
-  }
+    activate(container) {
+        this.container = container;
+        this.isActive = true;
+        
+        this.render();
+        this.setupEventListeners();
+        
+        // Emitir evento de activación
+        eventBus.emit('menuActivated', { scene: this });
+    }
+
+    deactivate() {
+        this.isActive = false;
+        this.cleanup();
+        
+        // Emitir evento de desactivación
+        eventBus.emit('menuDeactivated', { scene: this });
+    }
+
+    render() {
+        if (!this.container) return;
+        
+        // Limpiar contenedor
+        this.container.innerHTML = '';
+        
+        // Crear fondo del menú
+        this.createMenuBackground();
+        
+        // Crear UIManager para esta escena
+        this.uiManager = new UIManager({
+            container: this.container,
+            cursorSize: 24,
+            cursorSpeed: 8
+        });
+        
+        // Crear elementos del menú
+        this.createMenuElements();
+        
+        // Aplicar estilos
+        this.applyMenuStyles();
+    }
+
+    createMenuBackground() {
+        const background = document.createElement('div');
+        background.className = 'menu-background';
+        background.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        `;
+        
+        this.container.appendChild(background);
+    }
+
+    createMenuElements() {
+        const menuContainer = document.createElement('div');
+        menuContainer.className = 'menu-container';
+        menuContainer.style.cssText = `
+            text-align: center;
+            color: #00e5ff;
+            font-family: Arial, sans-serif;
+            position: relative;
+            z-index: 20;
+        `;
+        
+        // Título del menú
+        const title = document.createElement('h1');
+        title.textContent = 'MIZU OS';
+        title.style.cssText = `
+            font-size: 48px;
+            margin-bottom: 50px;
+            text-shadow: 0 0 20px rgba(0, 229, 255, 0.8);
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        `;
+        
+        menuContainer.appendChild(title);
+        
+        // Crear botones del menú usando UIManager
+        const buttons = this.uiManager.createMenuButtons(this.menuItems, {
+            y: 250,
+            spacing: 25
+        });
+        
+        // Crear HUD del menú
+        this.createMenuHUD();
+    }
+
+    createMenuHUD() {
+        // Crear información de controles
+        const controlsInfo = this.uiManager.createHUDElement('menu-controls-info', {
+            style: {
+                position: 'absolute',
+                bottom: '20px',
+                left: '20px',
+                color: '#00e5ff',
+                fontFamily: 'Arial, sans-serif',
+                fontSize: '12px',
+                zIndex: '30'
+            },
+            content: `
+                <div>🔼🔽 Navegar | ⏎ Seleccionar | ESC Salir</div>
+            `
+        });
+        
+        // Crear información de versión
+        const versionInfo = this.uiManager.createHUDElement('menu-version-info', {
+            style: {
+                position: 'absolute',
+                bottom: '20px',
+                right: '20px',
+                color: '#00e5ff',
+                fontFamily: 'Arial, sans-serif',
+                fontSize: '12px',
+                zIndex: '30'
+            },
+            content: `
+                <div>Mizu OS v0.7.2</div>
+            `
+        });
+    }
+
+    applyMenuStyles() {
+        if (document.getElementById('menu-scene-styles')) return;
+        
+        const style = document.createElement('style');
+        style.id = 'menu-scene-styles';
+        style.textContent = `
+            @keyframes titleGlow {
+                0% { text-shadow: 0 0 20px rgba(0, 229, 255, 0.8); }
+                100% { text-shadow: 0 0 30px rgba(0, 229, 255, 1), 0 0 40px rgba(0, 229, 255, 0.5); }
+            }
+        `;
+        
+        document.head.appendChild(style);
+    }
+
+    showSystemInfo() {
+        // Crear modal de información del sistema
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        `;
+        
+        const content = document.createElement('div');
+        content.style.cssText = `
+            background: rgba(15, 15, 35, 0.95);
+            border: 2px solid #00e5ff;
+            border-radius: 10px;
+            padding: 30px;
+            color: #00e5ff;
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            text-align: center;
+        `;
+        
+        content.innerHTML = `
+            <h2>Información del Sistema</h2>
+            <p><strong>Versión:</strong> Mizu OS 0.7.2</p>
+            <p><strong>Arquitectura:</strong> Cloud OS</p>
+            <p><strong>Motor:</strong> Vanilla JavaScript</p>
+            <p><strong>Navegador:</strong> ${navigator.userAgent}</p>
+            <p><strong>Resolución:</strong> ${window.innerWidth}x${window.innerHeight}</p>
+            <br>
+            <button id="close-system-info" style="
+                background: rgba(0, 229, 255, 0.2);
+                border: 1px solid #00e5ff;
+                color: #00e5ff;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-family: Arial, sans-serif;
+            ">Cerrar</button>
+        `;
+        
+        modal.appendChild(content);
+        document.body.appendChild(modal);
+        
+        // Event listener para cerrar
+        document.getElementById('close-system-info').addEventListener('click', () => {
+            document.body.removeChild(modal);
+        });
+        
+        // Cerrar con ESC
+        const closeModal = () => {
+            if (document.body.contains(modal)) {
+                document.body.removeChild(modal);
+            }
+            document.removeEventListener('keydown', handleKeydown);
+        };
+        
+        const handleKeydown = (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        };
+        
+        document.addEventListener('keydown', handleKeydown);
+    }
+
+    exitSystem() {
+        if (confirm('¿Estás seguro de que quieres salir del sistema?')) {
+            eventBus.emit('systemExit', { reason: 'user_request' });
+            window.close();
+        }
+    }
+
+    setupEventListeners() {
+        // Escuchar eventos de UI
+        eventBus.on('uiButtonClick', (data) => {
+            this.handleUIButtonClick(data);
+        });
+        
+        // Escuchar eventos del sistema
+        eventBus.on('systemExit', (data) => {
+            console.log('Sistema saliendo:', data);
+        });
+    }
+
+    handleUIButtonClick(data) {
+        const { action } = data;
+        
+        switch (action) {
+            case 'ENTER_SYSTEM':
+                eventBus.emit('changeScene', { scene: 'desktop' });
+                break;
+            case 'OPEN_SETTINGS':
+                eventBus.emit('changeScene', { scene: 'settings' });
+                break;
+            case 'SHOW_SYSTEM_INFO':
+                this.showSystemInfo();
+                break;
+            case 'EXIT_SYSTEM':
+                this.exitSystem();
+                break;
+        }
+    }
+
+    cleanup() {
+        // Limpiar event listeners
+        eventBus.off('uiButtonClick');
+        eventBus.off('systemExit');
+        
+        // Destruir UIManager
+        if (this.uiManager) {
+            this.uiManager.destroy();
+            this.uiManager = null;
+        }
+        
+        // Limpiar contenedor
+        if (this.container) {
+            this.container.innerHTML = '';
+        }
+    }
 }
 
 export default MenuScene;

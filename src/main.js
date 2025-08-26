@@ -8,6 +8,7 @@ import State from './core/State.js';
 import InputManager from './core/InputManager.js';
 import BootScene from './scenes/BootScene.js';
 import MenuScene from './scenes/MenuScene.js';
+import DesktopScene from './scenes/DesktopScene.js';
 
 /**
  * Clase principal del sistema
@@ -75,6 +76,10 @@ class MizuOS {
     // Escena del menú principal
     const menuScene = new MenuScene();
     this.sceneManager.addScene('menu', menuScene);
+    
+    // Escena del escritorio
+    const desktopScene = new DesktopScene();
+    this.sceneManager.addScene('desktop', desktopScene);
     
     console.log('📱 Escenas registradas:', this.sceneManager.getAllScenes());
   }

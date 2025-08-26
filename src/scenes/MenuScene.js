@@ -2,6 +2,7 @@ import eventBus from '../core/EventBus.js';
 import UIManager from '../ui/UIManager.js';
 import CanvasButton from '../entities/CanvasButton.js';
 import CanvasCursor from '../entities/CanvasCursor.js';
+import UIManagerCanvas from '../ui/UIManagerCanvas.js';
 
 /**
  * MenuScene - Escena del menú principal con UI interactiva
@@ -136,7 +137,7 @@ class MenuScene {
         });
         
         // UI canvas con UIManagerCanvas
-        const ui = new (await import('../ui/UIManagerCanvas.js')).default(menuContainer, { width: 420, height: 180 });
+        const ui = new UIManagerCanvas(menuContainer, { width: 420, height: 180 });
         ui.mount(20, 120);
         ui.createButtons([
             { x: 20, y: 20, width: 200, height: 40, label: 'Iniciar', onSelect: () => {

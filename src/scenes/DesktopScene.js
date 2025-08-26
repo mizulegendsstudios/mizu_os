@@ -115,6 +115,12 @@ class DesktopScene {
         // Crear HUD del escritorio
         this.createDesktopHUD();
         
+        // Asegurar montaje visual del escritorio
+        const bg = this.container.querySelector('.desktop-background');
+        if (bg) {
+            // Nada: los elementos ya fueron insertados en container
+        }
+        
         // Seleccionar primer icono
         this.selectIcon(0);
     }

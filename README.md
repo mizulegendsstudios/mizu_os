@@ -6,6 +6,66 @@ WebOS — Interfaz de Escritorio Virtual que ofrece un entorno unificado para ac
 
 ---
 
+## 🚀 Ejecutar en local (Vite)
+
+Requisitos: Node 18+
+
+```bash
+npm install
+npm run dev
+```
+
+- Abre la URL que indica Vite (por defecto `http://localhost:5173`)
+- Build: `npm run build`
+- Preview: `npm run preview`
+
+Estructura de escenas activa: Boot → Menu → Desktop (seleccionable desde el menú)
+
+Controles:
+- Flechas: navegar (↑ ↓ ← →)
+- Enter: acción positiva (seleccionar/entrar)
+- Escape: acción negativa (volver/salir)
+
+---
+
+## 🧪 Páginas de prueba incluidas
+
+- `ui-test.html`: prueba de UI (botones, cursor, navegación y escenas)
+- `stress-test.html`: estrés de 100 evt/s, cambios rápidos de escena, memoria
+- `optimization-test.html`: métricas de FPS, memoria y tiempo de carga
+
+Abrirlas con Vite en:
+- `http://localhost:5173/ui-test.html`
+- `http://localhost:5173/stress-test.html`
+- `http://localhost:5173/optimization-test.html`
+
+---
+
+## 🧩 Arquitectura actual (0.7.2)
+
+- `src/core/`: `EventBus`, `SceneManager`, `State`, `InputManager`
+- `src/scenes/`: `BootScene`, `MenuScene`, `DesktopScene`
+- `src/ui/`: `UIManager`
+- `src/entities/`: `Button`, `Cursor`
+- `src/assets/`: estilos de escenas
+
+Regla de oro: cada archivo ≤ 200 líneas (si crece, se divide).
+
+---
+
+## 🆘 Troubleshooting (pantalla negra)
+
+Si ves solo “cargando…” y luego pantalla negra:
+- Revisa la consola: no debe haber errores.
+- Asegura que `MenuScene` adjunta su contenedor visual (corregido en 0.7.2).
+- Verifica que `src/main.js` registre las escenas `boot`, `menu`, `desktop`.
+- Limpia caché/Hard Reload si estás en GitHub Pages.
+- En móvil, prueba `ui-test.html` para verificar InputManager/UI.
+
+Si persiste, abre un issue con: navegador, SO, logs de consola y pasos.
+
+---
+
 ## 📦 Contrato de una App Modular en Mizu OS
 
 Para que una app sea compatible con Mizu OS debe cumplir con:
@@ -45,84 +105,30 @@ Para que una app sea compatible con Mizu OS debe cumplir con:
 
 ## 🛸 Características actuales
 
-- **Pantalla de carga animada** con barra de progreso y fondo estrellado
-- **Modo standby** con hora y fecha en tiempo real
-- **Escritorio interactivo** con iconos arrastrables y reordenables
-- **Ventana flotante de aplicación** con efecto glassmorphism
-- **Ventana única con modos normal, maximizado y pantalla completa**
-- **Sistema modular de apps externas**: apps como Mizu Notes y Mizu Speech se cargan dinámicamente, con estilos y lógica aislados
-- **Transiciones suaves** entre pantallas
-- **Diseño responsive** y adaptable a distintos tamaños de pantalla
+- Carga/boot con transición a menú
+- Menú con navegación por flechas, cursor y botones
+- Escritorio básico con iconos navegables y evento `APP_LAUNCH`
+- Páginas de test de rendimiento y UI
 
 ## 🚀 Tecnologías utilizadas
 
-- **HTML5** para la estructura
-- **CSS3** con efectos de `backdrop-filter`, `box-shadow`, `border-radius` y animaciones
-- **JavaScript** para la lógica de navegación, interacción y drag & drop
-- **Sin frameworks**: todo el código es puro y fácilmente extensible
-
-## 🚀 Prueba Mizu OS online
-
-- Solo entra a: [https://mizulegendsstudios.github.io/mizu_os/](https://mizulegendsstudios.github.io/mizu_os/)
-- ¡No necesitas instalar nada!
-
-## 📦 Uso local (opcional)
-
-- Descarga o clona el repositorio.
-- Abre el archivo `index.html` en tu navegador.
-- ¡Listo! Puedes interactuar con el sistema sin instalar dependencias.
-
----
-
-## 🛠️ Planes futuros
-
-Este proyecto está en constante evolución. Aquí algunos desarrollos planeados:
-
-### 🔧 Funcionalidades
-
-- **Persistencia de escritorio**: guardar la posición de los iconos con `localStorage`
-- **Multiventanas**: permitir abrir varias apps simultáneamente con gestión de capas
-- **Sistema de notificaciones**: mensajes emergentes en la barra superior
-- **Modo oscuro/claro**: alternancia de temas visuales
-- **Soporte táctil completo**: optimización para dispositivos móviles
-
-### 🎨 Diseño
-
-- **Fondos dinámicos**: cambiar el wallpaper según la hora del día o el clima
-- **Animaciones avanzadas**: integración con librerías como GSAP para transiciones más fluidas
-- **Iconos personalizados**: SVGs temáticos para cada aplicación
-
-### 📱 PWA (Progressive Web App)
-
-- Convertir el sistema en una app instalable desde el navegador
-- Soporte offline y caché inteligente
-- Integración con notificaciones push
-
-### 🧠 Inteligencia simulada
-
-- Asistente virtual integrado
-- Simulación de tareas automatizadas (calendario, recordatorios, etc.)
+- Vanilla JS (sin frameworks)
+- Vite para desarrollo y build
+- HTML/CSS
 
 ## 🤝 Contribuciones
 
-¡Toda idea, sugerencia o mejora es bienvenida! Puedes abrir un issue o enviar un pull request si deseas colaborar.
+¡Toda idea, sugerencia o mejora es bienvenida! Abre un issue o PR.
 
 ---
 
-**Licencia:** AGPL
+**Licencia:** MIT
 
 **Autor:** Moises Nuñez
 
 ## 🧭 Versionado
 
-Este repositorio sigue SemVer. Versión actual: `0.7.1`.
-
+Versión actual: `0.7.2`.
+- `0.7.2`: arquitectura por escenas, UI interactiva, DesktopScene básica, páginas de prueba.
 - `0.7.1`: correciones de compatibilidad y documentación.
 - `0.7.0`: sistema modular de apps externas (notes, speech) con carga dinámica y sin conflictos.
-- `0.6.0`: refactor a ventana única con modos normal, maximizado y pantalla completa; iconos solo se ocultan en fullscreen; mejoras de UX y robustez.
-- `0.5.0`: mejoras en el head, optimización del fondo de pantalla, optimización de los div.
-- `0.4.0`: identificación por app y títulos dinámicos (“App N Maximizada” / “App N Modo Pantalla Completa”); navegación coherente entre maximizado y pantalla completa; escritorio con 8 iconos.
-- `0.3.1`: fecha/hora locales del dispositivo; “Salir de full screen” vuelve a modo maximizado; escritorio con 8 iconos.
-- `0.3.0`: hora local, sombra en reloj, clic en pantalla de standby en cualquier lugar.
-- `0.2.0`: reestructuración del proyecto, separación CSS/JS, linters, corrección de assets.
-- `0.1.0`: versión inicial.

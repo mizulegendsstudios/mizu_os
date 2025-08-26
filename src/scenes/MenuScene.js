@@ -135,6 +135,10 @@ class MenuScene {
         
         // Crear HUD del menú
         this.createMenuHUD();
+
+        // Adjuntar contenedor visual del menú
+        const background = this.container.querySelector('.menu-background');
+        (background || this.container).appendChild(menuContainer);
     }
 
     createMenuHUD() {

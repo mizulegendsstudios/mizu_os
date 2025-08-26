@@ -8,7 +8,7 @@ import State from './core/State.js';
 import InputManager from './core/InputManager.js';
 import BootScene from './scenes/BootScene.js';
 import MenuScene from './scenes/MenuScene.js';
-import DesktopScene from './scenes/DesktopScene.js';
+import DesktopScene from './scenes/DesktopSceneLite.js';
 
 /**
  * Clase principal del sistema

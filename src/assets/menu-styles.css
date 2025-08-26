@@ -1,100 +1,189 @@
-/* Estilos para MenuScene */
+/* ===== Estilos para MenuScene (Mejorado) ===== */
+/* Contenedor principal: Gradiente mejorado + centrado robusto */
 .menu-scene {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+  background: linear-gradient(135deg, #0a0a1a 0%, #0f0f23 50%, #16213e 100%);
   color: #00e5ff;
   font-family: 'Helvetica Neue', sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
 }
 
+/* Encabezado del menú: Espaciado y alineación mejorados */
 .menu-header {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 50px;
+  animation: fadeIn 0.8s ease-out;
 }
 
+/* Título principal: Efecto de brillo + sombra mejorada */
 .menu-title {
   font-size: 48px;
   margin: 0;
-  text-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
-  animation: titleGlow 2s ease-in-out infinite alternate;
+  text-shadow:
+    0 0 10px rgba(0, 229, 255, 0.6),
+    0 0 20px rgba(0, 229, 255, 0.3);
+  animation: titleGlow 3s ease-in-out infinite alternate;
+  letter-spacing: 2px;
+  background: linear-gradient(90deg, #00e5ff, #00b4d8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transform: translateZ(0); /* Aceleración por hardware */
 }
 
+/* Subtítulo: Legibilidad mejorada */
 .menu-subtitle {
-  font-size: 18px;
-  opacity: 0.7;
-  margin: 10px 0 0 0;
+  font-size: 16px;
+  opacity: 0.8;
+  margin: 12px 0 0 0;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 0 5px rgba(0, 229, 255, 0.2);
 }
 
+/* Contenedor de items: Espaciado ajustado */
 .menu-container {
-  margin-bottom: 60px;
+  margin-bottom: 40px;
+  width: 100%;
+  max-width: 400px;
 }
 
+/* Lista de items: Gap mejorado y animación */
 .menu-items {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
+  width: 100%;
 }
 
+/* Item del menú: Efectos visuales mejorados */
 .menu-item {
   display: flex;
   align-items: center;
-  padding: 15px 25px;
-  background: rgba(0, 229, 255, 0.1);
-  border: 2px solid transparent;
-  border-radius: 10px;
+  padding: 12px 20px;
+  background: rgba(0, 229, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 250px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 220px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.menu-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(to bottom, #00e5ff, #0099ff);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .menu-item:hover {
-  background: rgba(0, 229, 255, 0.2);
-  border-color: rgba(0, 229, 255, 0.3);
+  background: rgba(0, 229, 255, 0.15);
+  border-color: rgba(0, 229, 255, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 229, 255, 0.1);
+}
+
+.menu-item:hover::before {
+  opacity: 1;
 }
 
 .menu-item.selected {
-  background: rgba(0, 229, 255, 0.3);
+  background: rgba(0, 229, 255, 0.25);
   border-color: #00e5ff;
-  box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.3);
+  transform: translateY(-1px);
 }
 
+.menu-item.selected::before {
+  opacity: 1;
+}
+
+/* Icono del menú: Alineación y tamaño */
 .menu-icon {
-  font-size: 24px;
-  margin-right: 15px;
-  width: 30px;
+  font-size: 20px;
+  margin-right: 12px;
+  width: 24px;
   text-align: center;
+  color: #00e5ff;
+  transition: transform 0.2s ease;
 }
 
+.menu-item:hover .menu-icon,
+.menu-item.selected .menu-icon {
+  transform: scale(1.1);
+}
+
+/* Nombre del item: Tipografía mejorada */
 .menu-name {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
 }
 
+/* Controles: Diseño más claro */
 .menu-controls {
   display: flex;
-  gap: 30px;
-  opacity: 0.6;
+  gap: 25px;
+  opacity: 0.8;
+  margin-top: 20px;
+  justify-content: center;
 }
 
+/* Pista de control: Estilo mejorado */
 .control-hint {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
 }
 
+/* Tecla de control: Diseño tipo "tecla física" */
 .control-key {
-  background: rgba(0, 229, 255, 0.2);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-family: monospace;
+  background: rgba(0, 229, 255, 0.15);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-family: 'Courier New', monospace;
   font-weight: bold;
+  color: #00e5ff;
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
+/* Animaciones mejoradas */
 @keyframes titleGlow {
-  from { text-shadow: 0 0 20px rgba(0, 229, 255, 0.5); }
-  to { text-shadow: 0 0 30px rgba(0, 229, 255, 0.8); }
+  0% {
+    text-shadow: 0 0 10px rgba(0, 229, 255, 0.6), 0 0 20px rgba(0, 229, 255, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 15px rgba(0, 229, 255, 0.8), 0 0 25px rgba(0, 229, 255, 0.4);
+  }
+  100% {
+    text-shadow: 0 0 10px rgba(0, 229, 255, 0.6), 0 0 20px rgba(0, 229, 255, 0.3);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Efecto de focus para accesibilidad */
+.menu-item:focus-visible {
+  outline: 2px solid #00e5ff;
+  outline-offset: 2px;
 }

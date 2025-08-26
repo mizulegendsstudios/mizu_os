@@ -20,8 +20,7 @@ export default class UIManagerCanvas {
     this.cursor = new CanvasCursor();
     this._raf = 0;
   }
-
-  mount(x = 0, y = 0) {
+mount(x = 0, y = 0) {
     // Limpiar cualquier contenido previo
     this.container.innerHTML = '';
 
@@ -29,15 +28,23 @@ export default class UIManagerCanvas {
     this.canvas = document.createElement('canvas');
     this.canvas.width = this.width;
     this.canvas.height = this.height;
-    this.canvas.style.cssText = `position:absolute; left:${x}px; top:${y}px; width:${this.width}px; height:${this.height}px; z-index:1;`;
+    this.canvas.style.cssText = `
+        position: absolute; 
+        left: ${x}px; 
+        top: ${y}px; 
+        width: ${this.width}px; 
+        height: ${this.height}px; 
+        z-index: 99999;  // AUMENTADO A 99999 PARA QUE ESTÉ SIEMPRE ARRIBA
+        pointer-events: none; /* Permite clics a través del canvas */
+    `;
+    
     this.container.appendChild(this.canvas);
-
     this.ctx = this.canvas.getContext('2d');
     this._bindPointerEvents();
     this._bindCursorSelect();
     this._loop();
     return this.canvas;
-  }
+}
 
   _bindPointerEvents() {
     const c = this.canvas;

@@ -12,7 +12,7 @@ class BootScene {
     this.assets = new Map();
     this.loadingProgress = 0;
     this.isLoaded = false;
-    this.hasEmittedComplete = false;  // 🔥 BANDERA PARA EVITAR DUPLICADOS
+    this.hasEmittedComplete = false;
     this.currentStatus = 'Iniciando sistema...';
     
     this.initializeEventListeners();
@@ -36,14 +36,19 @@ class BootScene {
    */
   initialize() {
     console.log('BootScene inicializada');
-    this.startLoading();
+    // 🔥 NO iniciar loading hasta que uiManager esté listo
+    // El loading se inicia en activate()
   }
 
   /**
    * Renderiza la escena de boot
    */
   render() {
-    if (!this.uiManager.ctx) return;
+    // 🔥 VERIFICAR que uiManager y ctx existan antes de usar
+    if (!this.uiManager || !this.uiManager.ctx) {
+      console.warn('uiManager no está listo para renderizar');
+      return;
+    }
 
     const ctx = this.uiManager.ctx;
     const width = this.uiManager.canvas.width;
@@ -89,7 +94,7 @@ class BootScene {
    */
   startLoading() {
     this.currentStatus = 'Iniciando sistema...';
-    this.render();
+    this.render(); // 🔥 AHORA uiManager debería estar listo
     
     const loadingSteps = [
       { progress: 10, status: 'Inicializando núcleo...' },
@@ -138,7 +143,6 @@ class BootScene {
    * Se ejecuta cuando la carga está completa
    */
   onLoadingComplete() {
-    // 🔥 EVITAR DUPLICADOS - SOLO EJECUTAR UNA VEZ
     if (this.hasEmittedComplete) return;
     this.hasEmittedComplete = true;
     
@@ -147,13 +151,11 @@ class BootScene {
     console.log('BootScene completa, cambiando a MenuScene');
     
     setTimeout(() => {
-      // Ocultar indicador de carga del index.html
       const loadingIndicator = document.getElementById('loading-indicator');
       if (loadingIndicator) {
         loadingIndicator.style.display = 'none';
       }
       
-      // 🔥 EMITIR EVENTO PARA SCENEMANAGER (SOLO UNA VEZ)
       eventBus.emit('stateChanged', { to: 'menu' });
     }, 500);
   }
@@ -170,8 +172,10 @@ class BootScene {
    */
   activate() {
     console.log('BootScene activada');
+    // 🔥 INICIALIZAR uiManager PRIMERO
     this.uiManager = new UIManagerCanvas();
     this.uiManager.mount(0, 0);
+    // 🔥 AHORA iniciar loading
     this.startLoading();
   }
 
@@ -184,7 +188,6 @@ class BootScene {
       this.uiManager.destroy();
       this.uiManager = null;
     }
-    // 🔥 RESETEAR BANDERA AL DESACTIVAR
     this.hasEmittedComplete = false;
   }
 

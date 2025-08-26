@@ -3,10 +3,17 @@ import CanvasButton from '../entities/CanvasButton.js';
 import CanvasCursor from '../entities/CanvasCursor.js';
 
 export default class UIManagerCanvas {
-  constructor(container, opts = {}) {
-    this.container = container || document.body;
-    this.width = opts.width || 480;
-    this.height = opts.height || 240;
+  constructor(containerOrId, opts = {}) {
+    const fallback = document.getElementById('scene-container') || document.body;
+    if (typeof containerOrId === 'string') {
+      this.container = document.getElementById(containerOrId) || fallback;
+    } else if (containerOrId instanceof HTMLElement) {
+      this.container = containerOrId;
+    } else {
+      this.container = fallback;
+    }
+    this.width = opts.width || (this.container.clientWidth || window.innerWidth);
+    this.height = opts.height || (this.container.clientHeight || window.innerHeight);
     this.canvas = null;
     this.ctx = null;
     this.buttons = [];
@@ -15,11 +22,16 @@ export default class UIManagerCanvas {
   }
 
   mount(x = 0, y = 0) {
+    // Limpiar cualquier contenido previo
+    this.container.innerHTML = '';
+
+    // Crear canvas y ajustarlo al contenedor/viewport
     this.canvas = document.createElement('canvas');
     this.canvas.width = this.width;
     this.canvas.height = this.height;
-    this.canvas.style.cssText = `position:absolute; left:${x}px; top:${y}px; z-index:10; border:1px solid rgba(0,229,255,0.2)`;
+    this.canvas.style.cssText = `position:absolute; left:${x}px; top:${y}px; width:${this.width}px; height:${this.height}px; z-index:1;`;
     this.container.appendChild(this.canvas);
+
     this.ctx = this.canvas.getContext('2d');
     this._bindPointerEvents();
     this._bindCursorSelect();

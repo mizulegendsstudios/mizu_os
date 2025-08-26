@@ -139,15 +139,15 @@ class MenuScene {
         });
         
         // UI canvas con UIManagerCanvas
-        const ui = new UIManagerCanvas(menuContainer, { width: 420, height: 180 });
-        ui.mount(20, 120);
+        const ui = new UIManagerCanvas('scene-container');
+        ui.mount(0, 0);
         ui.createButtons([
-            { x: 20, y: 20, width: 200, height: 40, label: 'Iniciar', onSelect: () => {
+            { x: 40, y: 280, width: 240, height: 48, label: 'Iniciar', onSelect: () => {
                 eventBus.emit('scene:load', 'desktop');
                 eventBus.emit('changeScene', { scene: 'desktop' });
             }},
-            { x: 20, y: 70, width: 200, height: 40, label: 'Opciones', onSelect: () => console.log('Opciones') },
-            { x: 20, y: 120, width: 200, height: 40, label: 'Salir', onSelect: () => eventBus.emit('systemExit', { reason: 'user_request' }) }
+            { x: 40, y: 340, width: 240, height: 48, label: 'Opciones', onSelect: () => console.log('Opciones') },
+            { x: 40, y: 400, width: 240, height: 48, label: 'Salir', onSelect: () => eventBus.emit('systemExit', { reason: 'user_request' }) }
         ]);
 
         

@@ -1,7 +1,12 @@
-/* Estilos principales extraídos de index.html y normalizados */
+/* ============================================= */
+/* RESET Y ESTILOS GLOBALES (Optimizados)        */
+/* ============================================= */
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
+
 body {
   margin: 0;
   font-family: 'Helvetica Neue', sans-serif;
@@ -9,195 +14,426 @@ body {
   background-image: url('https://github.com/mizulegendsstudios/mizu_os/raw/refs/heads/main/assets/tapiz0.webp');
   background-size: cover;
   background-position: center;
-  background-attachment: fixed; /* opcional: evita scroll del fondo */
+  background-attachment: fixed;
   overflow: hidden;
-visibility: visible;
+  visibility: visible;
+  min-height: 100vh;
+  min-width: 100vw;
+  color: #fff;
 }
 
+/* ============================================= */
+/* SISTEMA DE SLIDES (Transiciones mejoradas)   */
+/* ============================================= */
 .slide {
   display: none;
-  position: absolute;
+  position: fixed; /* Cambiado de absolute a fixed para evitar issues con scroll */
   top: 0;
   left: 0;
   height: 100vh;
   width: 100vw;
   justify-content: center;
   align-items: center;
-  transition: opacity 0.5s ease;
-}
-.slide.active {
-  display: flex;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  opacity: 0;
+  visibility: hidden;
+  will-change: opacity, visibility; /* Optimización para animaciones */
 }
 
+.slide.active {
+  display: flex;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ============================================= */
+/* EFECTO GLASS MORPHISM (Mejorado)              */
+/* ============================================= */
 .glass {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(15, 15, 35, 0.4);
   backdrop-filter: blur(12px);
   border-radius: 20px;
   box-shadow: 0 0 30px rgba(0, 229, 255, 0.2);
   padding: 30px;
   text-align: center;
-  color: #fff;
+  border: 1px solid rgba(0, 229, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.3), rgba(26, 35, 126, 0.2));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ============================================= */
+/* PANTALLA DE CARGA (BootScene)                 */
+/* ============================================= */
 .logo {
   width: 100px;
   margin-bottom: 20px;
+  filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.7));
+  transition: filter 0.5s ease;
 }
 
 .barra-carga {
   width: 80%;
   height: 8px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   overflow: hidden;
-  margin: auto;
+  margin: 20px auto;
+  box-shadow: inset 0 0 5px rgba(0, 229, 255, 0.2);
 }
+
 .progreso {
   height: 100%;
   width: 0%;
   background: linear-gradient(90deg, #00e5ff, #1a237e);
   animation: cargar 2.5s forwards;
+  transition: width 0.3s ease;
 }
+
 @keyframes cargar {
-  to {
-    width: 100%;
-  }
+  to { width: 100%; }
 }
 
 .blink {
   font-size: 14px;
   margin-top: 10px;
   animation: blink 1.5s infinite;
-}
-@keyframes blink {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.3;
-  }
+  color: #00e5ff;
+  text-shadow: 0 0 5px rgba(0, 229, 255, 0.5);
 }
 
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ============================================= */
+/* PANTALLA STANDBY (Mejorada)                   */
+/* ============================================= */
 .standby-info {
   text-align: center;
-  color: #fff;
-  cursor: pointer;
-}
-.standby-info h1 {
-  font-size: 60px;
-  margin: 0;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
-}
-.standby-info p {
-  font-size: 20px;
-  opacity: 0.7;
-text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
-}
-
-/* Ocultar iconos por defecto */
-.iconos {
-  display: none;
-}
-/* Mostrar iconos en grid solo cuando el escritorio está activo */
-#escritorio.slide.active .iconos {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin: 0 auto;
-  max-width: 420px;
-}
-.icono {
-  width: 80px;
-  height: 80px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(5px);
-  border-radius: 20px;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 30px;
   cursor: pointer;
   transition: transform 0.3s ease;
 }
-.icono:hover {
-  transform: scale(1.1);
+
+.standby-info:hover {
+  transform: scale(1.02);
 }
 
-.slide#app-pantalla-completa ~ .iconos, .slide#app-pantalla-completa .iconos {
-  display: none !important;
+.standby-info h1 {
+  font-size: 60px;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0, 229, 255, 0.3);
+  background: linear-gradient(90deg, #00e5ff, #00b4d8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: titlePulse 3s ease-in-out infinite alternate;
 }
 
-.ventana {
+.standby-info p {
+  font-size: 20px;
+  opacity: 0.8;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  margin-top: 10px;
+}
+
+@keyframes titlePulse {
+  0% { text-shadow: 0 2px 10px rgba(0, 229, 255, 0.3); }
+  100% { text-shadow: 0 2px 20px rgba(0, 229, 255, 0.6); }
+}
+
+/* ============================================= */
+/* ESCRITORIO Y ICONOS (Grid mejorado)          */
+/* ============================================= */
+.iconos {
+  display: none;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 12px;
+  margin: 0 auto;
+  max-width: 90vw;
+  padding: 20px;
+  justify-content: center;
+}
+
+#escritorio.slide.active .iconos {
+  display: grid;
+}
+
+.icono {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(5px);
+  border-radius: 16px;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0, 229, 255, 0.1);
+}
+
+.icono::before {
+  content: "";
   position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(26, 35, 126, 0.1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.icono:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.icono:active {
+  transform: scale(0.98);
+}
+
+.icono .icon-label {
+  font-size: 10px;
+  margin-top: 5px;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============================================= */
+/* VENTANAS (Rediseño moderno)                   */
+/* ============================================= */
+.ventana {
+  position: fixed;
   min-width: 260px;
   min-height: 140px;
   width: 320px;
   height: 220px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(15, 15, 35, 0.6);
   backdrop-filter: blur(10px);
-  border-radius: 20px;
-  box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
   padding: 0;
   color: #fff;
   display: none;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(.4,2,.6,1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 10;
+  resize: both;
+  overflow: auto;
 }
-.ventana.maximizado {
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  border-radius: 0 !important;
-  box-shadow: 0 0 40px rgba(0, 229, 255, 0.4);
-}
+
+.ventana.maximizado,
 .ventana.fullscreen {
   top: 0 !important;
   left: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
   border-radius: 0 !important;
-  box-shadow: none;
-  background: rgba(20, 20, 30, 0.98);
-  z-index: 100;
 }
-.fullscreen ~ .iconos, .fullscreen ~ .iconos, .fullscreen .iconos {
-  display: none !important;
+
+.ventana.fullscreen {
+  box-shadow: none;
+  background: rgba(10, 10, 20, 0.95);
+  z-index: 100;
 }
 
 .ventana-max {
   width: 90%;
   height: 90%;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(15, 15, 35, 0.7);
   backdrop-filter: blur(15px);
-  border-radius: 20px;
-  box-shadow: 0 0 40px rgba(0, 229, 255, 0.4);
-  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.3);
+  padding: 20px;
   color: #fff;
   text-align: center;
 }
 
-button {
-  padding: 10px 20px;
-  border-radius: 10px;
-  border: none;
-  background: #00e5ff;
-  color: #000;
-  cursor: pointer;
-  margin-top: 20px;
+/* Barra superior de la ventana */
+.barra-ventana {
+  display: flex;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.2);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  padding: 8px 12px;
+  cursor: move;
+  user-select: none;
+  position: relative;
+  border-bottom: 1px solid rgba(0, 229, 255, 0.1);
 }
 
+.logo-barra {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  filter: drop-shadow(0 0 5px rgba(0, 229, 255, 0.5));
+}
+
+.titulo-barra {
+  flex: 1;
+  font-size: 0.9em;
+  font-weight: 500;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+}
+
+/* Controles de la ventana (cerrar, minimizar, maximizar) */
+.controles-barra {
+  display: flex;
+  gap: 6px;
+}
+
+.control-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.control-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(26, 35, 126, 0.1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.control-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.control-btn:active {
+  transform: scale(0.95);
+}
+
+.control-btn.close {
+  background: rgba(255, 80, 80, 0.2);
+}
+
+.control-btn.close:hover {
+  background: rgba(255, 80, 80, 0.4);
+}
+
+.control-btn.maximize {
+  background: rgba(80, 255, 80, 0.2);
+}
+
+.control-btn.maximize:hover {
+  background: rgba(80, 255, 80, 0.4);
+}
+
+.control-btn.minimize {
+  background: rgba(255, 255, 80, 0.2);
+}
+
+.control-btn.minimize:hover {
+  background: rgba(255, 255, 80, 0.4);
+}
+
+/* Contenido de la ventana */
+.contenido-ventana {
+  height: calc(100% - 36px);
+  padding: 15px;
+  overflow-y: auto;
+}
+
+/* Botones dentro de ventanas */
+button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(0, 229, 255, 0.2);
+  color: #fff;
+  cursor: pointer;
+  margin: 5px;
+  font-size: 0.9em;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0, 229, 255, 0.3);
+}
+
+button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.3), rgba(26, 35, 126, 0.2));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+button:hover {
+  background: rgba(0, 229, 255, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 229, 255, 0.2);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Ventana en pantalla completa */
 .ventana-completa {
   width: 100vw;
   height: 100vh;
-  background: rgba(20, 20, 30, 0.95);
+  background: rgba(10, 10, 20, 0.98);
   color: #fff;
   display: flex;
   flex-direction: column;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
 }
 
 .controles-ventana {
@@ -210,28 +446,6 @@ button {
   z-index: 10;
 }
 
-.control-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-}
-
-.control-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.5);
-  transform: scale(1.1);
-}
-
 .contenido-app {
   flex: 1;
   display: flex;
@@ -239,75 +453,42 @@ button {
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 80px 40px 40px;
+  padding: 60px 40px 40px;
 }
 
 .contenido-app h1 {
-  font-size: 48px;
-  margin-bottom: 30px;
+  font-size: 42px;
+  margin-bottom: 25px;
   font-weight: 300;
+  background: linear-gradient(90deg, #00e5ff, #00b4d8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 10px rgba(0, 229, 255, 0.3);
 }
 
 .contenido-app p {
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1.6;
   max-width: 600px;
   margin-bottom: 20px;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
-.barra-ventana {
-  display: flex;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.18);
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  padding: 10px 12px 10px 10px;
-  cursor: move;
-  user-select: none;
-  position: relative;
-}
-.logo-barra {
-  width: 28px;
-  height: 28px;
-  margin-right: 10px;
-}
-.titulo-barra {
-  flex: 1;
-  font-size: 1.1em;
-  font-weight: 500;
-  color: #fff;
-}
-.controles-barra {
-  display: flex;
-  gap: 6px;
-}
-#ventana-app .barra-ventana {
-  padding: 10px 12px 10px 10px;
-}
-#ventana-app .contenido-ventana {
-  padding: 16px 10px 10px 10px;
-}
-#ventana-app button {
-  background: rgba(0,229,255,0.15);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 10px;
-  cursor: pointer;
-  font-size: 1em;
-  margin: 0 2px;
-  transition: background 0.2s;
-}
-#ventana-app button:hover {
-  background: rgba(0,229,255,0.35);
-}
-
+/* ============================================= */
+/* MANEJADORES DE REDIMENSIONAMIENTO            */
+/* ============================================= */
 .resize-handle {
   position: absolute;
   z-index: 20;
-  background: transparent;
+  background: rgba(0, 229, 255, 0.2);
+  transition: background 0.2s;
 }
+
+.resize-handle:hover {
+  background: rgba(0, 229, 255, 0.4);
+}
+
 .resize-n { top: -4px; left: 10px; right: 10px; height: 8px; cursor: n-resize; }
 .resize-e { top: 10px; right: -4px; bottom: 10px; width: 8px; cursor: e-resize; }
 .resize-s { left: 10px; right: 10px; bottom: -4px; height: 8px; cursor: s-resize; }
@@ -317,20 +498,64 @@ button {
 .resize-sw { bottom: -4px; left: -4px; width: 12px; height: 12px; cursor: sw-resize; }
 .resize-se { bottom: -4px; right: -4px; width: 12px; height: 12px; cursor: se-resize; }
 
-.ventana-max .barra-ventana,
-.ventana-completa .barra-ventana {
-  border-radius: 20px 20px 0 0;
-  padding: 12px 18px;
-  font-size: 1.15em;
+/* ============================================= */
+/* RESPONSIVE (Ajustes para móviles)             */
+/* ============================================= */
+@media (max-width: 768px) {
+  .ventana {
+    width: 92vw;
+    left: 4vw !important;
+    min-width: 0;
+    border-radius: 12px;
+  }
+
+  .iconos {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 10px;
+  }
+
+  .icono {
+    width: 70px;
+    height: 70px;
+    font-size: 20px;
+  }
+
+  .barra-ventana {
+    padding: 6px 10px;
+  }
+
+  .titulo-barra {
+    font-size: 0.8em;
+  }
+
+  .control-btn {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
 }
-.ventana-max .contenido-ventana,
-.ventana-completa .contenido-ventana {
-  padding: 30px 20px 20px 20px;
-}
-@media (max-width: 600px) {
+
+@media (max-width: 480px) {
   .ventana {
     width: 96vw;
     left: 2vw !important;
-    min-width: 0;
+  }
+
+  .iconos {
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  }
+
+  .icono {
+    width: 60px;
+    height: 60px;
+    font-size: 18px;
+  }
+
+  .contenido-app h1 {
+    font-size: 32px;
+  }
+
+  .contenido-app p {
+    font-size: 14px;
   }
 }

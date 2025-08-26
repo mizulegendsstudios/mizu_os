@@ -1,117 +1,88 @@
 <!doctype html>
 <html lang="es">
   <head>
-<!-- HEAD -->
-<!-- METAS -->
-<meta charset="UTF-8">
-<title>Mizu OS</title>
-<meta name="description" content="Descripción actualizada para Mizu OS">
-<meta name="keywords" content="mizu,online,libre,nomowi,sistema,operativo">
-<meta name="author" content="Moises Nunez Ibarra">
-<link rel="icon" href="https://github.com/mizulegendsstudios/mizu_os/raw/refs/heads/main/assets/mizu_legends_3002_2025_alfa.ico" type="image/x-icon">
+    <!-- HEAD -->
+    <!-- METAS -->
+    <meta charset="UTF-8">
+    <title>Mizu OS - Cloud Operating System</title>
+    <meta name="description" content="Sistema operativo en la nube con navegación por flechas y sistema dual de botones">
+    <meta name="keywords" content="mizu,cloud,os,sistema,operativo,nube,navegacion,flechas">
+    <meta name="author" content="Moises Nunez Ibarra">
+    <link rel="icon" href="assets/mizu_legends_3002_2025_alfa.ico" type="image/x-icon">
 
-<!-- Viewport -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- CSS -->
-  <!-- CSS en línea para ocultar el body hasta que los estilos reales carguen -->
-  <style>
-    body {
-      visibility: hidden;
-      background: #000; 
-    }
-  </style>
-    <link rel="preload" href="assets/styles.css" as="style" />
-    <link rel="stylesheet" href="assets/styles.css" />
-    <link rel="prefetch" href="assets/main.js">
+    <!-- CSS -->
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Helvetica Neue', sans-serif;
+        background: #000;
+        overflow: hidden;
+        visibility: visible;
+      }
+      
+      #scene-container {
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+      }
+      
+      .loading-indicator {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #00e5ff;
+        font-size: 18px;
+        z-index: 9999;
+      }
+    </style>
 
-<!-- GEO -->
-<meta name="geo.region" content="PA-8">
-<meta name="geo.placename" content="Panama">
-    
-<!-- OpenGraph -->
-<meta property="og:title" content="Mizu OS - Título para redes sociales">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://github.com/mizulegendsstudios/mizu_os">
-<meta property="og:image" content="assets/mizu_legends_3002_2025_alfa.ico">
-<meta property="og:description" content="Descripción para compartir en redes">
+    <!-- GEO -->
+    <meta name="geo.region" content="PA-8">
+    <meta name="geo.placename" content="Panama">
+        
+    <!-- OpenGraph -->
+    <meta property="og:title" content="Mizu OS - Sistema Operativo en la Nube">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://github.com/mizulegendsstudios/mizu_os">
+    <meta property="og:image" content="assets/mizu_legends_3002_2025_alfa.ico">
+    <meta property="og:description" content="Sistema operativo en la nube con navegación por flechas">
 
-<!-- Analytics -->
-<meta name="octolytics-host" content="github.com">
-<meta name="octolytics-dimension-repository_id" content="1038271912">
-
+    <!-- Analytics -->
+    <meta name="octolytics-host" content="github.com">
+    <meta name="octolytics-dimension-repository_id" content="1038271912">
   </head>
   
-<!-- BODY -->
+  <!-- BODY -->
   <body>
+    <!-- Contenedor principal para las escenas -->
+    <div id="scene-container">
+      <!-- Las escenas se renderizarán aquí dinámicamente -->
+    </div>
+
+    <!-- Indicador de carga inicial -->
+    <div class="loading-indicator" id="loading-indicator">
+      🌊 Cargando Mizu OS...
+    </div>
+
+    <!-- JS -->
+    <script type="module" src="src/main.js"></script>
     
-    <!-- Diapositiva 1: Pantalla de carga -->
-    <div id="pantalla-carga" class="slide active">
-      <div class="glass">
-        <img src="assets/logo.svg" class="logo" alt="Logo Mizu" />
-        <div class="barra-carga">
-          <div class="progreso"></div>
-        </div>
-        <div class="blink">Cargando...</div>
-      </div>
-    </div>
-
-    <!-- Diapositiva 2: Standby -->
-    <div
-      id="standby"
-      class="slide"        
-    >
-      <div class="standby-info">
-        <h1 id="hora"></h1>
-        <p id="fecha"></p>
-        <img id="logo-standby" src="assets/logo.svg" class="logo" alt="Logo Mizu" />
-        <p style="opacity: 0.5">Toca en cualquier lugar para activar</p>
-      </div>
-    </div>
-
-    <!-- Diapositiva 3: Escritorio -->
-    <div
-      id="escritorio"
-      class="slide"
-    >
-      <div class="iconos">
-        <div id="btn-salir" class="icono">❌</div>
-        <div class="icono abrir-app" data-app="1">📁</div>
-        <div class="icono abrir-app" data-app="2">🖼️</div>
-        <div class="icono abrir-app" data-app="3">🎵</div>
-        <div class="icono abrir-app" data-app="4">📝</div>
-        <div class="icono abrir-app" data-app="5">🌐</div>
-        <div class="icono abrir-app" data-app="6">🕹️</div>
-        <div class="icono abrir-app" data-app="7">⚙️</div>
-      </div>
-
-      <!-- Ventana de app abierta desde el escritorio (única) -->
-      <div id="ventana-app" class="ventana" style="display: none;">
-        <div class="barra-ventana">
-          <img src="assets/logo.svg" class="logo-barra" alt="Logo App" />
-          <span class="titulo-barra" id="app-title">Aplicación abierta</span>
-          <div class="controles-barra">
-            <button id="btn-minimizar-ventana" title="Minimizar">⤢</button>
-            <button id="btn-maximizar" title="Maximizar">🗖</button>
-            <button id="btn-fullscreen" title="Pantalla completa">⛶</button>
-            <button id="btn-cerrar-ventana" title="Cerrar">✕</button>
-          </div>
-        </div>
-        <div class="contenido-ventana">
-          <p>Contenido de la aplicación seleccionada.</p>
-        </div>
-        <!-- Handlers para redimensionar -->
-        <div class="resize-handle resize-n"></div>
-        <div class="resize-handle resize-e"></div>
-        <div class="resize-handle resize-s"></div>
-        <div class="resize-handle resize-w"></div>
-        <div class="resize-handle resize-nw"></div>
-        <div class="resize-handle resize-ne"></div>
-        <div class="resize-handle resize-sw"></div>
-        <div class="resize-handle resize-se"></div>
-      </div>
-    </div>
-<!-- JS -->
-    <script src="assets/main.js" defer></script>
+    <script>
+      // Ocultar indicador de carga cuando el sistema esté listo
+      document.addEventListener('DOMContentLoaded', () => {
+        // El indicador se ocultará automáticamente cuando se active la primera escena
+        setTimeout(() => {
+          const loadingIndicator = document.getElementById('loading-indicator');
+          if (loadingIndicator) {
+            loadingIndicator.style.display = 'none';
+          }
+        }, 1000);
+      });
+    </script>
   </body>
 </html>

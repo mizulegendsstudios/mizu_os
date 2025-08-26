@@ -91,11 +91,11 @@ class MizuOS {
    * Configura los event listeners del sistema
    */
   setupSystemEventListeners() {
-    // Cuando el boot está completo, cambiar al menú
-    this.eventBus.on('bootComplete', () => {
-      console.log('🔄 Boot completado, cambiando al menú...');
-      this.sceneManager.changeScene('menu');
-    });
+    // === COMENTADO: Este listener causaba duplicidad con SceneManager ===
+    // this.eventBus.on('bootComplete', () => {
+    //   console.log('🔄 Boot completado, cambiando al menú...');
+    //   this.sceneManager.changeScene('menu');
+    // });
 
     // Cambio de escena solicitado
     this.eventBus.on('changeScene', (data) => {

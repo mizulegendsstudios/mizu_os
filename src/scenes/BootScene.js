@@ -2,6 +2,10 @@
  * BootScene - Escena de inicio del sistema
  * Maneja la precarga de assets y inicialización básica
  */
+import '../css/main.css';
+import '../css/components/glass.css';
+import '../css/components/slide-transition.css';
+import '../css/scenes/boot.css';
 import eventBus from '../core/EventBus.js';
 import UIManagerCanvas from '../ui/UIManagerCanvas.js';
 

@@ -1,0 +1,20 @@
+.slide {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+  opacity: 0;
+  visibility: hidden;
+  will-change: opacity, visibility;
+}
+
+.slide.active {
+  display: flex;
+  opacity: 1;
+  visibility: visible;
+}

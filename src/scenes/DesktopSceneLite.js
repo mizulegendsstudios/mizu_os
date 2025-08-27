@@ -21,7 +21,7 @@ export default class DesktopSceneLite {
   }
 
   activate(container) {
-    this.container = container;
+    this.container = document.getElementById('scene-container');
     this._mountCanvas();
     this.ui.addElement({ render: (ctx) => this.renderBackground(ctx) });
     this.ui.addElement(this.cursor);
@@ -31,13 +31,20 @@ export default class DesktopSceneLite {
 
   deactivate() {
     if (this._raf) cancelAnimationFrame(this._raf);
-    if (this.canvas && this.canvas.parentNode) this.canvas.parentNode.removeChild(this.canvas);
+    if (this.canvas && this.canvas.parentNode) {
+      this.canvas.parentNode.removeChild(this.canvas);
+    }
     this.ui.clear();
     this.canvas = null;
     this.ctx = null;
   }
 
   _mountCanvas() {
+    if (!this.container) {
+      console.error('DesktopSceneLite: No hay contenedor (this.container es null)');
+      return;
+    }
+
     this.container.innerHTML = '';
     this.canvas = document.createElement('canvas');
     this.canvas.width = this.container.clientWidth || window.innerWidth;
@@ -49,6 +56,7 @@ export default class DesktopSceneLite {
 
   _loop() {
     const draw = () => {
+      if (!this.ctx) return;
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.ui.render(this.ctx);
       this._raf = requestAnimationFrame(draw);
@@ -75,7 +83,10 @@ export default class DesktopSceneLite {
   }
 
   checkIconSelect(x, y) {
-    const icon = this.icons.find(i => x >= i.x && x <= i.x + i.width && y >= i.y && y <= i.y + i.height);
+    const icon = this.icons.find(i => 
+      x >= i.x && x <= i.x + i.width && 
+      y >= i.y && y <= i.y + i.height
+    );
     if (icon) {
       eventBus.emit('APP_LAUNCH', icon.label);
       eventBus.emit('OPEN_APP', { id: icon.label });

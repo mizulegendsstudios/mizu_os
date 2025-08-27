@@ -12,7 +12,7 @@ class MenuScene {
         this.uiManager = null;
         this.isActive = false;
         this.currentFocusIndex = 0;       // Índice del botón enfocado (modo tradicional)
-        this.freeMode = true;             // true = libre (cursor), false = tradicional (focus)
+        this.freeMode = false;             // true = libre (cursor), false = tradicional (focus)
         this.autoStartTimer = null;       // Timer para auto-inicio
         this.autoStartCountdown = 10;     // Segundos restantes para auto-inicio
         this.originalStartText = 'Iniciar Sistema'; // Texto original del botón

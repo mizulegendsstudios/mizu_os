@@ -36,17 +36,16 @@ class BootScene {
    */
   initialize() {
     console.log('BootScene inicializada');
-    // 🔥 NO iniciar loading hasta que uiManager esté listo
-    // El loading se inicia en activate()
+    // El loading se inicia en activate(), no aquí
   }
 
   /**
    * Renderiza la escena de boot
    */
   render() {
-    // 🔥 VERIFICAR que uiManager y ctx existan antes de usar
+    // 🔥 VERIFICAR que uiManager y ctx existan
     if (!this.uiManager || !this.uiManager.ctx) {
-      console.warn('uiManager no está listo para renderizar');
+      console.warn('BootScene: uiManager o ctx no están listos para renderizar');
       return;
     }
 
@@ -94,8 +93,7 @@ class BootScene {
    */
   startLoading() {
     this.currentStatus = 'Iniciando sistema...';
-    this.render(); // 🔥 AHORA uiManager debería estar listo
-    
+
     const loadingSteps = [
       { progress: 10, status: 'Inicializando núcleo...' },
       { progress: 25, status: 'Cargando módulos del sistema...' },
@@ -128,7 +126,7 @@ class BootScene {
    */
   updateProgress(progress) {
     this.loadingProgress = progress;
-    this.render();
+    this.render(); // Ahora es seguro: se llama solo tras ctx verificado
   }
 
   /**
@@ -156,7 +154,7 @@ class BootScene {
         loadingIndicator.style.display = 'none';
       }
       
-      eventBus.emit('stateChanged', { to: 'menu' });
+      eventBus.emit('changeScene', { scene: 'menu' }); // ✅ Emite 'changeScene', no 'stateChanged'
     }, 500);
   }
 
@@ -172,10 +170,20 @@ class BootScene {
    */
   activate() {
     console.log('BootScene activada');
-    // 🔥 INICIALIZAR uiManager PRIMERO
+    
+    // 1. Crear el UI Manager
     this.uiManager = new UIManagerCanvas();
+    
+    // 2. Montar el canvas
     this.uiManager.mount(0, 0);
-    // 🔥 AHORA iniciar loading
+    
+    // 3. 🔥 VERIFICAR que el contexto 2D esté listo ANTES de continuar
+    if (!this.uiManager.ctx) {
+      console.error('BootScene: Fallo al crear contexto 2D. Abortando.');
+      return;
+    }
+
+    // 4. ✅ AHORA es seguro iniciar la carga
     this.startLoading();
   }
 

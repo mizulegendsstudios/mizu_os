@@ -1,7 +1,6 @@
 import '../css/main.css';
 import '../css/components/glass.css';
-import '../css/components/slide-transition.css';
-import '../css/scenes/menu.css';
+import '../css/scenes/desktop.css';
 import '../css/components/button.css';
 import eventBus from '../core/EventBus.js';
 import UIManager from '../ui/UIManagerSimple.js';

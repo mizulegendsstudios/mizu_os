@@ -2,7 +2,6 @@
  * Mizu OS - Main Entry Point
  * Sistema operativo en la nube con arquitectura modular
  */
-import './css/components/window.css?inline';
 import eventBus from './core/EventBus.js';
 import SceneManager from './core/SceneManager.js';
 import State from './core/State.js';

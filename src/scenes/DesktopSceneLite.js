@@ -1,7 +1,3 @@
-import '../css/main.css?inline';
-import '../css/components/glass.css?inline';
-import '../css/scenes/desktop.css?inline';
-import '../css/components/button.css?inline';
 import { ensureContainer } from '../core/DOM.js';
 import eventBus from '../core/EventBus.js';
 import UIManager from '../ui/UIManagerSimple.js';

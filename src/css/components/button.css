@@ -1,0 +1,37 @@
+button {
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: rgba(0, 229, 255, 0.2);
+  color: var(--color-text);
+  cursor: pointer;
+  margin: 5px;
+  font-size: 0.9em;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0, 229, 255, 0.3);
+}
+
+button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-sm);
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.3), rgba(26, 35, 126, 0.2));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+button:hover {
+  background: rgba(0, 229, 255, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 229, 255, 0.2);
+}
+
+button:active {
+  transform: translateY(0);
+}

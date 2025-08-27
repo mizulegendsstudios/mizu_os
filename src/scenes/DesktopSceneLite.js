@@ -2,6 +2,7 @@ import '../css/main.css';
 import '../css/components/glass.css';
 import '../css/scenes/desktop.css';
 import '../css/components/button.css';
+import { ensureContainer } from '../core/DOM.js';
 import eventBus from '../core/EventBus.js';
 import UIManager from '../ui/UIManagerSimple.js';
 import CanvasCursor from '../entities/CanvasCursor.js';

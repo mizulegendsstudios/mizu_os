@@ -25,14 +25,7 @@ export default class DesktopSceneLite {
   }
 
   activate(container) {
-    this.container = document.getElementById('scene-container') || 
-                 (() => {
-                   const el = document.createElement('div');
-                   el.id = 'scene-container';
-                   el.style.cssText = 'width:100vw; height:100vh; position:relative;';
-                   document.body.appendChild(el);
-                   return el;
-                 })();
+    this.container = ensureContainer('scene-container', 'width:100vw; height:100vh; position:relative;');
     this._mountCanvas();
     this.ui.addElement({ render: (ctx) => this.renderBackground(ctx) });
     this.ui.addElement(this.cursor);

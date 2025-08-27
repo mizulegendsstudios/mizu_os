@@ -1,8 +1,8 @@
-import '../css/main.css';
-import '../css/components/glass.css';
-import '../css/components/slide-transition.css';
-import '../css/scenes/menu.css';
-import '../css/components/button.css';
+import '../css/main.css?inline';
+import '../css/components/glass.css?inline';
+import '../css/components/slide-transition.css?inline';
+import '../css/scenes/menu.css?inline';
+import '../css/components/button.css?inline';
 import eventBus from '../core/EventBus.js';
 import UIManagerCanvas from '../ui/UIManagerCanvas.js';
 

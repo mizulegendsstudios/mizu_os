@@ -2,7 +2,8 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   root: '.',
-  publicDir: 'assets',
+  base: '/mizu_os/',  // 🔥 Requerido para GitHub Pages
+  publicDir: 'public', // ✅ Estándar: assets estáticos (favicon, etc)
   build: {
     outDir: 'dist',
     assetsDir: 'assets',

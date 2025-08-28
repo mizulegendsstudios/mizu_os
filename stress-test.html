@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stress Test - Mizu OS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #0f0f23;
+            color: #00e5ff;
+        }
+        .test-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: rgba(0, 229, 255, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 229, 255, 0.3);
+        }
+        .stress-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .control-btn {
+            background: rgba(0, 229, 255, 0.2);
+            border: 1px solid #00e5ff;
+            color: #00e5ff;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .control-btn:hover {
+            background: rgba(0, 229, 255, 0.3);
+        }
+        .control-btn.danger {
+            background: rgba(255, 68, 68, 0.2);
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+        .control-btn.danger:hover {
+            background: rgba(255, 68, 68, 0.3);
+        }
+        .control-btn.active {
+            background: rgba(0, 255, 136, 0.3);
+            border-color: #00ff88;
+            color: #00ff88;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .metric-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(0, 229, 255, 0.2);
+        }
+        .metric-value {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .metric-label {
+            font-size: 11px;
+            opacity: 0.8;
+        }
+        .status-good { color: #00ff88; }
+        .status-warning { color: #ffaa00; }
+        .status-danger { color: #ff4444; }
+        .log-container {
+            background: #000;
+            padding: 15px;
+            border-radius: 5px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 11px;
+        }
+        .log-entry {
+            margin: 3px 0;
+            padding: 3px;
+            border-left: 2px solid #00e5ff;
+        }
+        .log-event { border-left-color: #00ff88; }
+        .log-error { border-left-color: #ff4444; }
+        .log-warning { border-left-color: #ffaa00; }
+        .log-stress { border-left-color: #ff00ff; }
+        .scene-display {
+            background: #000;
+            padding: 20px;
+            border-radius: 10px;
+            min-height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+        .stress-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: pulse 1s infinite;
+        }
+        .stress-indicator.active {
+            background: #ff4444;
+            animation: pulse 0.2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 229, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00e5ff, #ff4444);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔥 Stress Test - Mizu OS</h1>
+        
+        <div class="test-section">
+            <h3>🎮 Controles de Estrés</h3>
+            <div class="stress-controls">
+                <button class="control-btn" id="start-stress">🚀 Iniciar Stress Test</button>
+                <button class="control-btn" id="stop-stress">⏹️ Detener Stress Test</button>
+                <button class="control-btn danger" id="extreme-stress">💥 Estrés Extremo (1000 evt/s)</button>
+                <button class="control-btn danger" id="memory-stress">🧠 Estrés de Memoria</button>
+                <button class="control-btn" id="scene-stress">🎭 Estrés de Escenas</button>
+                <button class="control-btn" id="input-stress">⌨️ Estrés de Input</button>
+                <button class="control-btn" id="clear-logs">🧹 Limpiar Logs</button>
+                <button class="control-btn" id="reset-system">🔄 Reset Sistema</button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Métricas de Estrés</h3>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Eventos/segundo</div>
+                    <div class="metric-value" id="events-per-second">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">FPS Actual</div>
+                    <div class="metric-value" id="current-fps">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Memoria (MB)</div>
+                    <div class="metric-value" id="memory-usage">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Escenas Cambiadas</div>
+                    <div class="metric-value" id="scene-changes">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Errores</div>
+                    <div class="metric-value" id="error-count">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Tiempo de Test</div>
+                    <div class="metric-value" id="test-time">00:00</div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="stress-progress"></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎬 Escena Actual (Stress Test)</h3>
+            <div class="scene-display" id="scene-container">
+                <div class="stress-indicator" id="stress-indicator"></div>
+                <div id="scene-content">Sistema en espera...</div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 Log de Estrés</h3>
+            <div class="log-container" id="stress-log"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import eventBus from './src/core/EventBus.js';
+        import SceneManager from './src/core/SceneManager.js';
+        import State from './src/core/State.js';
+        import InputManager from './src/core/InputManager.js';
+        import BootScene from './src/scenes/BootScene.js';
+        import MenuScene from './src/scenes/MenuScene.js';
+
+        // Variables de estrés
+        let stressTest = {
+            isRunning: false,
+            startTime: 0,
+            eventCount: 0,
+            sceneChanges: 0,
+            errorCount: 0,
+            lastEventTime: 0,
+            eventInterval: null,
+            stressInterval: null,
+            memoryLeakObjects: []
+        };
+
+        // Elementos del DOM
+        const eventsPerSecond = document.getElementById('events-per-second');
+        const currentFps = document.getElementById('current-fps');
+        const memoryUsage = document.getElementById('memory-usage');
+        const sceneChanges = document.getElementById('scene-changes');
+        const errorCount = document.getElementById('error-count');
+        const testTime = document.getElementById('test-time');
+        const stressProgress = document.getElementById('stress-progress');
+        const stressIndicator = document.getElementById('stress-indicator');
+        const sceneContent = document.getElementById('scene-content');
+        const stressLog = document.getElementById('stress-log');
+
+        // Controles
+        const startStressBtn = document.getElementById('start-stress');
+        const stopStressBtn = document.getElementById('stop-stress');
+        const extremeStressBtn = document.getElementById('extreme-stress');
+        const memoryStressBtn = document.getElementById('memory-stress');
+        const sceneStressBtn = document.getElementById('scene-stress');
+        const inputStressBtn = document.getElementById('input-stress');
+        const clearLogsBtn = document.getElementById('clear-logs');
+        const resetSystemBtn = document.getElementById('reset-system');
+
+        // Variables del sistema
+        let sceneManager = null;
+        let state = null;
+        let inputManager = null;
+        let fpsCounter = 0;
+        let lastFpsTime = 0;
+
+        // Función para agregar logs
+        function addLog(message, type = '') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            logEntry.innerHTML = `<strong>[${timestamp}]</strong> ${message}`;
+            stressLog.appendChild(logEntry);
+            stressLog.scrollTop = stressLog.scrollHeight;
+
+            // Limpiar logs antiguos
+            if (stressLog.children.length > 100) {
+                stressLog.removeChild(stressLog.firstChild);
+            }
+        }
+
+        // Función para generar eventos aleatorios
+        function generateRandomEvent() {
+            const events = [
+                () => eventBus.emit('navigate', { direction: 'up' }),
+                () => eventBus.emit('navigate', { direction: 'down' }),
+                () => eventBus.emit('navigate', { direction: 'left' }),
+                () => eventBus.emit('navigate', { direction: 'right' }),
+                () => eventBus.emit('action', { type: 'positive' }),
+                () => eventBus.emit('action', { type: 'negative' }),
+                () => eventBus.emit('keyDown', { key: 'ArrowUp', code: 'ArrowUp' }),
+                () => eventBus.emit('keyUp', { key: 'ArrowUp', code: 'ArrowUp' }),
+                () => eventBus.emit('mouseClick', { x: Math.random() * 800, y: Math.random() * 600 }),
+                () => eventBus.emit('cursorMove', { x: Math.random() * 800, y: Math.random() * 600 })
+            ];
+
+            const randomEvent = events[Math.floor(Math.random() * events.length)];
+            try {
+                randomEvent();
+                stressTest.eventCount++;
+            } catch (error) {
+                stressTest.errorCount++;
+                addLog(`Error en evento: ${error.message}`, 'log-error');
+            }
+        }
+
+        // Función para cambiar escenas rápidamente
+        function rapidSceneChanges() {
+            const scenes = ['boot', 'menu', 'desktop', 'apps', 'settings'];
+            const randomScene = scenes[Math.floor(Math.random() * scenes.length)];
+            
+            try {
+                sceneManager.changeScene(randomScene);
+                stressTest.sceneChanges++;
+                addLog(`Cambio rápido a escena: ${randomScene}`, 'log-stress');
+            } catch (error) {
+                stressTest.errorCount++;
+                addLog(`Error en cambio de escena: ${error.message}`, 'log-error');
+            }
+        }
+
+        // Función para crear objetos de memoria
+        function createMemoryObjects() {
+            const objects = [];
+            for (let i = 0; i < 1000; i++) {
+                objects.push({
+                    id: i,
+                    data: new Array(100).fill(Math.random()),
+                    timestamp: Date.now(),
+                    metadata: {
+                        type: 'stress-test',
+                        size: Math.random() * 1000,
+                        complexity: Math.random()
+                    }
+                });
+            }
+            stressTest.memoryLeakObjects.push(...objects);
+            addLog(`Creados ${objects.length} objetos de memoria`, 'log-warning');
+        }
+
+        // Función para calcular FPS
+        function calculateFPS() {
+            const now = performance.now();
+            fpsCounter++;
+
+            if (now - lastFpsTime >= 1000) {
+                const fps = Math.round((fpsCounter * 1000) / (now - lastFpsTime));
+                currentFps.textContent = fps;
+                currentFps.className = `metric-value ${fps >= 55 ? 'status-good' : fps >= 30 ? 'status-warning' : 'status-danger'}`;
+                
+                fpsCounter = 0;
+                lastFpsTime = now;
+            }
+        }
+
+        // Función para obtener uso de memoria
+        function getMemoryUsage() {
+            if (performance.memory) {
+                const used = performance.memory.usedJSHeapSize / 1024 / 1024;
+                memoryUsage.textContent = Math.round(used);
+                return used;
+            }
+            return 0;
+        }
+
+        // Función para actualizar métricas
+        function updateMetrics() {
+            const now = performance.now();
+            const elapsed = now - stressTest.lastEventTime;
+            
+            if (elapsed >= 1000) {
+                const eps = Math.round((stressTest.eventCount * 1000) / elapsed);
+                eventsPerSecond.textContent = eps;
+                stressTest.eventCount = 0;
+                stressTest.lastEventTime = now;
+            }
+
+            sceneChanges.textContent = stressTest.sceneChanges;
+            errorCount.textContent = stressTest.errorCount;
+            getMemoryUsage();
+
+            // Actualizar tiempo de test
+            if (stressTest.isRunning) {
+                const testDuration = Math.floor((now - stressTest.startTime) / 1000);
+                const minutes = Math.floor(testDuration / 60);
+                const seconds = testDuration % 60;
+                testTime.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Función para iniciar stress test
+        function startStressTest() {
+            if (stressTest.isRunning) return;
+
+            stressTest.isRunning = true;
+            stressTest.startTime = performance.now();
+            stressTest.lastEventTime = performance.now();
+            stressTest.eventCount = 0;
+            stressTest.sceneChanges = 0;
+            stressTest.errorCount = 0;
+
+            startStressBtn.classList.add('active');
+            stopStressBtn.classList.remove('active');
+            stressIndicator.classList.add('active');
+
+            addLog('🚀 Stress test iniciado - 100 eventos/segundo', 'log-stress');
+
+            // Generar 100 eventos por segundo
+            stressTest.eventInterval = setInterval(() => {
+                for (let i = 0; i < 10; i++) {
+                    setTimeout(generateRandomEvent, i * 10);
+                }
+            }, 100);
+
+            // Loop de métricas
+            stressTest.stressInterval = setInterval(() => {
+                calculateFPS();
+                updateMetrics();
+            }, 16); // ~60 FPS
+
+            addLog('🔥 Sistema bajo estrés intenso', 'log-stress');
+        }
+
+        // Función para detener stress test
+        function stopStressTest() {
+            if (!stressTest.isRunning) return;
+
+            stressTest.isRunning = false;
+            startStressBtn.classList.remove('active');
+            stopStressBtn.classList.add('active');
+            stressIndicator.classList.remove('active');
+
+            if (stressTest.eventInterval) {
+                clearInterval(stressTest.eventInterval);
+            }
+            if (stressTest.stressInterval) {
+                clearInterval(stressTest.stressInterval);
+            }
+
+            const duration = (performance.now() - stressTest.startTime) / 1000;
+            addLog(`⏹️ Stress test detenido. Duración: ${duration.toFixed(2)}s`, 'log-stress');
+            addLog(`📊 Total eventos: ${stressTest.eventCount}, Cambios de escena: ${stressTest.sceneChanges}, Errores: ${stressTest.errorCount}`, 'log-stress');
+        }
+
+        // Función para estrés extremo
+        function extremeStress() {
+            addLog('💥 INICIANDO ESTRÉS EXTREMO - 1000 eventos/segundo', 'log-error');
+            
+            // Limpiar intervalos existentes
+            if (stressTest.eventInterval) {
+                clearInterval(stressTest.eventInterval);
+            }
+
+            // Generar 1000 eventos por segundo
+            stressTest.eventInterval = setInterval(() => {
+                for (let i = 0; i < 100; i++) {
+                    setTimeout(generateRandomEvent, i * 1);
+                }
+            }, 100);
+
+            addLog('🔥 SISTEMA BAJO ESTRÉS EXTREMO', 'log-error');
+        }
+
+        // Función para estrés de memoria
+        function memoryStress() {
+            addLog('🧠 Iniciando estrés de memoria...', 'log-warning');
+            
+            // Crear objetos masivos
+            setInterval(() => {
+                createMemoryObjects();
+            }, 1000);
+
+            addLog('🧠 Estrés de memoria activo - creando objetos cada segundo', 'log-warning');
+        }
+
+        // Función para estrés de escenas
+        function sceneStress() {
+            addLog('🎭 Iniciando estrés de escenas...', 'log-stress');
+            
+            setInterval(() => {
+                rapidSceneChanges();
+            }, 100);
+
+            addLog('🎭 Estrés de escenas activo - cambios cada 100ms', 'log-stress');
+        }
+
+        // Función para estrés de input
+        function inputStress() {
+            addLog('⌨️ Iniciando estrés de input...', 'log-stress');
+            
+            const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Escape', 'Tab'];
+            
+            setInterval(() => {
+                const randomKey = keys[Math.floor(Math.random() * keys.length)];
+                eventBus.emit('keyDown', { key: randomKey, code: randomKey });
+                setTimeout(() => {
+                    eventBus.emit('keyUp', { key: randomKey, code: randomKey });
+                }, 50);
+            }, 50);
+
+            addLog('⌨️ Estrés de input activo - teclas cada 50ms', 'log-stress');
+        }
+
+        // Función para reset del sistema
+        function resetSystem() {
+            addLog('🔄 Reseteando sistema...', 'log-warning');
+            
+            // Limpiar objetos de memoria
+            stressTest.memoryLeakObjects.length = 0;
+            
+            // Limpiar intervalos
+            if (stressTest.eventInterval) {
+                clearInterval(stressTest.eventInterval);
+            }
+            if (stressTest.stressInterval) {
+                clearInterval(stressTest.stressInterval);
+            }
+            
+            // Resetear métricas
+            stressTest.eventCount = 0;
+            stressTest.sceneChanges = 0;
+            stressTest.errorCount = 0;
+            
+            // Forzar garbage collection si está disponible
+            if (window.gc) {
+                window.gc();
+            }
+            
+            addLog('✅ Sistema reseteado', 'log-stress');
+        }
+
+        // Event listeners
+        startStressBtn.addEventListener('click', startStressTest);
+        stopStressBtn.addEventListener('click', stopStressTest);
+        extremeStressBtn.addEventListener('click', extremeStress);
+        memoryStressBtn.addEventListener('click', memoryStress);
+        sceneStressBtn.addEventListener('click', sceneStress);
+        inputStressBtn.addEventListener('click', inputStress);
+        clearLogsBtn.addEventListener('click', () => {
+            stressLog.innerHTML = '';
+            addLog('🧹 Logs limpiados', 'log-stress');
+        });
+        resetSystemBtn.addEventListener('click', resetSystem);
+
+        // Inicializar sistema
+        async function initializeSystem() {
+            try {
+                addLog('🔧 Inicializando sistema para stress test...', 'log-stress');
+                
+                // Inicializar componentes
+                state = new State();
+                sceneManager = new SceneManager();
+                inputManager = new InputManager();
+                
+                // Registrar escenas
+                const bootScene = new BootScene();
+                const menuScene = new MenuScene();
+                
+                sceneManager.addScene('boot', bootScene);
+                sceneManager.addScene('menu', menuScene);
+                
+                // Escenas mock para testing
+                sceneManager.addScene('desktop', {
+                    name: 'desktop',
+                    activate: () => {
+                        sceneContent.innerHTML = '<h2>🖥️ Escritorio (Stress Test)</h2><p>Sistema bajo estrés intenso</p>';
+                    },
+                    deactivate: () => {}
+                });
+                
+                sceneManager.addScene('apps', {
+                    name: 'apps',
+                    activate: () => {
+                        sceneContent.innerHTML = '<h2>📱 Aplicaciones (Stress Test)</h2><p>Generando eventos masivos</p>';
+                    },
+                    deactivate: () => {}
+                });
+                
+                sceneManager.addScene('settings', {
+                    name: 'settings',
+                    activate: () => {
+                        sceneContent.innerHTML = '<h2>⚙️ Configuración (Stress Test)</h2><p>Monitoreando rendimiento</p>';
+                    },
+                    deactivate: () => {}
+                });
+                
+                // Configurar contenedor
+                const container = document.getElementById('scene-container');
+                sceneManager.setSceneContainer(container);
+                
+                // Event listeners del sistema
+                eventBus.on('sceneChanged', (data) => {
+                    addLog(`🎭 Escena: ${data.from || 'ninguna'} → ${data.to}`, 'log-event');
+                });
+                
+                eventBus.on('systemError', (data) => {
+                    stressTest.errorCount++;
+                    addLog(`❌ Error: ${data.error}`, 'log-error');
+                });
+                
+                // Inicializar escenas
+                sceneManager.initializeScenes();
+                sceneManager.changeScene('boot');
+                
+                addLog('✅ Sistema inicializado para stress test', 'log-stress');
+                
+            } catch (error) {
+                addLog(`❌ Error al inicializar: ${error.message}`, 'log-error');
+                console.error('Error en inicialización:', error);
+            }
+        }
+
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            addLog('📋 DOM cargado, preparando stress test...', 'log-stress');
+            initializeSystem();
+        });
+
+        // Monitorear errores globales
+        window.addEventListener('error', (event) => {
+            stressTest.errorCount++;
+            addLog(`❌ Error global: ${event.error.message}`, 'log-error');
+        });
+
+        window.addEventListener('unhandledrejection', (event) => {
+            stressTest.errorCount++;
+            addLog(`❌ Promise rechazada: ${event.reason}`, 'log-error');
+        });
+    </script>
+</body>
+</html>

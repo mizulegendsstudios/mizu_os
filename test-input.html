@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test InputManager - Mizu OS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #0f0f23;
+            color: #00e5ff;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: rgba(0, 229, 255, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 229, 255, 0.3);
+        }
+        .event-log {
+            background: #000;
+            padding: 15px;
+            border-radius: 5px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .event-item {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #00e5ff;
+        }
+        .key-event { border-left-color: #00ff88; }
+        .nav-event { border-left-color: #ffaa00; }
+        .action-event { border-left-color: #ff4444; }
+        .instructions {
+            background: rgba(255, 170, 0, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .key-hint {
+            display: inline-block;
+            background: rgba(0, 229, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 3px;
+            margin: 5px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Test InputManager - Mizu OS</h1>
+        
+        <div class="instructions">
+            <h3>📋 Instrucciones de Prueba:</h3>
+            <p>Usa las siguientes teclas para probar el InputManager:</p>
+            <div>
+                <span class="key-hint">↑</span> <span class="key-hint">↓</span> <span class="key-hint">←</span> <span class="key-hint">→</span> Navegación
+                <br>
+                <span class="key-hint">Enter</span> <span class="key-hint">Espacio</span> Acción Positiva
+                <br>
+                <span class="key-hint">Escape</span> Acción Negativa
+                <br>
+                <span class="key-hint">Tab</span> <span class="key-hint">Shift+Tab</span> Navegación Secuencial
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎮 Eventos de Navegación</h3>
+            <div id="nav-events" class="event-log"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>⚡ Eventos de Acción</h3>
+            <div id="action-events" class="event-log"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>⌨️ Eventos de Teclado</h3>
+            <div id="key-events" class="event-log"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Estado del Sistema</h3>
+            <div id="system-status">
+                <p><strong>Teclas presionadas:</strong> <span id="pressed-keys">Ninguna</span></p>
+                <p><strong>Posición del cursor:</strong> <span id="cursor-position">0, 0</span></p>
+                <p><strong>Modo navegación:</strong> <span id="nav-mode">Desactivado</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import eventBus from './src/core/EventBus.js';
+        import InputManager from './src/core/InputManager.js';
+
+        // Inicializar InputManager
+        const inputManager = new InputManager();
+
+        // Elementos del DOM
+        const navEvents = document.getElementById('nav-events');
+        const actionEvents = document.getElementById('action-events');
+        const keyEvents = document.getElementById('key-events');
+        const pressedKeys = document.getElementById('pressed-keys');
+        const cursorPosition = document.getElementById('cursor-position');
+        const navMode = document.getElementById('nav-mode');
+
+        // Función para agregar eventos al log
+        function addEventLog(container, event, type = '') {
+            const timestamp = new Date().toLocaleTimeString();
+            const eventDiv = document.createElement('div');
+            eventDiv.className = `event-item ${type}`;
+            eventDiv.innerHTML = `<strong>[${timestamp}]</strong> ${event}`;
+            container.appendChild(eventDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Limpiar logs antiguos
+        function clearOldLogs() {
+            [navEvents, actionEvents, keyEvents].forEach(container => {
+                if (container.children.length > 20) {
+                    container.removeChild(container.firstChild);
+                }
+            });
+        }
+
+        // Event listeners
+        eventBus.on('navigate', (data) => {
+            addEventLog(navEvents, `Navegación: ${data.direction}`, 'nav-event');
+            clearOldLogs();
+        });
+
+        eventBus.on('action', (data) => {
+            addEventLog(actionEvents, `Acción: ${data.type}`, 'action-event');
+            clearOldLogs();
+        });
+
+        eventBus.on('keyDown', (data) => {
+            addEventLog(keyEvents, `Tecla presionada: ${data.key} (${data.code})`, 'key-event');
+            clearOldLogs();
+        });
+
+        eventBus.on('keyUp', (data) => {
+            addEventLog(keyEvents, `Tecla liberada: ${data.key}`, 'key-event');
+            clearOldLogs();
+        });
+
+        eventBus.on('cursorMove', (data) => {
+            cursorPosition.textContent = `${data.x}, ${data.y}`;
+        });
+
+        eventBus.on('navigationModeChanged', (data) => {
+            navMode.textContent = data.enabled ? 'Activado' : 'Desactivado';
+        });
+
+        // Actualizar estado de teclas presionadas
+        setInterval(() => {
+            const keys = Array.from(inputManager.keys);
+            pressedKeys.textContent = keys.length > 0 ? keys.join(', ') : 'Ninguna';
+        }, 100);
+
+        // Activar modo de navegación
+        inputManager.setNavigationMode(true);
+
+        console.log('🧪 Test InputManager iniciado');
+        addEventLog(navEvents, 'Sistema de prueba iniciado', 'nav-event');
+        addEventLog(actionEvents, 'InputManager cargado y listo', 'action-event');
+        addEventLog(keyEvents, 'Esperando eventos de teclado...', 'key-event');
+    </script>
+</body>
+</html>

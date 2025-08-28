@@ -1,0 +1,33 @@
+.barra-carga {
+  width: 80%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 20px auto;
+  box-shadow: inset 0 0 5px rgba(0, 229, 255, 0.2);
+}
+
+.progreso {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  animation: cargar 2.5s forwards;
+}
+
+@keyframes cargar {
+  to { width: 100%; }
+}
+
+.blink {
+  font-size: 14px;
+  margin-top: 10px;
+  animation: blink 1.5s infinite;
+  color: var(--color-primary);
+  text-shadow: 0 0 5px rgba(0, 229, 255, 0.5);
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}

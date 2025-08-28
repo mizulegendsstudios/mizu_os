@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test SceneManager - Mizu OS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #0f0f23;
+            color: #00e5ff;
+        }
+        .test-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: rgba(0, 229, 255, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 229, 255, 0.3);
+        }
+        .scene-container {
+            background: #000;
+            padding: 20px;
+            border-radius: 10px;
+            min-height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+        .event-log {
+            background: #000;
+            padding: 15px;
+            border-radius: 5px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .event-item {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #00e5ff;
+        }
+        .scene-event { border-left-color: #00ff88; }
+        .state-event { border-left-color: #ffaa00; }
+        .error-event { border-left-color: #ff4444; }
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        .control-btn {
+            background: rgba(0, 229, 255, 0.2);
+            border: 1px solid #00e5ff;
+            color: #00e5ff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .control-btn:hover {
+            background: rgba(0, 229, 255, 0.3);
+        }
+        .control-btn:active {
+            background: rgba(0, 229, 255, 0.4);
+        }
+        .current-scene {
+            background: rgba(0, 255, 136, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .scene-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎭 Test SceneManager - Mizu OS</h1>
+        
+        <div class="test-section">
+            <h3>🎮 Controles de Escena</h3>
+            <div class="controls">
+                <button class="control-btn" onclick="changeScene('boot')">Boot Scene</button>
+                <button class="control-btn" onclick="changeScene('menu')">Menu Scene</button>
+                <button class="control-btn" onclick="changeScene('desktop')">Desktop Scene</button>
+                <button class="control-btn" onclick="changeScene('apps')">Apps Scene</button>
+                <button class="control-btn" onclick="changeScene('settings')">Settings Scene</button>
+                <button class="control-btn" onclick="changeScene('error')">Error Scene</button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎬 Escena Actual</h3>
+            <div id="current-scene" class="current-scene">Inicializando...</div>
+            <div class="scene-container" id="scene-container">
+                <!-- Las escenas se renderizarán aquí -->
+            </div>
+        </div>
+
+        <div class="scene-info">
+            <div class="test-section">
+                <h3>📊 Estado del Sistema</h3>
+                <div id="system-status">
+                    <p><strong>Escena actual:</strong> <span id="current-scene-name">-</span></p>
+                    <p><strong>Estado del sistema:</strong> <span id="system-state">-</span></p>
+                    <p><strong>Escenas registradas:</strong> <span id="registered-scenes">-</span></p>
+                    <p><strong>EventBus activo:</strong> <span id="eventbus-status">-</span></p>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h3>📝 Log de Eventos</h3>
+                <div id="event-log" class="event-log"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import eventBus from './src/core/EventBus.js';
+        import SceneManager from './src/core/SceneManager.js';
+        import State from './src/core/State.js';
+        import BootScene from './src/scenes/BootScene.js';
+        import MenuScene from './src/scenes/MenuScene.js';
+
+        // Variables globales para el test
+        window.sceneManager = null;
+        window.state = null;
+
+        // Elementos del DOM
+        const currentSceneDiv = document.getElementById('current-scene');
+        const sceneContainer = document.getElementById('scene-container');
+        const currentSceneName = document.getElementById('current-scene-name');
+        const systemState = document.getElementById('system-state');
+        const registeredScenes = document.getElementById('registered-scenes');
+        const eventbusStatus = document.getElementById('eventbus-status');
+        const eventLog = document.getElementById('event-log');
+
+        // Función para agregar eventos al log
+        function addEventLog(event, type = '') {
+            const timestamp = new Date().toLocaleTimeString();
+            const eventDiv = document.createElement('div');
+            eventDiv.className = `event-item ${type}`;
+            eventDiv.innerHTML = `<strong>[${timestamp}]</strong> ${event}`;
+            eventLog.appendChild(eventDiv);
+            eventLog.scrollTop = eventLog.scrollHeight;
+
+            // Limpiar logs antiguos
+            if (eventLog.children.length > 30) {
+                eventLog.removeChild(eventLog.firstChild);
+            }
+        }
+
+        // Función para actualizar el estado del sistema
+        function updateSystemStatus() {
+            if (window.sceneManager) {
+                const currentScene = window.sceneManager.getCurrentScene();
+                currentSceneName.textContent = currentScene ? currentScene.name : 'Ninguna';
+                registeredScenes.textContent = window.sceneManager.getAllScenes().join(', ');
+            }
+            
+            if (window.state) {
+                systemState.textContent = window.state.getCurrentState();
+            }
+            
+            eventbusStatus.textContent = 'Activo';
+        }
+
+        // Función para cambiar escena (global para los botones)
+        window.changeScene = function(sceneName) {
+            if (window.sceneManager) {
+                addEventLog(`Cambiando a escena: ${sceneName}`, 'scene-event');
+                window.sceneManager.changeScene(sceneName);
+            }
+        };
+
+        // Inicializar el sistema
+        async function initializeSystem() {
+            try {
+                addEventLog('Inicializando sistema de escenas...', 'scene-event');
+                
+                // Inicializar componentes
+                window.state = new State();
+                window.sceneManager = new SceneManager();
+                
+                // Configurar contenedor
+                window.sceneManager.setSceneContainer(sceneContainer);
+                
+                // Registrar escenas
+                const bootScene = new BootScene();
+                const menuScene = new MenuScene();
+                
+                window.sceneManager.addScene('boot', bootScene);
+                window.sceneManager.addScene('menu', menuScene);
+                
+                // Escenas mock para testing
+                window.sceneManager.addScene('desktop', {
+                    name: 'desktop',
+                    activate: () => {
+                        sceneContainer.innerHTML = '<h2>🖥️ Escritorio</h2><p>Esta es la escena del escritorio</p>';
+                        addEventLog('Escena Desktop activada', 'scene-event');
+                    },
+                    deactivate: () => addEventLog('Escena Desktop desactivada', 'scene-event')
+                });
+                
+                window.sceneManager.addScene('apps', {
+                    name: 'apps',
+                    activate: () => {
+                        sceneContainer.innerHTML = '<h2>📱 Aplicaciones</h2><p>Lista de aplicaciones disponibles</p>';
+                        addEventLog('Escena Apps activada', 'scene-event');
+                    },
+                    deactivate: () => addEventLog('Escena Apps desactivada', 'scene-event')
+                });
+                
+                window.sceneManager.addScene('settings', {
+                    name: 'settings',
+                    activate: () => {
+                        sceneContainer.innerHTML = '<h2>⚙️ Configuración</h2><p>Panel de configuración del sistema</p>';
+                        addEventLog('Escena Settings activada', 'scene-event');
+                    },
+                    deactivate: () => addEventLog('Escena Settings desactivada', 'scene-event')
+                });
+                
+                window.sceneManager.addScene('error', {
+                    name: 'error',
+                    activate: () => {
+                        sceneContainer.innerHTML = '<h2>❌ Error</h2><p>Ha ocurrido un error en el sistema</p>';
+                        addEventLog('Escena Error activada', 'scene-event');
+                    },
+                    deactivate: () => addEventLog('Escena Error desactivada', 'scene-event')
+                });
+                
+                // Event listeners
+                eventBus.on('sceneChanged', (data) => {
+                    addEventLog(`Escena cambiada: ${data.from || 'ninguna'} → ${data.to}`, 'scene-event');
+                    currentSceneDiv.textContent = `Escena actual: ${data.to}`;
+                    updateSystemStatus();
+                });
+                
+                eventBus.on('stateChanged', (data) => {
+                    addEventLog(`Estado cambiado: ${data.from} → ${data.to}`, 'state-event');
+                    updateSystemStatus();
+                });
+                
+                eventBus.on('systemError', (data) => {
+                    addEventLog(`Error del sistema: ${data.error}`, 'error-event');
+                });
+                
+                // Inicializar escenas
+                window.sceneManager.initializeScenes();
+                
+                // Cambiar a la escena de boot
+                window.sceneManager.changeScene('boot');
+                
+                addEventLog('Sistema de escenas inicializado correctamente', 'scene-event');
+                updateSystemStatus();
+                
+            } catch (error) {
+                addEventLog(`Error al inicializar: ${error.message}`, 'error-event');
+                console.error('Error en inicialización:', error);
+            }
+        }
+
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            addEventLog('DOM cargado, iniciando sistema...', 'scene-event');
+            initializeSystem();
+        });
+
+        // Actualizar estado cada segundo
+        setInterval(updateSystemStatus, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+:root {
+  --color-primary: #00e5ff;
+  --color-secondary: #1a237e;
+  --color-bg: #000;
+  --color-text: #fff;
+  --color-overlay: #0f0f23;
+  --blur-small: 5px;
+  --blur-medium: 10px;
+  --blur-large: 15px;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Helvetica Neue', sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  overflow: hidden;
+  visibility: visible;
+}

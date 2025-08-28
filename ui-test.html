@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI Test - Mizu OS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #0f0f23;
+            color: #00e5ff;
+        }
+        .test-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: rgba(0, 229, 255, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 229, 255, 0.3);
+        }
+        .test-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .control-btn {
+            background: rgba(0, 229, 255, 0.2);
+            border: 1px solid #00e5ff;
+            color: #00e5ff;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .control-btn:hover {
+            background: rgba(0, 229, 255, 0.3);
+        }
+        .control-btn.success {
+            background: rgba(0, 255, 136, 0.2);
+            border-color: #00ff88;
+            color: #00ff88;
+        }
+        .control-btn.success:hover {
+            background: rgba(0, 255, 136, 0.3);
+        }
+        .log-container {
+            background: #000;
+            padding: 15px;
+            border-radius: 5px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #00e5ff;
+        }
+        .log-button { border-left-color: #00ff88; }
+        .log-cursor { border-left-color: #00e5ff; }
+        .log-ui { border-left-color: #ffaa00; }
+        .log-error { border-left-color: #ff4444; }
+        .test-area {
+            background: #000;
+            padding: 20px;
+            border-radius: 10px;
+            min-height: 400px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(0, 229, 255, 0.3);
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .metric-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(0, 229, 255, 0.2);
+        }
+        .metric-value {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .metric-label {
+            font-size: 11px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎮 UI Test - Mizu OS</h1>
+        
+        <div class="test-section">
+            <h3>🎮 Controles de Prueba</h3>
+            <div class="test-controls">
+                <button class="control-btn" id="test-buttons">🔘 Probar Botones</button>
+                <button class="control-btn" id="test-cursor">👆 Probar Cursor</button>
+                <button class="control-btn" id="test-navigation">🧭 Probar Navegación</button>
+                <button class="control-btn" id="test-scenes">🎭 Probar Escenas</button>
+                <button class="control-btn success" id="test-all">🚀 Prueba Completa</button>
+                <button class="control-btn" id="clear-logs">🧹 Limpiar Logs</button>
+                <button class="control-btn" id="reset-ui">🔄 Reset UI</button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Métricas de UI</h3>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Botones Creados</div>
+                    <div class="metric-value" id="buttons-created">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Botones Seleccionados</div>
+                    <div class="metric-value" id="buttons-selected">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Eventos de Cursor</div>
+                    <div class="metric-value" id="cursor-events">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Cambios de Escena</div>
+                    <div class="metric-value" id="scene-changes">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Errores</div>
+                    <div class="metric-value" id="error-count">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">FPS</div>
+                    <div class="metric-value" id="current-fps">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎬 Área de Prueba</h3>
+            <div class="test-area" id="test-area">
+                <div style="color: #00e5ff; text-align: center; padding: 50px;">
+                    <h2>Área de Prueba de UI</h2>
+                    <p>Usa los controles para probar botones, cursor y navegación</p>
+                    <p>🔼🔽 Navegar | ⏎ Seleccionar | ESC Salir</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 Log de Eventos</h3>
+            <div class="log-container" id="ui-log"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import eventBus from './src/core/EventBus.js';
+        import UIManager from './src/ui/UIManager.js';
+        import Button from './src/entities/Button.js';
+        import Cursor from './src/entities/Cursor.js';
+
+        // Variables de prueba
+        let uiManager = null;
+        let testButtons = [];
+        let metrics = {
+            buttonsCreated: 0,
+            buttonsSelected: 0,
+            cursorEvents: 0,
+            sceneChanges: 0,
+            errorCount: 0,
+            fpsCounter: 0,
+            lastFpsTime: 0
+        };
+
+        // Elementos del DOM
+        const testArea = document.getElementById('test-area');
+        const uiLog = document.getElementById('ui-log');
+        const buttonsCreated = document.getElementById('buttons-created');
+        const buttonsSelected = document.getElementById('buttons-selected');
+        const cursorEvents = document.getElementById('cursor-events');
+        const sceneChanges = document.getElementById('scene-changes');
+        const errorCount = document.getElementById('error-count');
+        const currentFps = document.getElementById('current-fps');
+
+        // Controles
+        const testButtonsBtn = document.getElementById('test-buttons');
+        const testCursorBtn = document.getElementById('test-cursor');
+        const testNavigationBtn = document.getElementById('test-navigation');
+        const testScenesBtn = document.getElementById('test-scenes');
+        const testAllBtn = document.getElementById('test-all');
+        const clearLogsBtn = document.getElementById('clear-logs');
+        const resetUiBtn = document.getElementById('reset-ui');
+
+        // Función para agregar logs
+        function addLog(message, type = '') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            logEntry.innerHTML = `<strong>[${timestamp}]</strong> ${message}`;
+            uiLog.appendChild(logEntry);
+            uiLog.scrollTop = uiLog.scrollHeight;
+
+            // Limpiar logs antiguos
+            if (uiLog.children.length > 100) {
+                uiLog.removeChild(uiLog.firstChild);
+            }
+        }
+
+        // Función para actualizar métricas
+        function updateMetrics() {
+            buttonsCreated.textContent = metrics.buttonsCreated;
+            buttonsSelected.textContent = metrics.buttonsSelected;
+            cursorEvents.textContent = metrics.cursorEvents;
+            sceneChanges.textContent = metrics.sceneChanges;
+            errorCount.textContent = metrics.errorCount;
+        }
+
+        // Función para calcular FPS
+        function calculateFPS() {
+            const now = performance.now();
+            metrics.fpsCounter++;
+
+            if (now - metrics.lastFpsTime >= 1000) {
+                const fps = Math.round((metrics.fpsCounter * 1000) / (now - metrics.lastFpsTime));
+                currentFps.textContent = fps;
+                metrics.fpsCounter = 0;
+                metrics.lastFpsTime = now;
+            }
+        }
+
+        // Función para probar botones
+        function testButtons() {
+            addLog('🔘 Iniciando prueba de botones...', 'log-button');
+            
+            // Limpiar botones existentes
+            testButtons.forEach(button => button.destroy());
+            testButtons = [];
+            
+            // Crear botones de prueba
+            const buttonConfigs = [
+                { text: 'Botón 1', x: 50, y: 50, action: 'TEST_BUTTON_1' },
+                { text: 'Botón 2', x: 250, y: 50, action: 'TEST_BUTTON_2' },
+                { text: 'Botón 3', x: 450, y: 50, action: 'TEST_BUTTON_3' },
+                { text: 'Botón 4', x: 50, y: 150, action: 'TEST_BUTTON_4' },
+                { text: 'Botón 5', x: 250, y: 150, action: 'TEST_BUTTON_5' },
+                { text: 'Botón 6', x: 450, y: 150, action: 'TEST_BUTTON_6' }
+            ];
+            
+            buttonConfigs.forEach((config, index) => {
+                const button = new Button({
+                    ...config,
+                    onClick: () => {
+                        addLog(`🔘 Botón ${index + 1} clickeado`, 'log-button');
+                        metrics.buttonsSelected++;
+                        updateMetrics();
+                    },
+                    onSelect: () => {
+                        addLog(`🔘 Botón ${index + 1} seleccionado`, 'log-button');
+                    }
+                });
+                
+                testArea.appendChild(button.getElement());
+                testButtons.push(button);
+                metrics.buttonsCreated++;
+            });
+            
+            updateMetrics();
+            addLog(`✅ ${testButtons.length} botones creados`, 'log-button');
+        }
+
+        // Función para probar cursor
+        function testCursor() {
+            addLog('👆 Iniciando prueba de cursor...', 'log-cursor');
+            
+            if (!uiManager) {
+                uiManager = new UIManager({ container: testArea });
+            }
+            
+            const cursor = uiManager.getCursor();
+            if (cursor) {
+                cursor.show();
+                cursor.centerCursor();
+                addLog('✅ Cursor activado y centrado', 'log-cursor');
+            }
+        }
+
+        // Función para probar navegación
+        function testNavigation() {
+            addLog('🧭 Iniciando prueba de navegación...', 'log-ui');
+            
+            if (!uiManager) {
+                uiManager = new UIManager({ container: testArea });
+            }
+            
+            // Simular eventos de navegación
+            const directions = ['up', 'down', 'left', 'right'];
+            let directionIndex = 0;
+            
+            const navigationInterval = setInterval(() => {
+                const direction = directions[directionIndex];
+                eventBus.emit('navigate', { direction });
+                addLog(`🧭 Navegación: ${direction}`, 'log-ui');
+                
+                directionIndex = (directionIndex + 1) % directions.length;
+                
+                if (directionIndex === 0) {
+                    clearInterval(navigationInterval);
+                    addLog('✅ Prueba de navegación completada', 'log-ui');
+                }
+            }, 1000);
+        }
+
+        // Función para probar escenas
+        function testScenes() {
+            addLog('🎭 Iniciando prueba de escenas...', 'log-ui');
+            
+            const scenes = ['boot', 'menu', 'desktop'];
+            let sceneIndex = 0;
+            
+            const sceneInterval = setInterval(() => {
+                const scene = scenes[sceneIndex];
+                eventBus.emit('changeScene', { scene });
+                addLog(`🎭 Cambio a escena: ${scene}`, 'log-ui');
+                metrics.sceneChanges++;
+                updateMetrics();
+                
+                sceneIndex = (sceneIndex + 1) % scenes.length;
+                
+                if (sceneIndex === 0) {
+                    clearInterval(sceneInterval);
+                    addLog('✅ Prueba de escenas completada', 'log-ui');
+                }
+            }, 2000);
+        }
+
+        // Función para prueba completa
+        function testAll() {
+            addLog('🚀 Iniciando prueba completa de UI...', 'log-ui');
+            
+            // Secuencia de pruebas
+            setTimeout(() => testButtons(), 500);
+            setTimeout(() => testCursor(), 1500);
+            setTimeout(() => testNavigation(), 2500);
+            setTimeout(() => testScenes(), 3500);
+            
+            setTimeout(() => {
+                addLog('🎉 Prueba completa finalizada', 'log-ui');
+            }, 6000);
+        }
+
+        // Función para reset de UI
+        function resetUI() {
+            addLog('🔄 Reseteando UI...', 'log-ui');
+            
+            // Limpiar botones
+            testButtons.forEach(button => button.destroy());
+            testButtons = [];
+            
+            // Limpiar UIManager
+            if (uiManager) {
+                uiManager.destroy();
+                uiManager = null;
+            }
+            
+            // Resetear métricas
+            metrics.buttonsCreated = 0;
+            metrics.buttonsSelected = 0;
+            metrics.cursorEvents = 0;
+            metrics.sceneChanges = 0;
+            metrics.errorCount = 0;
+            
+            updateMetrics();
+            addLog('✅ UI reseteada', 'log-ui');
+        }
+
+        // Event listeners
+        testButtonsBtn.addEventListener('click', testButtons);
+        testCursorBtn.addEventListener('click', testCursor);
+        testNavigationBtn.addEventListener('click', testNavigation);
+        testScenesBtn.addEventListener('click', testScenes);
+        testAllBtn.addEventListener('click', testAll);
+        clearLogsBtn.addEventListener('click', () => {
+            uiLog.innerHTML = '';
+            addLog('🧹 Logs limpiados', 'log-ui');
+        });
+        resetUiBtn.addEventListener('click', resetUI);
+
+        // Event listeners del sistema
+        eventBus.on('buttonClick', (data) => {
+            addLog(`🔘 Click en botón: ${data.buttonText}`, 'log-button');
+            metrics.buttonsSelected++;
+            updateMetrics();
+        });
+
+        eventBus.on('buttonSelect', (data) => {
+            addLog(`🔘 Selección de botón: ${data.buttonText}`, 'log-button');
+        });
+
+        eventBus.on('cursorMoved', (data) => {
+            metrics.cursorEvents++;
+            updateMetrics();
+        });
+
+        eventBus.on('sceneChanged', (data) => {
+            addLog(`🎭 Escena: ${data.from || 'ninguna'} → ${data.to}`, 'log-ui');
+            metrics.sceneChanges++;
+            updateMetrics();
+        });
+
+        eventBus.on('systemError', (data) => {
+            addLog(`❌ Error: ${data.error}`, 'log-error');
+            metrics.errorCount++;
+            updateMetrics();
+        });
+
+        // Inicializar sistema
+        function initializeSystem() {
+            addLog('🔧 Inicializando sistema de pruebas de UI...', 'log-ui');
+            
+            // Loop de FPS
+            setInterval(calculateFPS, 16);
+            
+            addLog('✅ Sistema de pruebas inicializado', 'log-ui');
+        }
+
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            addLog('📋 DOM cargado, preparando pruebas de UI...', 'log-ui');
+            initializeSystem();
+        });
+
+        // Monitorear errores globales
+        window.addEventListener('error', (event) => {
+            addLog(`❌ Error global: ${event.error.message}`, 'log-error');
+            metrics.errorCount++;
+            updateMetrics();
+        });
+
+        window.addEventListener('unhandledrejection', (event) => {
+            addLog(`❌ Promise rechazada: ${event.reason}`, 'log-error');
+            metrics.errorCount++;
+            updateMetrics();
+        });
+    </script>
+</body>
+</html>

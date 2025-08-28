@@ -1,14 +1,27 @@
 {
   "name": "mizu-os",
-  "version": "0.7.0",
-  "description": "Sistema operativo SPA con HTML, CSS y JS puros. Ventana única con modos normal, maximizado y fullscreen. Sistema modular de apps externas.",
+  "version": "0.7.2",
+  "description": "Sistema operativo en la nube con navegación por flechas y sistema dual de botones. Arquitectura modular con EventBus y SceneManager.",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "http-server -c-1 -p 5173 .",
-    "serve": "http-server -p 8080 ."
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "vite preview --port 8080"
   },
   "devDependencies": {
-    "http-server": "14.1.1"
-  }
+    "http-server": "14.1.1",
+    "vite": "^7.1.3"
+  },
+  "keywords": [
+    "cloud-os",
+    "operating-system",
+    "web-app",
+    "modular",
+    "event-driven",
+    "scene-management"
+  ],
+  "author": "Moises Nunez Ibarra",
+  "license": "MIT"
 }

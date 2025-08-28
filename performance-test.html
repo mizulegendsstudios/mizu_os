@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Test - Mizu OS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #0f0f23;
+            color: #00e5ff;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: rgba(0, 229, 255, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 229, 255, 0.3);
+        }
+        .performance-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .metric-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(0, 229, 255, 0.2);
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .metric-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        .fps-good { color: #00ff88; }
+        .fps-warning { color: #ffaa00; }
+        .fps-bad { color: #ff4444; }
+        .chart-container {
+            background: #000;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .fps-chart {
+            width: 100%;
+            height: 200px;
+            background: #111;
+            border-radius: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+        .fps-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #00e5ff;
+            transition: height 0.1s ease;
+        }
+        .fps-target {
+            position: absolute;
+            bottom: 33%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: #00ff88;
+            opacity: 0.5;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        .control-btn {
+            background: rgba(0, 229, 255, 0.2);
+            border: 1px solid #00e5ff;
+            color: #00e5ff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .control-btn:hover {
+            background: rgba(0, 229, 255, 0.3);
+        }
+        .control-btn.active {
+            background: rgba(0, 255, 136, 0.3);
+            border-color: #00ff88;
+        }
+        .log-container {
+            background: #000;
+            padding: 15px;
+            border-radius: 5px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #00e5ff;
+        }
+        .log-warning { border-left-color: #ffaa00; }
+        .log-error { border-left-color: #ff4444; }
+        .log-success { border-left-color: #00ff88; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>⚡ Performance Test - Mizu OS</h1>
+        
+        <div class="test-section">
+            <h3>🎮 Controles de Prueba</h3>
+            <div class="controls">
+                <button class="control-btn" id="start-test">Iniciar Test</button>
+                <button class="control-btn" id="stop-test">Detener Test</button>
+                <button class="control-btn" id="stress-test">Test de Estrés</button>
+                <button class="control-btn" id="memory-test">Test de Memoria</button>
+                <button class="control-btn" id="clear-logs">Limpiar Logs</button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Métricas de Rendimiento</h3>
+            <div class="performance-metrics">
+                <div class="metric-card">
+                    <div class="metric-label">FPS Actual</div>
+                    <div class="metric-value" id="current-fps">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">FPS Promedio</div>
+                    <div class="metric-value" id="avg-fps">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">FPS Mínimo</div>
+                    <div class="metric-value" id="min-fps">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">FPS Máximo</div>
+                    <div class="metric-value" id="max-fps">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Frame Time (ms)</div>
+                    <div class="metric-value" id="frame-time">0</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Memoria (MB)</div>
+                    <div class="metric-value" id="memory-usage">0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📈 Gráfico de FPS</h3>
+            <div class="chart-container">
+                <div class="fps-chart" id="fps-chart">
+                    <div class="fps-target"></div>
+                    <div class="fps-line" id="fps-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 Log de Rendimiento</h3>
+            <div class="log-container" id="performance-log"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import eventBus from './src/core/EventBus.js';
+        import SceneManager from './src/core/SceneManager.js';
+        import State from './src/core/State.js';
+        import InputManager from './src/core/InputManager.js';
+        import BootScene from './src/scenes/BootScene.js';
+        import MenuScene from './src/scenes/MenuScene.js';
+
+        // Variables de rendimiento
+        let performanceTest = {
+            isRunning: false,
+            startTime: 0,
+            frameCount: 0,
+            fpsHistory: [],
+            lastFrameTime: 0,
+            minFps: Infinity,
+            maxFps: 0,
+            totalFps: 0
+        };
+
+        // Elementos del DOM
+        const currentFps = document.getElementById('current-fps');
+        const avgFps = document.getElementById('avg-fps');
+        const minFps = document.getElementById('min-fps');
+        const maxFps = document.getElementById('max-fps');
+        const frameTime = document.getElementById('frame-time');
+        const memoryUsage = document.getElementById('memory-usage');
+        const fpsLine = document.getElementById('fps-line');
+        const performanceLog = document.getElementById('performance-log');
+
+        // Controles
+        const startTestBtn = document.getElementById('start-test');
+        const stopTestBtn = document.getElementById('stop-test');
+        const stressTestBtn = document.getElementById('stress-test');
+        const memoryTestBtn = document.getElementById('memory-test');
+        const clearLogsBtn = document.getElementById('clear-logs');
+
+        // Función para agregar logs
+        function addLog(message, type = '') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            logEntry.innerHTML = `<strong>[${timestamp}]</strong> ${message}`;
+            performanceLog.appendChild(logEntry);
+            performanceLog.scrollTop = performanceLog.scrollHeight;
+
+            // Limpiar logs antiguos
+            if (performanceLog.children.length > 50) {
+                performanceLog.removeChild(performanceLog.firstChild);
+            }
+        }
+
+        // Función para calcular FPS
+        function calculateFPS() {
+            const now = performance.now();
+            const deltaTime = now - performanceTest.lastFrameTime;
+            performanceTest.lastFrameTime = now;
+
+            if (deltaTime > 0) {
+                const fps = 1000 / deltaTime;
+                performanceTest.frameCount++;
+                performanceTest.totalFps += fps;
+                performanceTest.fpsHistory.push(fps);
+
+                // Mantener solo los últimos 60 valores
+                if (performanceTest.fpsHistory.length > 60) {
+                    performanceTest.fpsHistory.shift();
+                }
+
+                // Actualizar métricas
+                const avgFpsValue = performanceTest.totalFps / performanceTest.frameCount;
+                performanceTest.minFps = Math.min(performanceTest.minFps, fps);
+                performanceTest.maxFps = Math.max(performanceTest.maxFps, fps);
+
+                // Actualizar UI
+                currentFps.textContent = Math.round(fps);
+                avgFps.textContent = Math.round(avgFpsValue);
+                minFps.textContent = Math.round(performanceTest.minFps);
+                maxFps.textContent = Math.round(performanceTest.maxFps);
+                frameTime.textContent = Math.round(deltaTime);
+
+                // Clasificar FPS
+                currentFps.className = `metric-value ${fps >= 55 ? 'fps-good' : fps >= 30 ? 'fps-warning' : 'fps-bad'}`;
+
+                // Actualizar gráfico
+                updateFPSChart(fps);
+
+                // Verificar rendimiento
+                if (fps < 30) {
+                    addLog(`⚠️ FPS bajo detectado: ${Math.round(fps)}`, 'log-warning');
+                }
+            }
+        }
+
+        // Función para actualizar el gráfico de FPS
+        function updateFPSChart(fps) {
+            const height = Math.min(100, (fps / 60) * 100);
+            fpsLine.style.height = `${height}%`;
+        }
+
+        // Función para obtener uso de memoria
+        function getMemoryUsage() {
+            if (performance.memory) {
+                const used = performance.memory.usedJSHeapSize / 1024 / 1024;
+                memoryUsage.textContent = Math.round(used);
+                return used;
+            }
+            return 0;
+        }
+
+        // Función para iniciar test de rendimiento
+        function startPerformanceTest() {
+            if (performanceTest.isRunning) return;
+
+            performanceTest.isRunning = true;
+            performanceTest.startTime = performance.now();
+            performanceTest.frameCount = 0;
+            performanceTest.fpsHistory = [];
+            performanceTest.minFps = Infinity;
+            performanceTest.maxFps = 0;
+            performanceTest.totalFps = 0;
+
+            startTestBtn.classList.add('active');
+            stopTestBtn.classList.remove('active');
+
+            addLog('🚀 Test de rendimiento iniciado', 'log-success');
+
+            // Loop de rendimiento
+            function performanceLoop() {
+                if (!performanceTest.isRunning) return;
+
+                calculateFPS();
+                getMemoryUsage();
+
+                requestAnimationFrame(performanceLoop);
+            }
+
+            performanceLoop();
+        }
+
+        // Función para detener test de rendimiento
+        function stopPerformanceTest() {
+            if (!performanceTest.isRunning) return;
+
+            performanceTest.isRunning = false;
+            startTestBtn.classList.remove('active');
+            stopTestBtn.classList.add('active');
+
+            const duration = (performance.now() - performanceTest.startTime) / 1000;
+            addLog(`⏹️ Test de rendimiento detenido. Duración: ${duration.toFixed(2)}s`, 'log-success');
+        }
+
+        // Función para test de estrés
+        function stressTest() {
+            addLog('🔥 Iniciando test de estrés...', 'log-warning');
+            
+            // Simular carga pesada
+            const iterations = 1000000;
+            const start = performance.now();
+            
+            for (let i = 0; i < iterations; i++) {
+                Math.sqrt(i);
+            }
+            
+            const end = performance.now();
+            const duration = end - start;
+            
+            addLog(`🔥 Test de estrés completado en ${duration.toFixed(2)}ms`, 'log-success');
+        }
+
+        // Función para test de memoria
+        function memoryTest() {
+            addLog('🧠 Iniciando test de memoria...', 'log-warning');
+            
+            const initialMemory = getMemoryUsage();
+            const testObjects = [];
+            
+            // Crear objetos para consumir memoria
+            for (let i = 0; i < 10000; i++) {
+                testObjects.push({
+                    id: i,
+                    data: new Array(100).fill(Math.random()),
+                    timestamp: Date.now()
+                });
+            }
+            
+            const peakMemory = getMemoryUsage();
+            
+            // Limpiar objetos
+            testObjects.length = 0;
+            
+            const finalMemory = getMemoryUsage();
+            
+            addLog(`🧠 Test de memoria: Inicial: ${initialMemory.toFixed(1)}MB, Pico: ${peakMemory.toFixed(1)}MB, Final: ${finalMemory.toFixed(1)}MB`, 'log-success');
+        }
+
+        // Event listeners para controles
+        startTestBtn.addEventListener('click', startPerformanceTest);
+        stopTestBtn.addEventListener('click', stopPerformanceTest);
+        stressTestBtn.addEventListener('click', stressTest);
+        memoryTestBtn.addEventListener('click', memoryTest);
+        clearLogsBtn.addEventListener('click', () => {
+            performanceLog.innerHTML = '';
+            addLog('🧹 Logs limpiados', 'log-success');
+        });
+
+        // Inicializar sistema para el test
+        async function initializeSystem() {
+            try {
+                addLog('🔧 Inicializando sistema para test de rendimiento...', 'log-success');
+                
+                // Inicializar componentes
+                const state = new State();
+                const sceneManager = new SceneManager();
+                const inputManager = new InputManager();
+                
+                // Registrar escenas
+                const bootScene = new BootScene();
+                const menuScene = new MenuScene();
+                
+                sceneManager.addScene('boot', bootScene);
+                sceneManager.addScene('menu', menuScene);
+                
+                // Configurar contenedor
+                const container = document.createElement('div');
+                container.style.display = 'none';
+                document.body.appendChild(container);
+                sceneManager.setSceneContainer(container);
+                
+                // Inicializar escenas
+                sceneManager.initializeScenes();
+                
+                addLog('✅ Sistema inicializado correctamente', 'log-success');
+                
+                // Iniciar test automáticamente
+                setTimeout(() => {
+                    startPerformanceTest();
+                }, 1000);
+                
+            } catch (error) {
+                addLog(`❌ Error al inicializar: ${error.message}`, 'log-error');
+                console.error('Error en inicialización:', error);
+            }
+        }
+
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            addLog('📋 DOM cargado, preparando test de rendimiento...', 'log-success');
+            initializeSystem();
+        });
+
+        // Monitorear eventos del sistema
+        eventBus.on('systemError', (data) => {
+            addLog(`❌ Error del sistema: ${data.error}`, 'log-error');
+        });
+
+        eventBus.on('sceneChanged', (data) => {
+            addLog(`🎭 Cambio de escena: ${data.from || 'ninguna'} → ${data.to}`, '');
+        });
+    </script>
+</body>
+</html>

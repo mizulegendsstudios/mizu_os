@@ -1,47 +1,24 @@
-# 🌌 Mizu OS
-
-> 🧑‍💻 ¿Quieres crear tu propia app para Mizu OS? Lee la guía: [docs/crear-app-modular.md](docs/crear-app-modular.md)
+# 🌌 Mizu Cloud OS - M1ST
 
 WebOS — Interfaz de Escritorio Virtual que ofrece un entorno unificado para acceder a herramientas básicas sin salir del navegador sin dependencias externas.
 
 ---
 
-## 🚀 Ejecutar en local (Vite)
+Controles (smartphone+tablet):
+- Tactil
 
-Requisitos: Node 18+
+Controles (Smart-TV):
+- Flechas: navegar (↑ ↓ ← →)
+- Ok: acción positiva (seleccionar/entrar)
+- Back: acción negativa (volver/salir)
 
-```bash
-npm install
-npm run dev
-```
-
-- Abre la URL que indica Vite (por defecto `http://localhost:5173`)
-- Build: `npm run build`
-- Preview: `npm run preview`
-
-Estructura de escenas activa: Boot → Menu → Desktop (seleccionable desde el menú)
-
-Controles:
+Controles (desktop+laptop):
 - Flechas: navegar (↑ ↓ ← →)
 - Enter: acción positiva (seleccionar/entrar)
 - Escape: acción negativa (volver/salir)
 
 ---
-
-## 🧪 Páginas de prueba incluidas
-
-- `ui-test.html`: prueba de UI (botones, cursor, navegación y escenas)
-- `stress-test.html`: estrés de 100 evt/s, cambios rápidos de escena, memoria
-- `optimization-test.html`: métricas de FPS, memoria y tiempo de carga
-
-Abrirlas con Vite en:
-- `http://localhost:5173/ui-test.html`
-- `http://localhost:5173/stress-test.html`
-- `http://localhost:5173/optimization-test.html`
-
----
-
-## 🧩 Arquitectura actual (0.7.2)
+## 🧩 Arquitectura actual (2.1.0)
 
 - `src/core/`: `EventBus`, `SceneManager`, `State`, `InputManager`
 - `src/scenes/`: `BootScene`, `MenuScene`, `DesktopScene`
@@ -49,20 +26,7 @@ Abrirlas con Vite en:
 - `src/entities/`: `Button`, `Cursor`
 - `src/assets/`: estilos de escenas
 
-Regla de oro: cada archivo ≤ 200 líneas (si crece, se divide).
-
----
-
-## 🆘 Troubleshooting (pantalla negra)
-
-Si ves solo “cargando…” y luego pantalla negra:
-- Revisa la consola: no debe haber errores.
-- Asegura que `MenuScene` adjunta su contenedor visual (corregido en 0.7.2).
-- Verifica que `src/main.js` registre las escenas `boot`, `menu`, `desktop`.
-- Limpia caché/Hard Reload si estás en GitHub Pages.
-- En móvil, prueba `ui-test.html` para verificar InputManager/UI.
-
-Si persiste, abre un issue con: navegador, SO, logs de consola y pasos.
+Regla de oro: cada archivo ≤ 300 líneas (si crece, se divide).
 
 ---
 
@@ -105,10 +69,8 @@ Para que una app sea compatible con Mizu OS debe cumplir con:
 
 ## 🛸 Características actuales
 
-- Carga/boot con transición a menú
-- Menú con navegación por flechas, cursor y botones
+- Barra de tareas lateral con navegación por flechas, cursor y botones.
 - Escritorio básico con iconos navegables y evento `APP_LAUNCH`
-- Páginas de test de rendimiento y UI
 
 ## 🚀 Tecnologías utilizadas
 
@@ -122,13 +84,13 @@ Para que una app sea compatible con Mizu OS debe cumplir con:
 
 ---
 
-**Licencia:** MIT
+**Licencia:** AGPL 3.0
 
 **Autor:** Moises Nuñez
 
 ## 🧭 Versionado
 
-Versión actual: `0.7.2`.
-- `0.7.2`: arquitectura por escenas, UI interactiva, DesktopScene básica, páginas de prueba.
-- `0.7.1`: correciones de compatibilidad y documentación.
-- `0.7.0`: sistema modular de apps externas (notes, speech) con carga dinámica y sin conflictos.
+Versión actual: `3.0.1`.
+- `3.0.1`: github login
+- `3.0.0`: arquitectura por escenas, UI interactiva, DesktopScene básica, páginas de prueba, correciones documentación y limpieza de archivos incompatibles.
+- `2.0.0`: base de Mizu Cloud OS 2.0.0

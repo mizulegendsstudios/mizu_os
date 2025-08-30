@@ -35,7 +35,49 @@
       margin: 0;
       overflow: hidden;
       }
-      
+      /* Oculta el texto para que aparezca al hacer hover */
+        .group-hover-text {
+            display: none;
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+        }
+
+        .group:hover .group-hover-text {
+            display: inline;
+            opacity: 1;
+        }
+
+        /* Estilo para los botones de la barra de tareas */
+        .taskbar-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 4rem; /* Ancho fijo para el estado contraído */
+            height: 4rem;
+            padding: 1rem;
+            border-radius: 1rem;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .taskbar-button:hover {
+            justify-content: flex-start;
+            background-color: #4a5568;
+            color: white;
+            padding-left: 1.5rem;
+            padding-right: 1rem;
+        }
+
+        .taskbar-button .fa-solid, .taskbar-button .fa-brands {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .taskbar-button:hover .fa-solid, .taskbar-button:hover .fa-brands {
+            transform: translateX(0rem);
+        }
+
+        .taskbar-button span {
+            margin-left: 1rem;
+        }
 .scene {
       width: 50vw;
       height: 50vh;
@@ -127,14 +169,73 @@ border-style: dotted;
   <!-- BODY -->
 
 <body>
-  <div class="scene">
-    <div class="cube">
-      <div class="hologram logo"></div>
-      <div class="hologram hologrambot"></div>
-      <div class="hologram hologramtop"></div>
-<div class="hologram hologramtopi"></div>
-    </div>
-  </div>
+<!-- Barra de Tareas Lateral (Sidebar) -->
+    <aside id="taskbar-sidebar" class="fixed left-0 top-0 h-screen bg-gray-900 text-gray-400 flex flex-col justify-between transition-all duration-300 w-20 hover:w-64 group z-50 shadow-xl">
+        <!-- Íconos superiores -->
+        <div class="p-4 flex flex-col items-center group-hover:items-start space-y-2">
+            <button id="home-icon" class="taskbar-button text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900" tabindex="0">
+                <i class="fas fa-home text-xl"></i>
+                <span class="group-hover:inline ml-4 hidden">Inicio</span>
+            </button>
+            <button id="files-icon" class="taskbar-button text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900" tabindex="-1">
+                <i class="fas fa-folder text-xl"></i>
+                <span class="group-hover:inline ml-4 hidden">Archivos</span>
+            </button>
+        </div>
+
+        <!-- Íconos centrales (las apps) -->
+        <div class="flex-grow flex flex-col items-center justify-center space-y-6">
+            <!-- Ícono de Netflix -->
+            <button id="netflix-icon" class="taskbar-button p-3 rounded-xl hover:bg-red-600 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-900" tabindex="-1">
+                <i class="fab fa-netflix text-2xl"></i>
+            </button>
+
+            <!-- Ícono de Discord -->
+            <button id="discord-icon" class="taskbar-button p-3 rounded-xl hover:bg-indigo-600 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900" tabindex="-1">
+                <i class="fab fa-discord text-2xl"></i>
+            </button>
+
+            <!-- Ícono de Spotify -->
+            <button id="spotify-icon" class="taskbar-button p-3 rounded-xl hover:bg-green-500 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-gray-900" tabindex="-1">
+                <i class="fab fa-spotify text-2xl"></i>
+            </button>
+
+            <!-- Ícono de GitHub -->
+            <button id="github-icon" class="taskbar-button p-3 rounded-xl hover:bg-gray-700 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 focus:ring-offset-gray-900" tabindex="-1">
+                <i class="fab fa-github text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- Información del sistema -->
+        <div class="p-4 space-y-2 text-sm text-gray-500 group-hover:items-start group-hover:w-auto hidden group-hover:block">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-signal"></i>
+                <div class="group-hover:inline">Conexión: <span id="connection">Online</span></div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-battery-full"></i>
+                <div class="group-hover:inline">Batería: <span id="battery">100%</span></div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-volume-up"></i>
+                <div class="group-hover:inline">Volumen: <span id="volume">50%</span></div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-clock"></i>
+                <div class="group-hover:inline">Hora: <span id="time"></span></div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-calendar-alt"></i>
+                <div class="group-hover:inline">Fecha: <span id="date"></span></div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Contenido Principal de la Pantalla -->
+    <main class="flex-1 ml-20 p-8 flex items-center justify-center bg-b rounded-l-3xl shadow-lg transition-all duration-300" id="main-content">
+
+        <div id="content-display" class="text-center text-gray-500">
+            <h1 class="text-4xl font-extrabold mb-4 text-gray-800">¡Bienvenido!</h1>
   <div class="scene">
     <div class="cube">
       <div class="hologram logo2"></div>
@@ -143,14 +244,174 @@ border-style: dotted;
 <div class="hologram hologramtopi"></div>
     </div>
   </div>
-  <div class="scene">
-    <div class="cube">
-      <div class="hologram logo"></div>
-      <div class="hologram hologrambot"></div>
-      <div class="hologram hologramtop"></div>
-<div class="hologram hologramtopi"></div>
-    </div>
-  </div>
+
+ 
+            <p class="text-lg">Haz clic en un ícono de la barra de tareas o usa las flechas del teclado.</p>
+        </div>
+    </main>
+
+    <script>
+        window.onload = function() {
+            // Referencias a los elementos del DOM
+            const contentDisplay = document.getElementById('content-display');
+            const timeSpan = document.getElementById('time');
+            const dateSpan = document.getElementById('date');
+            const taskbarButtons = Array.from(document.querySelectorAll('.taskbar-button'));
+            let currentFocusIndex = 0;
+
+            // Función para actualizar la información del sistema
+            function updateSystemInfo() {
+                const now = new Date();
+                const timeOptions = { hour: '2-digit', minute: '2-digit' };
+                const dateOptions = { day: 'numeric', month: 'short', year: 'numeric' };
+
+                timeSpan.textContent = now.toLocaleTimeString('es-ES', timeOptions);
+                dateSpan.textContent = now.toLocaleDateString('es-ES', dateOptions);
+            }
+
+            // Actualizar la información del sistema cada minuto
+            updateSystemInfo();
+            setInterval(updateSystemInfo, 60000);
+
+            // Función para cambiar el contenido y el estado activo del ícono
+            function openApp(appName, color) {
+                // Generar contenido dinámico basado en la aplicación
+                let contentHTML;
+                if (appName === 'Netflix') {
+                    contentHTML = `
+                        <div class="p-8 bg-gray-100 rounded-3xl shadow-inner text-center">
+                            <h2 class="text-3xl font-bold mb-4" style="color: ${color};">Abriendo Netflix...</h2>
+                            <p class="text-gray-600 mb-4">¡Navega por tus series y películas favoritas!</p>
+                            <div class="flex flex-col space-y-4">
+                                <button class="movie-button bg-red-600 text-white py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2" tabindex="0">Película 1</button>
+                                <button class="movie-button bg-red-600 text-white py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2" tabindex="-1">Película 2</button>
+                                <button class="movie-button bg-red-600 text-white py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2" tabindex="-1">Película 3</button>
+                            </div>
+                        </div>
+                    `;
+                } else if (appName === 'Archivos') {
+                    contentHTML = `
+                        <div class="p-8 bg-gray-100 rounded-3xl shadow-inner text-center">
+                            <h2 class="text-3xl font-bold mb-4" style="color: ${color};">Explorador de Archivos</h2>
+                            <p class="text-gray-600 mb-4">Aquí están tus documentos recientes.</p>
+                            <ul class="text-left space-y-2">
+                                <li>
+                                    <button class="file-button text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" tabindex="0">Documento 1.docx</button>
+                                </li>
+                                <li>
+                                    <button class="file-button text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" tabindex="-1">Informe.pdf</button>
+                                </li>
+                                <li>
+                                    <button class="file-button text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" tabindex="-1">Presentación.pptx</button>
+                                </li>
+                            </ul>
+                        </div>
+                    `;
+                } else {
+                    contentHTML = `
+                        <div class="p-8 bg-gray-100 rounded-3xl shadow-inner text-center">
+                            <h2 class="text-3xl font-bold mb-4" style="color: ${color};">Abriendo ${appName}...</h2>
+                            <p class="text-gray-600">Este es el contenido de la aplicación ${appName}.</p>
+                        </div>
+                    `;
+                }
+
+                contentDisplay.innerHTML = contentHTML;
+
+                // Eliminar el estado "activo" de todos los íconos de la barra de tareas
+                taskbarButtons.forEach(button => {
+                    button.classList.remove('bg-red-600', 'bg-indigo-600', 'bg-green-500', 'bg-gray-700', 'text-white');
+                    button.classList.add('text-gray-400');
+                    button.setAttribute('tabindex', '-1');
+                });
+
+                // Añadir un color de fondo al ícono clicado y hacer que sea enfocable
+                const clickedButton = document.getElementById(appName.toLowerCase() + '-icon');
+                if (clickedButton) {
+                    clickedButton.classList.remove('text-gray-400');
+                    switch(appName) {
+                        case 'Netflix':
+                            clickedButton.classList.add('bg-red-600', 'text-white');
+                            break;
+                        case 'Discord':
+                            clickedButton.classList.add('bg-indigo-600', 'text-white');
+                            break;
+                        case 'Spotify':
+                            clickedButton.classList.add('bg-green-500', 'text-white');
+                            break;
+                        case 'GitHub':
+                            clickedButton.classList.add('bg-gray-700', 'text-white');
+                            break;
+                        default:
+                            clickedButton.classList.add('bg-gray-700', 'text-white');
+                            break;
+                    }
+                    clickedButton.setAttribute('tabindex', '0');
+                    currentFocusIndex = taskbarButtons.indexOf(clickedButton);
+                }
+            }
+            
+            // Asignar los eventos de clic a cada ícono
+            document.getElementById('home-icon').addEventListener('click', () => openApp('Inicio', '#4a5568'));
+            document.getElementById('files-icon').addEventListener('click', () => openApp('Archivos', '#4a5568'));
+            document.getElementById('netflix-icon').addEventListener('click', () => openApp('Netflix', '#E50914'));
+            document.getElementById('discord-icon').addEventListener('click', () => openApp('Discord', '#5865F2'));
+            document.getElementById('spotify-icon').addEventListener('click', () => openApp('Spotify', '#1DB954'));
+            document.getElementById('github-icon').addEventListener('click', () => openApp('GitHub', '#333333'));
+
+            // Manejar la navegación del teclado
+            document.addEventListener('keydown', (event) => {
+                const focusedElement = document.activeElement;
+                const isTaskbarFocused = taskbarButtons.some(btn => btn === focusedElement);
+                
+                if (isTaskbarFocused) {
+                    if (event.key === 'ArrowUp') {
+                        event.preventDefault(); // Prevenir el desplazamiento de la página
+                        currentFocusIndex = (currentFocusIndex - 1 + taskbarButtons.length) % taskbarButtons.length;
+                        taskbarButtons[currentFocusIndex].focus();
+                    } else if (event.key === 'ArrowDown') {
+                        event.preventDefault(); // Prevenir el desplazamiento de la página
+                        currentFocusIndex = (currentFocusIndex + 1) % taskbarButtons.length;
+                        taskbarButtons[currentFocusIndex].focus();
+                    } else if (event.key === 'ArrowRight') {
+                        event.preventDefault();
+                        // Mover el foco a la primera opción dentro del contenido
+                        const contentButtons = contentDisplay.querySelectorAll('button, a, input');
+                        if (contentButtons.length > 0) {
+                            contentButtons[0].focus();
+                        }
+                    }
+                } else {
+                    const contentElements = Array.from(contentDisplay.querySelectorAll('button, a, input'));
+                    if (contentElements.includes(focusedElement)) {
+                        const contentIndex = contentElements.indexOf(focusedElement);
+                        if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+                            event.preventDefault();
+                            if (contentIndex < contentElements.length - 1) {
+                                contentElements[contentIndex + 1].focus();
+                            }
+                        } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+                            event.preventDefault();
+                            if (contentIndex > 0) {
+                                contentElements[contentIndex - 1].focus();
+                            } else {
+                                // Mover el foco de regreso a la barra de tareas si no hay elementos anteriores
+                                taskbarButtons[currentFocusIndex].focus();
+                            }
+                        }
+                    } else if (event.key === 'ArrowLeft') {
+                        // Si el foco no está en un botón de la barra de tareas o del contenido,
+                        // y se presiona la flecha izquierda, mover el foco a la barra de tareas.
+                        taskbarButtons[currentFocusIndex].focus();
+                    }
+                }
+            });
+
+            // Enfocar el primer botón al cargar la página para iniciar la navegación
+            taskbarButtons[currentFocusIndex].focus();
+        };
+    </script>
+
 
     <!-- JS 
     <script type="module" src="src/main.js"></script>-->

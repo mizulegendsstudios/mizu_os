@@ -2,7 +2,6 @@
 <html lang="es">
   <head>
     <!-- HEAD -->
-
     <!-- Viewport -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -305,6 +304,21 @@ border-style: dotted;
                             </ul>
                         </div>
                     `;
+                } else if (appName === 'Inicio') {
+                    contentHTML = `
+                        <div class="text-center text-gray-500">
+                            <h1 class="text-4xl font-extrabold mb-4 text-white">¡Bienvenido!</h1>  
+                            <div class="scene">
+                                <div class="cube">
+                                    <div class="hologram logo2"></div>
+                                    <div class="hologram hologrambot"></div>
+                                    <div class="hologram hologramtop"></div>
+                                    <div class="hologram hologramtopi"></div>
+                                </div>
+                            </div>
+                            <p class="text-lg">Haz clic en un ícono de la barra de tareas o usa las flechas del teclado.</p>
+                        </div>
+                    `;
                 } else {
                     contentHTML = `
                         <div class="p-8 bg-gray-100 rounded-3xl shadow-inner text-center">
@@ -328,6 +342,9 @@ border-style: dotted;
                 if (clickedButton) {
                     clickedButton.classList.remove('text-gray-400');
                     switch(appName) {
+                        case 'Inicio':
+                            clickedButton.classList.add('bg-blue-600', 'text-white');
+                            break;
                         case 'Netflix':
                             clickedButton.classList.add('bg-red-600', 'text-white');
                             break;
@@ -350,7 +367,7 @@ border-style: dotted;
             }
             
             // Asignar los eventos de clic a cada ícono
-            document.getElementById('home-icon').addEventListener('click', () => openApp('Inicio', '#4a5568'));
+            document.getElementById('home-icon').addEventListener('click', () => openApp('Inicio', '#3b82f6'));
             document.getElementById('files-icon').addEventListener('click', () => openApp('Archivos', '#4a5568'));
             document.getElementById('netflix-icon').addEventListener('click', () => openApp('Netflix', '#E50914'));
             document.getElementById('discord-icon').addEventListener('click', () => openApp('Discord', '#5865F2'));

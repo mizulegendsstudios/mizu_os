@@ -26,30 +26,80 @@
     <!-- CSS -->
     <style>
       body {
-        margin: 0;
-        padding: 0;
-        font-family: 'Inter', sans-serif;
-        background: #000;
-        overflow: hidden;
-        display: flex;
-        visibility: visible;
+    body,  html {
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
       }
       
-      #scene-container {
-        width: 100vw;
-        height: 100vh;
-        position: relative;
-      }
-      
-      .loading-indicator {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: #00e5ff;
-        font-size: 18px;
-        z-index: 9999;
-      }
+.scene {
+      width: 50vw;
+      height: 50vh;
+      perspective: 100vh;
+    }
+
+    .cube {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+animation: rotateCube 20s infinite linear;
+    }
+
+    .hologram  {      position: absolute;
+      width: 200px;
+      height: 200px;
+      background: rgba(0, 0, 0, 0);
+      box-sizing: border-box;
+  border-radius: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: sans-serif;
+      font-size: 24px;
+text-align: center;
+      color: #fff; transform: rotateY(  0deg) translateZ(0px); }
+
+    @keyframes rotateCube {
+      from { transform: rotateX(0deg) rotateY(0deg); }
+      to   { transform: rotateX(0deg) rotateY(360deg); }
+    }
+.logo {
+background-size: contain;
+background-image: url('https://raw.githubusercontent.com/mizulegendsstudios/mizu_os/refs/heads/main/src/assets/image/mizu_legends_3000_2024_alfa.png');
+}
+.logo2 {
+background-size: contain;
+background-image: url('public/mizulegends_favico.ico');
+}
+.hologramtop  {
+   border-radius: 100px;
+transform: rotateX(  90deg) translateZ(-100px);
+      border: 3px solid #0ff;
+border-style: dotted;
+}
+.hologramtopi  {
+   border-radius: 100px;
+transform: rotateX(  90deg) translateZ(-100px);
+      border: 1px solid #fff;
+      width: 180px;
+      height: 180px;
+//border-style: dotted;
+}
+.hologrambot  { 
+   border-radius: 100px;
+transform: rotateX(  90deg) translateZ(100px);
+      border: 3px solid #0ff;
+border-style: dotted;
+}
     </style>
 <link rel="stylesheet" href="/mizu_os/src/css/main.css">
 <link rel="stylesheet" href="/mizu_os/src/css/components/glass.css">
@@ -68,7 +118,7 @@
     <meta property="og:title" content="Mizu OS - Sistema Operativo en la Nube">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://mizulegendsstudios.github.io/mizu_os">
-    <meta property="og:image" content="assets/mizu_legends_3002_2025_alfa.ico">
+    <meta property="og:image" content="public/mizulegends_favico.ico">
     <meta property="og:description" content="Sistema operativo en la nube con navegación por flechas">
 
     <!-- Analytics -->
@@ -77,12 +127,33 @@
   </head>
   
   <!-- BODY -->
-  <body>
 
-    <!-- Indicador de carga inicial -->
-    <div class="loading-indicator" id="loading-indicator">
-      🌊 Cargando Mizu OS...
+<body>
+  <div class="scene">
+    <div class="cube">
+      <div class="hologram logo"></div>
+      <div class="hologram hologrambot"></div>
+      <div class="hologram hologramtop"></div>
+<div class="hologram hologramtopi"></div>
     </div>
+  </div>
+  <div class="scene">
+    <div class="cube">
+      <div class="hologram logo"></div>
+      <div class="hologram hologrambot"></div>
+      <div class="hologram hologramtop"></div>
+<div class="hologram hologramtopi"></div>
+    </div>
+  </div>
+  <div class="scene">
+    <div class="cube">
+      <div class="hologram logo"></div>
+      <div class="hologram hologrambot"></div>
+      <div class="hologram hologramtop"></div>
+<div class="hologram hologramtopi"></div>
+    </div>
+  </div>
+
     <!-- JS -->
     <script type="module" src="src/main.js"></script>
   </body>

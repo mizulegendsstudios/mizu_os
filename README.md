@@ -72,6 +72,11 @@ Para que una app sea compatible con Mizu OS debe cumplir con:
 - Barra de tareas lateral con navegación por flechas, cursor y botones.
 - Escritorio básico con iconos navegables y evento `APP_LAUNCH`
 
+---
+
+## 🛸 Características futuras
+- Compatibilidad con Android 11 o versiones más recientes.
+
 ## 🚀 Tecnologías utilizadas
 
 - Vanilla JS (sin frameworks)
